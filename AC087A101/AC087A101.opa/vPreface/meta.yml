@@ -1,0 +1,42 @@
+id:
+  segment sources:
+    P3F44FBAA:
+      type: origin_type
+      relation: translation
+      lang: Sanskrit
+    P9E2826C9:
+      type: origin_type
+      relation: translation
+      lang: Chinese
+    PE4BF344C:
+      type: origin_type
+      relation: translation
+      lang: Chinese
+    P7D5D9D76:
+      type: origin_type
+      relation: translation
+      lang: Tibetan
+    P530DBF7C:
+      type: origin_type
+      relation: translation
+      lang: Tibetan
+    P6AE716B1:
+      type: origin_type
+      relation: translation
+      lang: English
+  segment_pairs:
+    c39ba45e9f494117a714024a77df3efb:
+      P3F44FBAA: 8d3924a7b7424562829aa68825c4fbf6
+      P9E2826C9: 4253a073c640487d8bdbad562675aa34
+      PE4BF344C: 9027ff05b17e481ca774afc6b3704f94
+      P7D5D9D76: None
+      P530DBF7C: 42ba4ad6326640b8ba4ac78d6e0376f0
+      P6AE716B1: eae3aacf5b284f439977978e619903f3
+title: vPreface
+type: translation
+source_metadata:
+  lang:
+  - Chinese
+  - Sanskrit
+  - English
+  - Tibetan

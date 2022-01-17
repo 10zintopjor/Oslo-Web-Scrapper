@@ -1,0 +1,35 @@
+id:
+  segment sources:
+    P3F44FBAA:
+      type: origin_type
+      relation: translation
+      lang: Sanskrit
+    P9E2826C9:
+      type: origin_type
+      relation: translation
+      lang: Chinese
+    PE4BF344C:
+      type: origin_type
+      relation: translation
+      lang: Chinese
+    P7D5D9D76:
+      type: origin_type
+      relation: translation
+      lang: Tibetan
+    P530DBF7C:
+      type: origin_type
+      relation: translation
+      lang: Tibetan
+    P6AE716B1:
+      type: origin_type
+      relation: translation
+      lang: English
+  segment_pairs: {}
+title: 'vChapter 7: Śīlapāramitā'
+type: translation
+source_metadata:
+  lang:
+  - Chinese
+  - Sanskrit
+  - English
+  - Tibetan

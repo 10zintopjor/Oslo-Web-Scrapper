@@ -1,0 +1,112 @@
+id:
+  segment sources:
+    P3F44FBAA:
+      type: origin_type
+      relation: translation
+      lang: Sanskrit
+    P9E2826C9:
+      type: origin_type
+      relation: translation
+      lang: Chinese
+    PE4BF344C:
+      type: origin_type
+      relation: translation
+      lang: Chinese
+    P7D5D9D76:
+      type: origin_type
+      relation: translation
+      lang: Tibetan
+    P530DBF7C:
+      type: origin_type
+      relation: translation
+      lang: Tibetan
+    P6AE716B1:
+      type: origin_type
+      relation: translation
+      lang: English
+  segment_pairs:
+    359755cd08524f32af6b7a27f41403e7:
+      P3F44FBAA: b45fb4c925e042e4a91fc8ce02cbde82
+      P9E2826C9: 1bf56ec22678434b8c73913ccdd3ca2f
+      PE4BF344C: 0ab043e0eac94fa7983cc01b8f445ab9
+      P7D5D9D76: 896d8852c41845dc9827740e94c51bb3
+      P530DBF7C: f09355b4057c4818b31fe0a5b3af7643
+      P6AE716B1: 1717ce3aa48049bb96235339f595dda5
+    78a3e74c692c4a20907a057cdcb91014:
+      P3F44FBAA: 6078e69e04da42508265604b3ed63a63
+      P9E2826C9: c1bac805759b441483e158e59740fb79
+      PE4BF344C: 13a61a2b96f54a0394e4a9e54128c4da
+      P7D5D9D76: None
+      P530DBF7C: 8b8eea49cc5e428287568e9061f1f461
+      P6AE716B1: 43754bf47c034e47a4fa75deb8b9a94f
+    1d5ac8be6fcb4ccea7a86b93ac64c8bb:
+      P3F44FBAA: 78312d34679d4098b08935625d5bd89f
+      P9E2826C9: 3e88607982d54ad6be7a8a8130b29754
+      PE4BF344C: c91621263ad4441db17a851078358547
+      P7D5D9D76: None
+      P530DBF7C: 56225d451fc0465b877e9ef286822819
+      P6AE716B1: 9e748f6afe2c4549aac30af9bc62756b
+    da987b093069405caf298d1ee011fb88:
+      P3F44FBAA: 8c5336fc8a91409bad57c62fbf24c8aa
+      P9E2826C9: f85846e6710949cf9c0d2803bb4b4b81
+      PE4BF344C: 649a736a53874b4780df8baa6e4ea719
+      P7D5D9D76: None
+      P530DBF7C: 4ebcabebdd694acebc4c88bde34c109a
+      P6AE716B1: 8a1d79962d9540b0a0d95a081017c295
+    dad6d9a4ed0d4d8cbc195daff62f1412:
+      P3F44FBAA: ac7b76f580a8425fb5b8b28c20782a6d
+      P9E2826C9: 4873d87e64ff4539ae18d6a5e30546e2
+      PE4BF344C: 4aba83e9223e4dc2b7e34cbb6cc31395
+      P7D5D9D76: None
+      P530DBF7C: 519126428f3341a09b54a9d113704064
+      P6AE716B1: 6258f9b263da46b88d099721da553f1c
+    ea8e67ec79fc4f9c82dc1f21694ebb0e:
+      P3F44FBAA: d7921bac1f7b48118ad145a8d9a1c485
+      P9E2826C9: cf0187ff012a4abc905c01c3f8e29579
+      PE4BF344C: 91f9ada8fe284ed79f69db779d3668d2
+      P7D5D9D76: None
+      P530DBF7C: 61467d10bc1c45778e7374c4085317dd
+      P6AE716B1: c31ab3de887d43969883fddde72afa05
+    5f53251e4b74496caf24cdfff40f8110:
+      P3F44FBAA: 664bdc6dd197488cb435081de51a6492
+      P9E2826C9: 4e46bbc3b9f048fc9d8abbe2b8d13432
+      PE4BF344C: e4c9bad4be4549e9baee5c1c02945d84
+      P7D5D9D76: None
+      P530DBF7C: 30b23666911542c9bd55f3305cc06a98
+      P6AE716B1: fa46ced904434f868fefb2d09627ede8
+    270cf88cfa1b4a269512898635f5a5dd:
+      P3F44FBAA: ffe6d4fc2f7945da932abc007b47157c
+      P9E2826C9: 09a14fb5bac5456faea0b6f702ec25f4
+      PE4BF344C: ca135e6b3368443688663d105b5195d0
+      P7D5D9D76: None
+      P530DBF7C: 9f5543af9e0f4904987d48797317160b
+      P6AE716B1: a50219c38be648b9b27a8c29c6087826
+    a5eeeff95d374feca280ae1e264a49df:
+      P3F44FBAA: efd5cdc8fc664cdbad2885d9b1430ea1
+      P9E2826C9: 14d8b06a77584a90af0969bd8605d682
+      PE4BF344C: 68705e43bca0446980896a3c3cc26564
+      P7D5D9D76: None
+      P530DBF7C: 17a1a05ad9c044b7971926412ebed75f
+      P6AE716B1: f16deba40f2e492eacfdb1e2cac33851
+    4389885908b64ce18ca112a4a6073511:
+      P3F44FBAA: 1515dc4194c24780bb5da1d86113db16
+      P9E2826C9: fc62f8844d3147859d0a58bd0531c588
+      PE4BF344C: a558e08a650b43d685d526841ab6b24f
+      P7D5D9D76: None
+      P530DBF7C: fe8591dfc13440ef9d7474d29c6f4e0e
+      P6AE716B1: 5633ef6e7f654ec8a46031844f4ee39e
+    329a7b1229e248d892652fb05dfe6d9a:
+      P3F44FBAA: 50ee6598e20848d1898fdfe532567d6b
+      P9E2826C9: 4591152f678d4be388f21505beec8b0b
+      PE4BF344C: 793fafed36bd432f81e09e53cbc2057e
+      P7D5D9D76: None
+      P530DBF7C: 7c6c3324a0ab46fc8fa52e6a4c0e447b
+      P6AE716B1: 63ff8d026dae4affb0a92ebc8ec80f0c
+title: 'vChapter 1: Gṛhapati_Folio 3a'
+type: translation
+source_metadata:
+  lang:
+  - Chinese
+  - Sanskrit
+  - English
+  - Tibetan

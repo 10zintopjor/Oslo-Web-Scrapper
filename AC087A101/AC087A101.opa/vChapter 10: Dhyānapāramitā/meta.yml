@@ -1,0 +1,84 @@
+id:
+  segment sources:
+    P3F44FBAA:
+      type: origin_type
+      relation: translation
+      lang: Sanskrit
+    P9E2826C9:
+      type: origin_type
+      relation: translation
+      lang: Chinese
+    PE4BF344C:
+      type: origin_type
+      relation: translation
+      lang: Chinese
+    P7D5D9D76:
+      type: origin_type
+      relation: translation
+      lang: Tibetan
+    P530DBF7C:
+      type: origin_type
+      relation: translation
+      lang: Tibetan
+    P6AE716B1:
+      type: origin_type
+      relation: translation
+      lang: English
+  segment_pairs:
+    d4245e3fe0ad46969f4eecdb2e434995:
+      P3F44FBAA: 097ea7360ff2460c8177c0cc24c8f847
+      P9E2826C9: 2f8b7c1ac6da4129afa049b67c8fd080
+      PE4BF344C: 57a75c4dcd3843bda903cb645141b519
+      P7D5D9D76: None
+      P530DBF7C: 9bd5941e661f4ac7b4c8d7537892ad44
+      P6AE716B1: d9f501f1a5f44c268c3f5c1d3519d859
+    5048e1828e174cb5832f6692d61cb2ec:
+      P3F44FBAA: f5766b5f46f94b0a8b20fd78c365ca70
+      P9E2826C9: 5d2eaafc53f946f380bc595c0a83f9c3
+      PE4BF344C: ff7e52538268430db4f5f240fae87e45
+      P7D5D9D76: None
+      P530DBF7C: 22024ea29f5349359d81ee041b2a573e
+      P6AE716B1: c67b98429b014536aedb4cfa62a4708a
+    657ca55b2c474cd2a5ba8e46e9552100:
+      P3F44FBAA: 0222fad8ff1c4dee956464e6bbfc54cb
+      P9E2826C9: c9507633255b4586a92b721a5196119e
+      PE4BF344C: af49261f5606494e99973c215230e81f
+      P7D5D9D76: None
+      P530DBF7C: f585f860a8314a2bae3df92ec0f1708a
+      P6AE716B1: 00df069eedc04493b7c24401b8a68d1f
+    b24a2b6548064049b49abccc03aaf5d4:
+      P3F44FBAA: da91aec00f704a40912c1618ed603e75
+      P9E2826C9: c72f6c1fe76f4c46bbfeb650d3014ed1
+      PE4BF344C: 96212255ba4346f8ae01c9707339cbf7
+      P7D5D9D76: None
+      P530DBF7C: afd5c613f99f48d99b5dd321f48f8641
+      P6AE716B1: 9ea015685d9d41c6a38494dee979bd6a
+    fa13f040af9d4d8496eae5273bfff991:
+      P3F44FBAA: 773492058d864f608ad6482bfba672c3
+      P9E2826C9: 72d4d137bc7542b4a41a721a030d5a38
+      PE4BF344C: 89c5ed59ae844dd2b12d41b8c2d05fb5
+      P7D5D9D76: None
+      P530DBF7C: 0c94fb03895e46f6b1db33fc20a1edbb
+      P6AE716B1: b0b53d34324c45a4a45ac424ba1bc4ee
+    57a988f95e4a48b384a311bb1ebed1f2:
+      P3F44FBAA: 136fe9eb9e5744a496c84d72fd2095eb
+      P9E2826C9: 40ce2fb91a0a46b28e54c02216b09aaa
+      PE4BF344C: d30394db9c9542e7be2a550e21603f08
+      P7D5D9D76: None
+      P530DBF7C: 4f06d15798704673af4ab12dade9e041
+      P6AE716B1: cd8a8775da094a38ac75fba75bb65151
+    3cf57bef6b8248899591bf54c0f061fd:
+      P3F44FBAA: aef4668f45d14f0aa4f97e32884d0eea
+      P9E2826C9: 00271893683445b6a5ab3df9df66893c
+      PE4BF344C: 8f332d8968c242388dcf926bca862903
+      P7D5D9D76: None
+      P530DBF7C: 2ba7235fe7bc400e8ebda5f1bbce845c
+      P6AE716B1: 1279a840136645f49ea3458801c26a37
+title: 'vChapter 10: Dhyānapāramitā'
+type: translation
+source_metadata:
+  lang:
+  - Chinese
+  - Sanskrit
+  - English
+  - Tibetan
