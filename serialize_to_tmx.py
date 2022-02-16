@@ -42,7 +42,7 @@ def create_main(seg_pairs,pecha_lang,volume):
     body = ET.SubElement(header,"body")
     create_body(body,seg_pairs,pecha_lang,volume)
     tree = ET.ElementTree(root)
-    tree.write(f"./tmx/{volume}.tmx")    
+    tree.write(f"./tmx/{volume}.tmx","UTF-8")    
 
 def create_tmx(alignment,volume):
     seg_pairs = alignment['segment_pairs']

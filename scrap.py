@@ -9,6 +9,7 @@ from openpecha.core.pecha import OpenPechaFS
 from openpecha.core.annotation import AnnBase, Span
 from uuid import uuid4
 from index import OsloAlignment
+import re
 
 
 
@@ -139,8 +140,8 @@ def write_file(divs,base_dic):
         base_dic[f"col_{index}"] = [] if f"col_{index}" not in base_dic else base_dic[f"col_{index}"]
         spans = div.find('span')
         for span in spans:
-            if len(span.text) != 0:
-                base_text+=span.text
+            if len(span.text) != 0:  
+                base_text+=change_text_format(span.text)
             else:
                 base_text+="--------------"    
         if len(spans) == 1 and len(spans[0].text) == 0:
@@ -151,6 +152,26 @@ def write_file(divs,base_dic):
         
     return base_dic
 
+def change_text_format(text):
+    base_text=""
+    text = text.replace("\n","") 
+    ranges = iter(range(len(text)))
+    print(len(text))
+    for i in ranges:
+        if i<len(text)-1:
+            if i%90 == 0 and i != 0 and re.search("\W",text[i+1]):
+                base_text+=text[i]+"\n"
+            elif i%90 == 0 and i != 0 and re.search("\w",text[i+1]):
+                while i < len(text)-1 and re.search("\w",text[i+1]):
+                    base_text+=text[i]
+                    i = next(ranges) 
+                base_text+=text[i]+"\n"    
+            else:
+                base_text+=text[i]
+        else:
+            base_text+=text[i]
+
+    return base_text
 
 def create_opf(base_text,filename,pecha_id):
     opf_path = f"{pecha_id}/{pecha_id}.opf"
