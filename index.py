@@ -8,6 +8,8 @@ from openpecha.core.ids import get_alignment_id
 from openpecha import config, github_utils
 from openpecha.utils import dump_yaml, load_yaml
 from copy import deepcopy
+import serialize_to_tmx
+
 
 logging.basicConfig(
     filename="alignment_opf_map.log",
@@ -25,14 +27,14 @@ class OsloAlignment:
                 pecha['pecha_id']:{
                     "type": "origin_type",
                     "relation": "translation",
-                    "lang": pecha['lang'],
+                    "language": pecha['lang'],
                 }
 
             }
             self.segment_sources.update(alignment)
 
         alignments = {
-            "segment sources": self.segment_sources,
+            "segment_sources": self.segment_sources,
             "segment_pairs":seg_pairs
         }    
 
@@ -47,6 +49,7 @@ class OsloAlignment:
             alignment = self.create_alignment_yml(pechas,volume)
             meta = self.create_alignment_meta(alignment,volume,pechas)
             self.write_alignment_repo(f"./{alignment_path}/{volume}",alignment,meta)
+            serialize_to_tmx.create_tmx(alignment,volume)
 
         readme = self.create_readme_for_opa(alignment_id,pecha_name,pechas)
         with open(f"{alignment_path}/readme.md","w") as f:
@@ -92,7 +95,6 @@ class OsloAlignment:
 
 
     def get_ids(self,annotations):
-        curr_segment = {}
         final_segments = {}
         num = 1
         for uid, _ in annotations.items():
@@ -114,14 +116,14 @@ class OsloAlignment:
             dump_yaml(meta, meta_path)
 
 
-    def create_alignment_meta(self,alignment_id,volume,pechas):
+    def create_alignment_meta(self,alignment,volume,pechas):
         lang  = list(set([pecha['lang'] for pecha in pechas]))
 
         metadata = {
-            "id": alignment_id,
+            "id": alignment['segment_sources'],
             "title": volume,
             "type": "translation",
-            "source_metadata":{"lang":lang},
+            "source_metadata":{"language":lang},
         }
         return metadata
 
