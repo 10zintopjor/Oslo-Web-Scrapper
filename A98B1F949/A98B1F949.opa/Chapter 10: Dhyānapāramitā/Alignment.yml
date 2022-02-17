@@ -1,0 +1,75 @@
+segment_sources:
+  P5B774C04:
+    type: origin_type
+    relation: translation
+    language: Sanskrit
+  P670FA4B1:
+    type: origin_type
+    relation: translation
+    language: Chinese
+  PB4BC1DD2:
+    type: origin_type
+    relation: translation
+    language: Chinese
+  P27B0A5EF:
+    type: origin_type
+    relation: translation
+    language: Tibetan
+  P766334AE:
+    type: origin_type
+    relation: translation
+    language: Tibetan
+  P69FC648B:
+    type: origin_type
+    relation: translation
+    language: English
+segment_pairs:
+  f12f05c23d154cd9a8b587ee3b844a66:
+    P5B774C04: dbe75152b9da4dfbbccbc807b740b2c8
+    P670FA4B1: 7d3eec0f3d5e4d0c9da303a280b6ade4
+    PB4BC1DD2: c21b72e85bd84dce9b61ac3fb427f411
+    P27B0A5EF: None
+    P766334AE: 52bad66fc1f947658394d8e090da9cb0
+    P69FC648B: 908d0702aebf49049d28cf02a01e5c1c
+  4a12f59fc57940d18c3d0d37c4b1d1ac:
+    P5B774C04: 248efdc69a6443eab894a78d52cd638f
+    P670FA4B1: eb4c0dbbf64d4d2081e10294018e526f
+    PB4BC1DD2: 3980cdf8e04f48b7b17767e3addaeea6
+    P27B0A5EF: None
+    P766334AE: ea224e1aa2fe4a8fb89925b8cf1d7df6
+    P69FC648B: c29de558692b454bbf55fadbea550ce3
+  cf5ae49efd314bfa8398e74b790e2106:
+    P5B774C04: 952240fe4f9d4964a320f330d8931a84
+    P670FA4B1: 0850960771b247528c582751752146cc
+    PB4BC1DD2: 7790796246b249f1a2e314d67d382260
+    P27B0A5EF: None
+    P766334AE: 6b6da75c7f6b42c291c31a1e2bc10539
+    P69FC648B: d1a0e8f9f4124a6eadd5cfe5921d5bae
+  a5a17f46aed94968816d665e07a2e7e0:
+    P5B774C04: 58701f0e1a46492692af42e59d723469
+    P670FA4B1: 4d3e623df38f4142a5aa09781f27b7be
+    PB4BC1DD2: 3a8e78e63ee7415c9eb94ef07a006a79
+    P27B0A5EF: None
+    P766334AE: 18c4e137cf9b41889925be3161f50b92
+    P69FC648B: 7ac6bbd57b64429fb6980b3ac5640a1b
+  e405c04a529f4daa87282883ad3bff11:
+    P5B774C04: d1fd8b62da1543ac9810ab3dd92fff02
+    P670FA4B1: 1140852ff298450a8d86ade9f55cc1c9
+    PB4BC1DD2: cca7f6883d5b425ca8ac3972cdcbd56c
+    P27B0A5EF: None
+    P766334AE: 59870b9d32b74a908d2959322da00aa5
+    P69FC648B: 7326ae0b88854e07a5d0a0c3593158e0
+  8b0f5fffa7104a9794558966e823d5d9:
+    P5B774C04: b26a4fcb88e24a1b91df91a44e0d3675
+    P670FA4B1: eca2de7dea9544d4a71fc8bc1a38fef0
+    PB4BC1DD2: 86d5a61efe9342a7923662a3e129e3c9
+    P27B0A5EF: None
+    P766334AE: abe9004dc58143e58a667861b8b6aa9f
+    P69FC648B: f665c34a1e1b4dffbea2d0f79db3c9df
+  665fdda6ddf44c1fabed60ece1e906f7:
+    P5B774C04: 6b8a9cec8a45400887ef78882e92635b
+    P670FA4B1: 029eb0425e0e47b9b04d930326adca2b
+    PB4BC1DD2: ea46e08afc66413a9a864771c55c4c2b
+    P27B0A5EF: None
+    P766334AE: da3b7383ac1949ffb1b192dad960de48
+    P69FC648B: 1f86962e7efa4134abf7a95e5e72f406

@@ -1,0 +1,460 @@
+<?xml version="1.0" ?>
+<tmx>
+  <header>
+    <body>
+      <tu seg_id="9b2b6036a6c442f095443a30bc73d272">
+        <tuv lang="Sanskrit">loke mātsaryadoṣeṇa āgāḍho bhoti ā(MS:a)grāhaḥ |parigrahāta ārakṣā saṃbhavāti nirantarā ||</tuv>
+        <tuv lang="Chinese">慳過染世間　能起堅積聚聚斂故守護　遍生無有間</tuv>
+        <tuv lang="Chinese">世間慳過失　堅固而執著以執故不護　起罪咎相續</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">ser sna’i ñes pas ’jig rten na || kun tu ’dzin pa sra bar ’gyur || yoṅs su ’dzin pas kun sruṅ
+ ba || rgyun mi ’chad par ’byuṅ bar ’gyur ||</tuv>
+        <tuv lang="English">Because of the vice of envythe world becomes thick with grasping.Because of grasping, one’s
+ need to safeguard one's propertygrows incessantly.</tuv>
+      </tu>
+      <tu seg_id="d63964d613f14bb3b671341248240c76">
+        <tuv lang="Sanskrit">ārakṣāhetukā bālā daṇḍaśastranipātanāḥ |karoti sarvapāpāni tato duḥkhaṃ vivarddhate ||</tuv>
+        <tuv lang="Chinese">守護在愚夫　刀仗相加害種諸不善業　因此生衆苦</tuv>
+        <tuv lang="Chinese">愚者以不護　執刀杖損害廣作諸罪業　其後苦増長</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">byis pa kun tu bsruṅ ba’i phyir || dbyig pa daṅ ni mtshon ’debs śiṅ || sdig pa thams cad byed
+ pas na || de las sdug bsṅal ’phel bar ’gyur ||</tuv>
+        <tuv lang="English">Due to the need to safeguard their propertythe immature resort to sticks and weapons,performing
+ all sorts of evil deeds,and then suffering escalates.</tuv>
+      </tu>
+      <tu seg_id="56bdcd296e814783aaa958f18b91667e">
+        <tuv lang="Sanskrit">tṛṣṇānidānaṃ paśyitvā sarvaduḥkhāna saṃbhavaḥ |amūlām apratiṣṭhānaṃ bodhiṃ budhyiṣu uttamāṃ
+ ||</tuv>
+        <tuv lang="Chinese">觀愛因縁已　衆苦則不生無根無住覺　諸覺中最上</tuv>
+        <tuv lang="Chinese">愛縁増長已　乃生於衆苦我證勝菩提　令住無根本</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">sred pa’i gźi las sdug bsṅal kun || śin tu ’byuṅ bar mthoṅ bas na || rtsa ba med ciṅ gnas med
+ pa’i || byaṅ chub dam pa rtogs par ’dod ||</tuv>
+        <tuv lang="English">Seeing that it is from desirethat all suffering comes about,I decided to awaken to the unsurpassed
+ awakeningthat has no root or foundation.</tuv>
+      </tu>
+      <tu seg_id="92cb158b982a4867954742c2bc65783d">
+        <tuv lang="Sanskrit">punar aparaṃ gṛhapate mithyātvaniyataṃ batemaṃ lokasanniveśaṃ dṛṣṭvā daśabhir mithyātvair dharmmaiḥ
+</tuv>
+        <tuv lang="Chinese">復次長者。我觀世間一切衆生。皆由十種惡邪性故建立邪定。</tuv>
+        <tuv lang="Chinese">復次長者。邪定聚法世間合集。斯苦甚大。邪法有十。</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">gźan yaṅ kye ma’o khyim bdag ’jig rten gnas pa ’di ni log pa’i chos bcus log pa ñid du ṅes par
+ mthoṅ ste |</tuv>
+        <tuv lang="English">&quot;Furthermore, householder, I have seen that one who is involved with the world errs in ten ways
+ which doom him to error.</tuv>
+      </tu>
+      <tu seg_id="fbd5090065ef40c4a6be262b058a0977">
+        <tuv lang="Sanskrit">katamair daśabhir</tuv>
+        <tuv lang="Chinese">何等爲十。</tuv>
+        <tuv lang="Chinese">何等爲十。</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">bcu gaṅ źe na |</tuv>
+        <tuv lang="English">What are these ten kinds of error?</tuv>
+      </tu>
+      <tu seg_id="f3c99a5bda354db7bd38bd8e0aab4db1">
+        <tuv lang="Sanskrit">yad idaṃ | mithyādṛṣṭyā '</tuv>
+        <tuv lang="Chinese">一者邪見。</tuv>
+        <tuv lang="Chinese">一者邪見。</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">’di lta ste | log pa’i lta ba daṅ |</tuv>
+        <tuv lang="English">They are wrong view,</tuv>
+      </tu>
+      <tu seg_id="2018843dbb47452982cff1bcee961d00">
+        <tuv lang="Sanskrit">mithyāsaṃkalpena</tuv>
+        <tuv lang="Chinese">二者邪思惟。</tuv>
+        <tuv lang="Chinese">二者邪思惟。</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">log pa’i rtog pa daṅ |</tuv>
+        <tuv lang="English">wrong intention,</tuv>
+      </tu>
+      <tu seg_id="d496b03779b54e8d9454dd78a455d515">
+        <tuv lang="Sanskrit">mithyāvācā</tuv>
+        <tuv lang="Chinese">三者邪語。</tuv>
+        <tuv lang="Chinese">三者邪語。</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">log pa’i ṅag daṅ |</tuv>
+        <tuv lang="English">wrong speech,</tuv>
+      </tu>
+      <tu seg_id="d9a81e0b82bd409688a244e7286d7f27">
+        <tuv lang="Sanskrit">mithyākarmāntena</tuv>
+        <tuv lang="Chinese">四者邪業。</tuv>
+        <tuv lang="Chinese">四者邪業。</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">log pa’i las kyi mtha’ daṅ |</tuv>
+        <tuv lang="English">wrong action,</tuv>
+      </tu>
+      <tu seg_id="da24675474ca4a2394e1bb9582bb6cfd">
+        <tuv lang="Sanskrit">mithyā’jīvena</tuv>
+        <tuv lang="Chinese">五者邪命。</tuv>
+        <tuv lang="Chinese">五者邪命。</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">log pa’i ’tsho ba daṅ |</tuv>
+        <tuv lang="English">wrong livelihood,</tuv>
+      </tu>
+      <tu seg_id="c7349482b4c74cda88a48dca4eb44bb6">
+        <tuv lang="Sanskrit">mithyāvyāyāmena '</tuv>
+        <tuv lang="Chinese">六者邪精進。</tuv>
+        <tuv lang="Chinese">六者邪勤。</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">log pa’i rtsol pa daṅ |</tuv>
+        <tuv lang="English">wrong effort,</tuv>
+      </tu>
+      <tu seg_id="fc13e56150484b118f4d2fc9d4439558">
+        <tuv lang="Sanskrit">mithyāsmṛtyā '</tuv>
+        <tuv lang="Chinese">七者邪念。</tuv>
+        <tuv lang="Chinese">七者邪念。</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">log pa’i dran pa daṅ |</tuv>
+        <tuv lang="English">wrong mindfulness,</tuv>
+      </tu>
+      <tu seg_id="6e5b11bce9e646f290dd00cfa942a8f3">
+        <tuv lang="Sanskrit">mithyāsamādhinā '</tuv>
+        <tuv lang="Chinese">八者邪定。</tuv>
+        <tuv lang="Chinese">八者邪定。</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">log pa’i (2) tiṅ ṅe ’dzin daṅ |</tuv>
+        <tuv lang="English">wrong concentration,</tuv>
+      </tu>
+      <tu seg_id="d577454d4a5749359118c4436c42cc53">
+        <tuv lang="Sanskrit">mithyāvimuktyā '</tuv>
+        <tuv lang="Chinese">九者邪解脱。</tuv>
+        <tuv lang="Chinese">九者邪解脱。</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">log pa’i rnam par grol ba daṅ |</tuv>
+        <tuv lang="English">wrong liberation,</tuv>
+      </tu>
+      <tu seg_id="32957fb9a6094182ab13dadfa1019326">
+        <tuv lang="Sanskrit">mithyājñānena ca daśamena ||</tuv>
+        <tuv lang="Chinese">十者邪解脱智見。</tuv>
+        <tuv lang="Chinese">十者邪智。</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">log pa’i śes pa daṅ bcu ste |</tuv>
+        <tuv lang="English">and wrong understanding.</tuv>
+      </tu>
+      <tu seg_id="c96ea852dc134fab86dc64c5e3146cf0">
+        <tuv lang="Sanskrit">ebhir gṛhapate daśabhir mithyātvair niyataṃ lokasanniveśaṃ dṛṣṭvā '</tuv>
+        <tuv lang="Chinese">長者。我觀衆生由如是等十邪性故建立邪定。</tuv>
+        <tuv lang="Chinese">如是十種邪定聚法。世間合集斯苦甚大。我見是已。</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">khyim bdag ’jig rten gnas pa ’di ni log pa’i chos bcu po de dag gis log par ṅes par mthoṅ nas
+ |</tuv>
+        <tuv lang="English">Householder, when I saw that one who is involved with the world is doomed by these ten kinds
+ of error,</tuv>
+      </tu>
+      <tu seg_id="42c3e7a715684190a9fb6b85a8f08fef">
+        <tuv lang="Sanskrit">sarvamithyātvasamatikramāyā’nuttarā{yā}ṃ samyaksaṃbodhim abhisaṃbhotsyāmīti</tuv>
+        <tuv lang="Chinese">爲欲證得阿耨多羅三藐三菩提出離如是諸邪性故。</tuv>
+        <tuv lang="Chinese">普令超越一切邪法。是故我乃淨信出家。趣證阿耨多羅三藐三菩提果</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">log pa thams cad las yaṅ dag par bzla ba’i phyir bla na med pa yaṅ dag par rdzogs pa’i byaṅ
+ chub mṅon par rdzogs par ’tshaṅ rgya bar bya’o źes daṅ pas</tuv>
+        <tuv lang="English">I decided to overcome them all and fully awaken to unsurpassed perfect awakening.</tuv>
+      </tu>
+      <tu seg_id="45136081253b449cafc237d0bb9e7c27">
+        <tuv lang="Sanskrit">śraddhayā āgārād anagārikāṃ pravrajitaḥ ||</tuv>
+        <tuv lang="Chinese">以淨信心捨釋氏家趣無上道。</tuv>
+        <tuv lang="Chinese">爾時世尊。重説偈言</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">khyim nas khyim med par rab tu byuṅ ṅo ||</tuv>
+        <tuv lang="English">With that conviction, I left ordinary household life behind and became a renunciant.”</tuv>
+      </tu>
+      <tu seg_id="a22168daab744f04b206fd2529ca78fe">
+        <tuv lang="Sanskrit">atha khalu bhagavān imam evārthaṃ bhūyasyā mātrayā saṃdarśayamānas tasyāṃ velāyām imā gāthā
+ abhāṣata ||</tuv>
+        <tuv lang="Chinese">爾時世尊。欲重宣此義。而説頌曰</tuv>
+        <tuv lang="Chinese">邪見所含藏　邪思惟境界談説邪語言　起作諸邪業</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">de nas bcom ldan ’das kyis don ’di ñid rgya cher bstan pa’i phyir de’i tshe tshigs su bcad pa
+ ’di dag gsuṅs so ||</tuv>
+        <tuv lang="English">Then, to clarify this point further, the Blessed One spoke these verses:</tuv>
+      </tu>
+      <tu seg_id="8eb76f49e58642a3b5e1cc7bed30d5a6">
+        <tuv lang="Sanskrit">ye mithyādṛṣṭipālīnā mithyāsaṃkalpagocarāḥ 'mithyāvācaṃ prabhāṣaṃte mithyākarmāntacāriṇaḥ ||
+</tuv>
+        <tuv lang="Chinese">懷邪見衆生　邪思惟境界宣説於邪語　及行諸邪業</tuv>
+        <tuv lang="Chinese">邪命及邪勤　邪念與邪定起彼邪解脱　一向生邪智</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">gaṅ dag log pa’i lta chags daṅ | log par rtog pa’i spyod (4) yul daṅ | log pa’i tshig tu smra
+ ba daṅ | log pa’i las mtha’ spyod pa daṅ ||</tuv>
+        <tuv lang="English">Those who defend wrong views,who hold wrong intentions,who utter wrong speech,who perform wrong
+ activities,</tuv>
+      </tu>
+      <tu seg_id="94aa58b5b6db44e58f18a28b42bb7df3">
+        <tuv lang="Sanskrit">mithyājīvā mithyāvyāyāmā mithyāsmṛtisamāhitāḥ 'mithyāvimuktisaṃpannā mithyājñānaparāyaṇāḥ ||
+</tuv>
+        <tuv lang="Chinese">邪命邪精進　邪念與邪定成就邪解脱　及趣邪智見</tuv>
+        <tuv lang="Chinese">此諸邪定聚　諸愚者安立令翻邪入正　是故我出家</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">log pa’i ’tsho daṅ log pa’i rtsol || log pa’i dran daṅ mñam par ’jog | log pa’i rnam mgrol rdzogs
+ pa daṅ || log pa’i śes la gźol ba yi ||</tuv>
+        <tuv lang="English">have wrong livelihood, wrong effort,wrong mindfulness and concentration,attain wrong liberation,and
+ are intent upon wrong knowledge,</tuv>
+      </tu>
+      <tu seg_id="b12a338ba49a41f8b5992c91958c0d96">
+        <tuv lang="Sanskrit">mithyātvaniyato rāśir yatra bālāḥ pratiṣṭhitāḥ &lt;'&gt;samyaktvatāyāṃ sthāpiṣye tasmāt pravrajito
+ hy ahaṃ ||</tuv>
+        <tuv lang="Chinese">邪性決定聚　愚夫之所依爲令住正性　故趣無上道</tuv>
+        <tuv lang="Chinese">復次長者。惡道深險世間合集。斯苦甚大。漸向惡趣増長惡趣廣開惡趣。謂不善業有其十種。</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">log par reṅs pa’i phuṅ po ni || byis pa de (5) la gnas pa dag || yaṅ dag ñid la dgod do źes
+ || de phyir ṅa ni rab tu byuṅ ||</tuv>
+        <tuv lang="English">these immature people who stand fixedamong those doomed to errorI shall establish in right action.It
+ was in order to do this that I went forth into homelessness.</tuv>
+      </tu>
+      <tu seg_id="eeed6831c5bc49449d71ec125c12d7af">
+        <tuv lang="Sanskrit">punar aparaṃ gṛhapate kumārgāvarūḍhaṃ batemaṃ lokasanniveśaṃ dṛṣṭvā yadbhūyasā ’pāyanimnam apāyapravaṇam(MS.
+ śravaṇa; tib. bab pa) apāyaprāgbhāraṃ daśabhir akuśalaiḥ karmapathair</tuv>
+        <tuv lang="Chinese">復次長者。我觀世間一切衆生。由於十種不善業道。而能建立安處邪道多墮惡趣。</tuv>
+        <tuv lang="Chinese">何等爲十。</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">gźan yaṅ kye ma’o khyim bdag ’jig rten gnas pa ’di ni lam ṅan par źugs śiṅ | mi dge ba bcu’i
+ las kyi lam rnams kyis phal cher ṅan soṅ du gźol ba | ṅan soṅ du ’bab pa | ṅan soṅ du bab
+ par mthoṅ ste |</tuv>
+        <tuv lang="English">“Furthermore, householder, I have seen that one who is involved with the world sets out on the
+ wrong path by way of ten unwholesome actions, and is certain to sink into the lower realms,
+ to descend into the lower realms, to be borne into the lower realms.</tuv>
+      </tu>
+      <tu seg_id="87fec44166534667b223d70d93d3de7c">
+        <tuv lang="Sanskrit">adhyārūḍham imaṃ bhūyastvenāpāyanimnam apāyapravaṇa1 m apāyaprāgbhāraṃ lokasanniveśaṃ dṛṣṭvā
+</tuv>
+        <tuv lang="Chinese">何等爲十。</tuv>
+        <tuv lang="Chinese">一者殺生。</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">bcu gaṅ źe na | ’di lta ste |</tuv>
+        <tuv lang="English">What are these ten actions?</tuv>
+      </tu>
+      <tu seg_id="80ab570b49c24fd0ba4ea8ba39f99998">
+        <tuv lang="Sanskrit">sarvakumārgasamatikramāyā ’nuttarāṃ samyaksaṃbodhim abhisaṃbhotsyamīti</tuv>
+        <tuv lang="Chinese">一者奪命。</tuv>
+        <tuv lang="Chinese">二者偸盜。</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">srog gcod pa daṅ |</tuv>
+        <tuv lang="English">They are killing,</tuv>
+      </tu>
+      <tu seg_id="dddeeb4373f148cab4f15b229b9c9192">
+        <tuv lang="Sanskrit">śraddhayā āgārād anagārikāṃ pravrajitaḥ ||</tuv>
+        <tuv lang="Chinese">二者不與取。</tuv>
+        <tuv lang="Chinese">三者邪染。</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">ma byin par len pa daṅ |</tuv>
+        <tuv lang="English">taking what is not given,</tuv>
+      </tu>
+      <tu seg_id="370ae42a75a14ffc9e7e6aa96991cf50">
+        <tuv lang="Sanskrit">atha khalu bhagavān imam evārthaṃ bhūyasyā mātrayā prarūpayaṃs tasyāṃ velāyām imā gāthā abhāṣata
+ ||</tuv>
+        <tuv lang="Chinese">三者邪婬。</tuv>
+        <tuv lang="Chinese">四者妄言。</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">’dod pa la log par g-yem pa daṅ |</tuv>
+        <tuv lang="English">sexual misconduct,</tuv>
+      </tu>
+      <tu seg_id="55220c66e3684934bcfdee8124f027bb">
+        <tuv lang="Sanskrit">prāṇātipātinaḥ satvāḥ paradravyāpahāriṇaḥ 'kāmamithyāsamācārā gacchanti narakaṃ laghu ||</tuv>
+        <tuv lang="Chinese">四者妄語。</tuv>
+        <tuv lang="Chinese">五者綺語。</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">brdzun du smra ba daṅ |</tuv>
+        <tuv lang="English">lying,</tuv>
+      </tu>
+      <tu seg_id="8d6f977d88cf4b229c39c2c25dc4df18">
+        <tuv lang="Sanskrit">vibhedakāś ca pāruṣyamṛṣāvādi2 asaṃyatāḥ |sandhi3 pralāpino bālā moṣabaddhāḥ pṛtagjanāḥ ||</tuv>
+        <tuv lang="Chinese">五者離間語。</tuv>
+        <tuv lang="Chinese">六者兩舌。</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">phra ma zer ba daṅ |</tuv>
+        <tuv lang="English">slander,</tuv>
+      </tu>
+      <tu seg_id="5957da6ea3764f778cf178836403ee05">
+        <tuv lang="Sanskrit">abhidhyā parabhogeṣu vyāpādabahulāpi ca 'dṛṣṭīvipannā bahavo narā durgatigāminaḥ ||</tuv>
+        <tuv lang="Chinese">六者麁語。</tuv>
+        <tuv lang="Chinese">七者惡口。</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">ṅag rtsub po daṅ |</tuv>
+        <tuv lang="English">uttering harsh words,</tuv>
+      </tu>
+      <tu seg_id="d7a6ad71883745bbb0f25bac0238b97f">
+        <tuv lang="Sanskrit">kāyena trividhaṃ pāpaṃ vācayā ca caturvidhaṃ |manasā trividhaṃ pāpaṃ kurvvate pāpakāriṇaḥ ||
+</tuv>
+        <tuv lang="Chinese">七者綺語。</tuv>
+        <tuv lang="Chinese">八者貪。</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">tshig kyal pa daṅ |</tuv>
+        <tuv lang="English">idle talk,</tuv>
+      </tu>
+      <tu seg_id="7c81b71ef3ff46899cdb9517ff7bbc26">
+        <tuv lang="Sanskrit">pāpaṃ karma karitvāna yena gacchanti durgatim* |niṣkrāntas trāyaṇārthāya yan na gaccheya durgatiṃ
+ ||</tuv>
+        <tuv lang="Chinese">八者貪著。</tuv>
+        <tuv lang="Chinese">九者瞋。</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">brnab sems daṅ |</tuv>
+        <tuv lang="English">covetousness,</tuv>
+      </tu>
+      <tu seg_id="23c052d8f5d74136aa48ee884e6c78a1">
+        <tuv lang="Sanskrit">punar aparaṃ gṛhapate kleśopakleśasaṃkleśamalopagataṃ batemaṃ lokasanniveśaṃ dṛṣṭvā daśabhiḥ
+ saṃkleśaiḥ</tuv>
+        <tuv lang="Chinese">九者瞋恚。</tuv>
+        <tuv lang="Chinese">十者邪見。</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">gnod sems daṅ |</tuv>
+        <tuv lang="English">maliciousness,</tuv>
+      </tu>
+      <tu seg_id="6903c2479e5a49bc90dea0ba129a09f0">
+        <tuv lang="Sanskrit">katamair daśabhir</tuv>
+        <tuv lang="Chinese">十者邪見。</tuv>
+        <tuv lang="Chinese">如是十種不善業道。漸向惡趣増長惡趣廣開惡趣。我見是已。爲令出離諸險惡道。</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">log par lta ba (7) daṅ bcu ste ||</tuv>
+        <tuv lang="English">and holding wrong views.</tuv>
+      </tu>
+      <tu seg_id="6b312aa790e1427ca93366f4d58bff8a">
+        <tuv lang="Sanskrit">yad idaṃ mātsaryamalasaṃkleśena |</tuv>
+        <tuv lang="Chinese">長者。我見衆生由是十種不善業故。乘於邪道多趣多向多墮惡道。</tuv>
+        <tuv lang="Chinese">是故我乃淨信出家。趣證阿耨多羅三藐三菩提果</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">khyim bdag mi dge ba bcu’i las kyi lam rnams kyis ’jig rten gnas pa ’di la mṅan par źugs śiṅ
+ phal cher ṅan soṅ du gźol ba | ṅan soṅ du ’bab pa | ṅan soṅ du bab par mthoṅ nas</tuv>
+        <tuv lang="English">Householder, when I saw that one who is involved with the world sets out on the wrong path by
+ way of ten unwholesome actions, and is certain to sink into the lower realms, to descend
+ into the lower realms, to be borne into the lower realms,</tuv>
+      </tu>
+      <tu seg_id="4d7a0582eda2464f9bbc80f43170cf56">
+        <tuv lang="Sanskrit">dauḥśīlyamalasaṃkleśena |</tuv>
+        <tuv lang="Chinese">爲欲證得阿耨多羅三藐三菩提超出一切諸邪道故。</tuv>
+        <tuv lang="Chinese">爾時世尊。重説偈言</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">ṅan soṅ thams cad las yaṅ dag par bzla ba’i phyir bla na med pa yaṅ dag par rdzogs pa’i byaṅ
+ chub mṅon par rdzogs par ’tshaṅ rgya bar bya’o źes</tuv>
+        <tuv lang="English">I decided to leave all of these wrong paths behind and fully awaken to unsurpassed perfect awakening.
+</tuv>
+      </tu>
+      <tu seg_id="5c92d03b6f9a407484f54136dbc665bd">
+        <tuv lang="Sanskrit">vyāpādamalasaṃkleśena |</tuv>
+        <tuv lang="Chinese">以淨信心捨釋氏家趣無上道。</tuv>
+        <tuv lang="Chinese">衆生起殺命　侵取他財物欲邪行遍行　速墮於地獄</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">dad pas khyim nas khyim med par rab tu byuṅ ṅo ||</tuv>
+        <tuv lang="English">With that conviction, I left ordinary household life behind and became a renunciant.”</tuv>
+      </tu>
+      <tu seg_id="580e569971ff4d39a0ddbb71e8aaf076">
+        <tuv lang="Sanskrit">kausīdyamalasaṃkleśena '</tuv>
+        <tuv lang="Chinese">爾時世尊。欲重宣此義。而説頌曰</tuv>
+        <tuv lang="Chinese">兩舌及惡口　妄言無決定愚者綺飾語　異生煩惱縛</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">de nas bcom ldan ’das kyis don de ñid rgya cher bstan pa’i phyir de’i tshe tshigs su bcad pa
+ ’di dag gsuṅs so ||</tuv>
+        <tuv lang="English">Then, to illustrate this point in further detail, the Blessed One spoke these verses:</tuv>
+      </tu>
+      <tu seg_id="da069d6d90214ba480d18022233ca6ea">
+        <tuv lang="Sanskrit">vyākṣepamalasaṃkleśena |</tuv>
+        <tuv lang="Chinese">諸害命衆生　劫盜他財物行諸邪欲行　速墮於地獄</tuv>
+        <tuv lang="Chinese">貪心樂他富　瞋起諸過失邪見破壞多　當墮於惡趣</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">srog gcod pa yi sems can daṅ || gźan gyi nor la ’phrog pa daṅ || ’dod la log par g-yem pa dag
+ || sems can dmyal bar myur du ’gro ||</tuv>
+        <tuv lang="English">Beings who take life,who steal the property of others,and who engage in sexual misconduct,soon
+ end up in hell.</tuv>
+      </tu>
+      <tu seg_id="675365f3d5a84171b9de5fccb1db12f3">
+        <tuv lang="Sanskrit"/>
+        <tuv lang="Chinese">麁言離間語　妄語乖寂靜綺語等凡夫　愚癡之所縛</tuv>
+        <tuv lang="Chinese">身有三種罪　語四種應知意三罪亦然　作者墮惡趣</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">dbyen byed pa daṅ tshig rtsub daṅ || brdzun du smra źiṅ mi sdom pa ||byis pa kyal pa smra ba
+ rnams || so so skye bo slu bas bciṅs ||</tuv>
+        <tuv lang="English">Those who create discord, use harsh language,tell lies and are unreliable,these infantile fools,
+ chattering continuously,are bound by delusion.</tuv>
+      </tu>
+      <tu seg_id="020bee25e5d3488183f076e56bfc3034">
+        <tuv lang="Sanskrit"/>
+        <tuv lang="Chinese">貪著他資財　數起於瞋恚興種種邪見　是人趣惡道</tuv>
+        <tuv lang="Chinese">若造諸罪者　定墮於惡趣若離此三罪　必不墮惡趣</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">gźan gyi spyod la brnab sems daṅ || gnod sems dag ni maṅ ba daṅ ||mi maṅ lta ba log źugs pa
+ || ṅan ’gro dag tu ’gro bar ’gyur ||</tuv>
+        <tuv lang="English">Coveting the wealth of others,full of malicious intent,holding destructive views,many men are
+ led to the lower realms.</tuv>
+      </tu>
+      <tu seg_id="a034a6472ae94667a611bb7e3b44f9ee">
+        <tuv lang="Sanskrit"/>
+        <tuv lang="Chinese">三種由身起　四種語業生意能成三惡　故名惡行者</tuv>
+        <tuv lang="Chinese">復次長者。煩惱隨煩惱。諸雜染垢世間合集。斯苦甚大。雜染有十。</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">lus kyis sdig pa rnam gsum daṅ | ṅag gis sdig pa rnam bźi daṅ ||yid kyis sdig pa rnams gsum
+ ni || sdig byed pa dag rab tu byed ||</tuv>
+        <tuv lang="English">Three sins of the body,four committed by speech,three sins of the mind,these are the actions
+ of evil-doers.</tuv>
+      </tu>
+      <tu seg_id="19f89d0bfd634c7abb5496e0832cec32">
+        <tuv lang="Sanskrit"/>
+        <tuv lang="Chinese">行諸惡業已　牽趣惡道中吾今現世間　拔濟令出離</tuv>
+        <tuv lang="Chinese">何等爲十。</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">sdig pa’i las rnams byas pas na || de phyir ṅan ’gror ’gro bar ’gyur ||ci nas ṅan ’gror mi gtaṅ
+ bar || bskyab pa’i phyir ni rab tu byuṅ ||</tuv>
+        <tuv lang="English">Having committed an evil actthey go to the lower realms.I left in order to save myself,from
+ going to the lower realms.</tuv>
+      </tu>
+      <tu seg_id="06e1ab3ed6d94fafa49913a807e7144b">
+        <tuv lang="Sanskrit"/>
+        <tuv lang="Chinese">復次長者。我觀世間一切衆生。由於十種染汚法故。處在煩惱墮煩惱垢中。</tuv>
+        <tuv lang="Chinese">一者慳悋垢雜染。</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">gźan yaṅ kye ma’o khyim bdag ’jig rten gnas pa ’di ni kun nas ñon moṅs pa bcu dag gis ñon moṅs
+ pa daṅ | ñe ba’i ñon moṅs pa daṅ | kun nas ñon moṅs pa’i dri ma daṅ ldan par mthoṅ ste
+ |</tuv>
+        <tuv lang="English">“Furthermore, householder, I have seen that, alas, one who is involved with the world is tainted
+ by the defilements of major and minor vices in ten ways.</tuv>
+      </tu>
+      <tu seg_id="c1b48e9a307d403380a7797636acf8f9">
+        <tuv lang="Sanskrit"/>
+        <tuv lang="Chinese">何謂爲十。</tuv>
+        <tuv lang="Chinese">二者毀戒垢雜染。</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">bcu gaṅ źe na |</tuv>
+        <tuv lang="English">What are these ten ways?</tuv>
+      </tu>
+      <tu seg_id="77a47aa6d91b4da1b4d0c030f9469668">
+        <tuv lang="Sanskrit"/>
+        <tuv lang="Chinese">一者慳垢染汚。</tuv>
+        <tuv lang="Chinese">三者瞋恚垢雜染。</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">’di lta ste | ser sna’i dri ma kun nas ñon moṅs pa daṅ |</tuv>
+        <tuv lang="English">They are the taint of envy,</tuv>
+      </tu>
+      <tu seg_id="c1b52ef61e9548c48354800f76f2bb4b">
+        <tuv lang="Sanskrit"/>
+        <tuv lang="Chinese">二者惡戒垢染汚。</tuv>
+        <tuv lang="Chinese">四者懈怠垢雜染。</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">’chal pa’i tshul khrims kyi dri ma kun nas ñon moṅs pa daṅ |</tuv>
+        <tuv lang="English">the taint of immorality,</tuv>
+      </tu>
+      <tu seg_id="73ffee4829e847f9a4e30a965d02e5b2">
+        <tuv lang="Sanskrit"/>
+        <tuv lang="Chinese">三者瞋垢染汚。</tuv>
+        <tuv lang="Chinese">五者散亂垢雜染。</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">gnod sems kyi dri ma kun nas ñon moṅs pa daṅ |</tuv>
+        <tuv lang="English">the taint of malice,</tuv>
+      </tu>
+      <tu seg_id="b9034957e8e44539aa75aa9ba9cfedab">
+        <tuv lang="Sanskrit"/>
+        <tuv lang="Chinese">四者懈怠垢染汚。</tuv>
+        <tuv lang="Chinese"/>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">le lo’i dri ma kun nas ñon moṅs pa daṅ |</tuv>
+        <tuv lang="English">the taint of laziness,</tuv>
+      </tu>
+      <tu seg_id="e68fe28c448d42c1a520002fda998807">
+        <tuv lang="Sanskrit"/>
+        <tuv lang="Chinese">五者散亂垢染汚。</tuv>
+        <tuv lang="Chinese"/>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">g-yeṅ ba’i (6) dri ma kun nas ñon mogs [should be moṅs] pa daṅ |</tuv>
+        <tuv lang="English">the taint of distraction,</tuv>
+      </tu>
+    </body>
+  </header>
+</tmx>

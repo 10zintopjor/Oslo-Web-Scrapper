@@ -1,6 +1,4 @@
 from os import write
-from git import base
-from requests.models import Response
 from requests_html import HTMLSession
 from openpecha.core.ids import get_pecha_id
 from datetime import datetime
@@ -156,13 +154,14 @@ def change_text_format(text):
     base_text=""
     text = text.replace("\n","") 
     ranges = iter(range(len(text)))
-    print(len(text))
     for i in ranges:
         if i<len(text)-1:
-            if i%90 == 0 and i != 0 and re.search("\W",text[i+1]):
+            if i%90 == 0 and i != 0 and re.search("\s",text[i+1]):
                 base_text+=text[i]+"\n"
-            elif i%90 == 0 and i != 0 and re.search("\w",text[i+1]):
-                while i < len(text)-1 and re.search("\w",text[i+1]):
+            elif i%90 == 0 and i != 0 and re.search("\S",text[i+1]):
+                while i < len(text)-1 and re.search("\S",text[i+1]):
+                    """ if re.search("\s",text[i]):
+                        break """
                     base_text+=text[i]
                     i = next(ranges) 
                 base_text+=text[i]+"\n"    

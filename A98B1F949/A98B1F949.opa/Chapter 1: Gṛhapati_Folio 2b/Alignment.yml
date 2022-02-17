@@ -1,0 +1,40 @@
+segment_sources:
+  P5B774C04:
+    type: origin_type
+    relation: translation
+    language: Sanskrit
+  P670FA4B1:
+    type: origin_type
+    relation: translation
+    language: Chinese
+  PB4BC1DD2:
+    type: origin_type
+    relation: translation
+    language: Chinese
+  P27B0A5EF:
+    type: origin_type
+    relation: translation
+    language: Tibetan
+  P766334AE:
+    type: origin_type
+    relation: translation
+    language: Tibetan
+  P69FC648B:
+    type: origin_type
+    relation: translation
+    language: English
+segment_pairs:
+  4112590ca5624aaeaaca2071b6c5d16c:
+    P5B774C04: 27fbcbc55830431d895b842fa466e14a
+    P670FA4B1: 6b8c961c673a4bca847eccfc16e8d38b
+    PB4BC1DD2: e86491aac39f4618887b764718e1e14f
+    P27B0A5EF: 540ea9d65ece4f7f9d967276b226a273
+    P766334AE: 541d8afb507a42d1ac303986f0572495
+    P69FC648B: bce1524324c24dfa9f185455e452ddf4
+  3f966660c88742ac81e9b49ddfc82d35:
+    P5B774C04: bb1dbeabe28a4845bb6a9712cc7d6a47
+    P670FA4B1: 2b29e0ae0adb418c88920b80dcab8f35
+    PB4BC1DD2: 7726a7cb5d4641e5afc45146d5aa4246
+    P27B0A5EF: None
+    P766334AE: 25d304e4cf8f4caaba0c469f9370f3b7
+    P69FC648B: 59c9dc090e8d4f2793856d3782d9f45f

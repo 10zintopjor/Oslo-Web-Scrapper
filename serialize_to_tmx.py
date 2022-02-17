@@ -1,16 +1,19 @@
 from __future__ import annotations
-import xml.etree.cElementTree as ET
+from xml.etree import ElementTree
 from openpecha.utils import dump_yaml, load_yaml
+from xml.dom import minidom
 from pathlib import Path
 
 def create_body(body,seg_pairs,pecha_lang,volume):
     for seg_id in seg_pairs:
-        tu = ET.SubElement(body, "tu", seg_id=seg_id)
+        tu =ElementTree.SubElement(body,'tu',{"seg_id":seg_id})
         for elem in seg_pairs[seg_id]:
             pecha_id = elem
             segment_id = seg_pairs[seg_id][elem]
             text = get_text(pecha_id,segment_id,volume)
-            ET.SubElement(tu, "tuv",lang=pecha_lang[pecha_id]).text = text      
+            if text!="":
+                tuv = ElementTree.SubElement(tu,"tuv",{"lang":pecha_lang[pecha_id]})     
+                tuv.text=text
 
 
 def get_text(pecha_id,seg_id,volume):
@@ -37,12 +40,13 @@ def get_base_text(span,base_text_path):
     return base_text[start:end+1]
 
 def create_main(seg_pairs,pecha_lang,volume):
-    root = ET.Element("tmx",source="GRETIL")
-    header = ET.SubElement(root, "header",datatype="PlainText")
-    body = ET.SubElement(header,"body")
+    root = ElementTree.Element('tmx')
+    header = ElementTree.SubElement(root,'header')
+    body = ElementTree.SubElement(header,'body')
     create_body(body,seg_pairs,pecha_lang,volume)
-    tree = ET.ElementTree(root)
-    tree.write(f"./tmx/{volume}.tmx","UTF-8")    
+    tree = prettify(root)
+    #tree.write(f"./tmx/{volume}.tmx","UTF-8") 
+    Path(f"./tmx/{volume}.tmx").write_text(tree)   
 
 def create_tmx(alignment,volume):
     seg_pairs = alignment['segment_pairs']
@@ -56,5 +60,10 @@ def get_pecha_lang(segment_srcs):
     
     return pecha_lang
 
-if __name__ == "__main__":
-    create_main()
+
+def prettify(elem):
+    """Return a pretty-printed XML string for the Element.
+    """
+    rough_string = ElementTree.tostring(elem, 'utf-8')
+    reparsed = minidom.parseString(rough_string)
+    return reparsed.toprettyxml(indent="  ")

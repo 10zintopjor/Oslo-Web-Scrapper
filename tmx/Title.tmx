@@ -1,0 +1,16 @@
+<?xml version="1.0" ?>
+<tmx>
+  <header>
+    <body>
+      <tu seg_id="9bc60214f5304337b3dad19809802212">
+        <tuv lang="Sanskrit">dkon mchog ’phags pa’i byaṅ chub sems dpa’i sde snod bźugs |</tuv>
+        <tuv lang="Chinese">大菩薩藏經</tuv>
+        <tuv lang="Chinese">大乘菩薩藏正法經</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">’phags pa dkon mchog brtsegs pa chen po’i chos kyi rnam graṅs le’u stoṅ phrag brgya pa las le’u
+ bcu gñis pa ste byaṅ chub sems dpa’i sde snod |</tuv>
+        <tuv lang="English">The Collected Teachings on the Bodhisatva</tuv>
+      </tu>
+    </body>
+  </header>
+</tmx>

@@ -1,0 +1,292 @@
+<?xml version="1.0" ?>
+<tmx>
+  <header>
+    <body>
+      <tu seg_id="b57ee8063442443b898d808094442a69">
+        <tuv lang="Sanskrit">atha khalu punas tasyāṃ velāyām ime gāthe abhāṣata ||</tuv>
+        <tuv lang="Chinese">爾時世尊。欲重宣此義。而説頌曰</tuv>
+        <tuv lang="Chinese">爾時世尊欲重宣此義而説偈言</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">bcom ldan ’das kyis de’i tshe tshigs su bcad pa ’di dag gsuṅs so ||</tuv>
+        <tuv lang="English">He then went on to speak these verses:</tuv>
+      </tu>
+      <tu seg_id="39ccc814046d4255938721cfc091a61d">
+        <tuv lang="Sanskrit">saṃsārapaṃjare ruddhān sarvabālapṛthagjanān* |jātyā upadrutān dṛṣṭvā jarāvyādhiprapīḍitān ||
+</tuv>
+        <tuv lang="Chinese">我觀諸凡夫　閉流轉牢獄常爲生老病　衆苦所逼迫</tuv>
+        <tuv lang="Chinese">諸愚夫異生　輪迴網羈絆生嬈亂愁歎　老病旋逼逐</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">’khor ba’i sgrom du chud pa yi ||byis pa so so’i skye bo kun ||skye bas ñe bar gtse ba daṅ ||na
+ daṅ rga bas rab tu gzir ||</tuv>
+        <tuv lang="English">I saw that all immature, ordinary peopleare trapped in the cage of cyclic existence,that they
+ are tormented by birth,harassed by old age and disease.</tuv>
+      </tu>
+      <tu seg_id="07e4ad3937e5489a8bb238615866a288">
+        <tuv lang="Sanskrit">śokanti paridevanti maraṇasya vaśaṃgatān |niṣkrāntas trāyaṇārthāya mociṣye bhavapaṃjarāt* ||
+</tuv>
+        <tuv lang="Chinese">愁憂及怨恨　死苦等所牽爲除牢獄怖　令欣出離法</tuv>
+        <tuv lang="Chinese">憂悲故苦惱　死法來呑食若救度出離　解脱三有網</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">mya ṅan byed ciṅ smre sṅags ’don ||’chi ba’i dbaṅ du soṅ mthoṅ nas ||srid pa’i sgrom las thar
+ bya źes ||bskyab pa’i phyir ni mṅon par byuṅ ||</tuv>
+        <tuv lang="English">They experience pain, they grieve.I left in order to protectthose who are under the sway of
+ death.I will free them from the cage of existence.</tuv>
+      </tu>
+      <tu seg_id="3c8376e6637848ee95dad8fa2c6f78ca">
+        <tuv lang="Sanskrit">vidviṣṭaṃ batedaṃ gṛhapate lokasanniveśaṃ dṛṣṭvā anyonyapratighātakaṃ daśabhir āghātavastubhiḥ
+</tuv>
+        <tuv lang="Chinese">復次長者。我觀世間一切衆生。爲十惱害互相憎嫉。</tuv>
+        <tuv lang="Chinese">復次長者。瞋之一法互相損害世間合集。斯苦甚大。損害有十。</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">kye ma’o khyim bdag ’jig rten gnas pa ’di ni źe sdaṅ źiṅ kun nas mnar sems kyi dṅos po bcus
+ gcig la gcig mnar sems su byed par mthoṅ ste ||</tuv>
+        <tuv lang="English">“Alas householder! I have seen the hatred caused by ten situations which lead to malice that
+ make those who are involved with the world fight among themselves.</tuv>
+      </tu>
+      <tu seg_id="7d65f2eb467d4f49a76dc08aa70bb0b2">
+        <tuv lang="Sanskrit">katamair daśabhir yad idaṃ |</tuv>
+        <tuv lang="Chinese">何謂爲十。</tuv>
+        <tuv lang="Chinese">何等爲十。</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">bcu gaṅ źe na | ’di lta ste |</tuv>
+        <tuv lang="English">What are these ten situations which lead to malice?</tuv>
+      </tu>
+      <tu seg_id="9ca60a169dad4d1386d6674cf195fcfd">
+        <tuv lang="Sanskrit">ātmano me ’narthaḥ kṛta utpadyate cetasa āghātaḥ</tuv>
+        <tuv lang="Chinese">一者曾於我身作不饒益。心生惱害。</tuv>
+        <tuv lang="Chinese">一者以我心故。過去已作諸損害事。</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">bdag ñid la gnod pa byas źes sems la kun nas mnar sems skye ba daṅ |</tuv>
+        <tuv lang="English">They are the malicious intent that arises when one thinks “I have been treated unjustly”,</tuv>
+      </tu>
+      <tu seg_id="445418b6095143ffb1cdd32667e65ca5">
+        <tuv lang="Sanskrit">anarthaṃ karoty utpadyate cetasa āghātaḥ |</tuv>
+        <tuv lang="Chinese">二者今於我身作不饒益。心生惱害。</tuv>
+        <tuv lang="Chinese">二者生起思念。現在今作諸損害事。</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">gnod pa byed do || źes sems la kun nas mnar sems skye ba daṅ |</tuv>
+        <tuv lang="English">the malicious intent that arises when one thinks “I am being treated unjustly”,</tuv>
+      </tu>
+      <tu seg_id="bbc146c1d63e45ddb13f31f7757ca609">
+        <tuv lang="Sanskrit">anarthaṃ kariṣyaty utpadyate cetasa āghātaḥ</tuv>
+        <tuv lang="Chinese">三者當於我身作不饒益。心生惱害。</tuv>
+        <tuv lang="Chinese">三者生起思念。未來當作諸損害事。</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">gnod pa byed par ’gyur ro || źes sems la kun nas mnar sems skye ba daṅ |</tuv>
+        <tuv lang="English">the malicious intent that arises when one thinks “I will be treated unjustly”,</tuv>
+      </tu>
+      <tu seg_id="09c5cd7f9ec94df39ba83c8e74f76891">
+        <tuv lang="Sanskrit">priyasya me ’narthaḥ kṛta utpadyate cetasa āghātaḥ |</tuv>
+        <tuv lang="Chinese">四者曾於我之所愛作不饒益。心生惱害。</tuv>
+        <tuv lang="Chinese">四者我所愛者生起思念。而不已作諸損害事。</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">bdag gi mdza’ bo la gnod pa byas so || źes sems la kun nas mnar sems skye ba daṅ |</tuv>
+        <tuv lang="English">the malicious intent that arises when one thinks “my loved one has been treated unjustly”,</tuv>
+      </tu>
+      <tu seg_id="eac19de755cc4bffb1a065dce1b2d102">
+        <tuv lang="Sanskrit">priyasya me ’narthaṃ karoty utpadyate cetasa āghātaḥ |</tuv>
+        <tuv lang="Chinese">五者今於我之所愛作不饒益。心生惱害。</tuv>
+        <tuv lang="Chinese">五者我所愛者生起思念。而不今作諸損害事。</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">bdag gi mdza’ bo la gnod pa byed do ||</tuv>
+        <tuv lang="English">the malicious intent that arises when one thinks “my loved one is being treated unjustly”,</tuv>
+      </tu>
+      <tu seg_id="f5151b13bbd545b58b8406e3260d53f9">
+        <tuv lang="Sanskrit">priyasya me anarthaṃ kariṣyaty utpadyate cetasa āghātaḥ |</tuv>
+        <tuv lang="Chinese">六者當於我之所愛作不饒益。心生惱害。</tuv>
+        <tuv lang="Chinese">六者我所愛者生起思念。而不當作諸損害事。</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">źes sems la kun nas mnar sems skye ba daṅ bdag gi mdza’ bo la gnod pa byed par ’gyur ro ||</tuv>
+        <tuv lang="English">the malicious intent that arises when one thinks “my loved one will be treated unjustly”,</tuv>
+      </tu>
+      <tu seg_id="dd64af7580b0452e94e9773484b2c0be">
+        <tuv lang="Sanskrit">apriyasya me ’rthaḥ kṛta utpadyate cetasa āghātaḥ |</tuv>
+        <tuv lang="Chinese">七者曾於我所不愛而作饒益。心生惱害。</tuv>
+        <tuv lang="Chinese">七者非我愛者生起思念。過去已作諸損害事。</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">źes sems la kun nas mnar sems skye ba daṅ bdag daṅ mi mdza’ ba’i don byas so źes sems la kun
+ nas mnar sems skye ba daṅ ||</tuv>
+        <tuv lang="English">the malicious intent that arises when one thinks “my enemy has gained an advantage”,</tuv>
+      </tu>
+      <tu seg_id="1a4ee0e33cb24016bbb8b9d6747fac6d">
+        <tuv lang="Sanskrit">apriyasya me ’rthaṃ karoty utpadyate cetasa āghātaḥ</tuv>
+        <tuv lang="Chinese">八者今於我所不愛而作饒益。心生惱害。</tuv>
+        <tuv lang="Chinese">八者非我愛者生起思念。現在今作諸損害事。</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">bdag daṅ mi mdza’ ba’i don byed do źes sems la kun nas mnar sems skye ba daṅ |</tuv>
+        <tuv lang="English">the malicious intent that arises when one thinks “my enemy is gaining an advantage”,</tuv>
+      </tu>
+      <tu seg_id="1a1d359c1efe4bc0a541414937d1cedd">
+        <tuv lang="Sanskrit">apriyasya me arthaṃ kariṣyaty utpadyate cetasa āghātaḥ |</tuv>
+        <tuv lang="Chinese">九者當於我所不愛而作饒益。心生惱害。</tuv>
+        <tuv lang="Chinese">九者非我愛者生起思念。未來當作諸損害事。</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">bdag daṅ mi mdza’ ba’i don byed par ’gyur ro źes sems la kun nas mnar sems skye ba daṅ |</tuv>
+        <tuv lang="English">the malicious intent that arises when one thinks “my enemy will gain an advantage”,</tuv>
+      </tu>
+      <tu seg_id="4608875daa904ec6ba01644d2a460085">
+        <tuv lang="Sanskrit">anarthapradoṣenaiva daśamena</tuv>
+        <tuv lang="Chinese">十者於諸過失作不饒益。心生惱害。</tuv>
+        <tuv lang="Chinese">十者生起思念。作無義利損害過失。</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">gnod pa’i rab tu sdaṅ ba ñid daṅ bcu’o ||</tuv>
+        <tuv lang="English">as well as unjustified rage.</tuv>
+      </tu>
+      <tu seg_id="04f29bd5ae7a46af981960f592c2566f">
+        <tuv lang="Sanskrit">ebhir gṛhapate daśabhir āghātavastubhiḥ sarvā āghātavigatā anuttarāṃ samyaksaṃbodhiṃ prāpsyāmīti
+ śraddhayā agārād anagārikāṃ pravrajitaḥ ||</tuv>
+        <tuv lang="Chinese">長者我見如是十種惱害。惱害世間一切衆生。爲得阿耨多羅三藐三菩提。出離如是惱害事故。以淨信心捨釋氏家趣無上道。</tuv>
+        <tuv lang="Chinese">如是十種諸損害事世間合集。我見是已。爲令離彼諸損害故。是故我乃淨信出家。趣證阿耨多羅三藐三菩提果</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">khyim bdag kun nas mnar sems kyi dṅos po bcu po ni de dag yin te || kun nas mnar sems thams
+ cad sel ba bla na med pa yaṅ dag par rdzogs pa’i byaṅ chub thob par bya’o || źes dad pas khyim
+ nas khyim med par rab tu byuṅ ṅo ||</tuv>
+        <tuv lang="English">Householder, it was in order to get rid of all malice, caused by these ten situations that lead
+ to malice, that I decided to attain unsurpassed perfect awakening, and with that conviction
+ I left ordinary household life behind and became a renunciant.”</tuv>
+      </tu>
+      <tu seg_id="ae0ee02495fe4bbab13a3074e7af9103">
+        <tuv lang="Sanskrit">atha khalu bhagavān imam evārthaṃ prarūpayaṃs tasyāṃ velāyām imā gāthā abhāṣata ||</tuv>
+        <tuv lang="Chinese">爾時世尊。欲重宣此義。而説頌曰</tuv>
+        <tuv lang="Chinese">爾時世尊重説偈言</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">de nas bcom ldan ’das kyis don de ñid rab tu bstan pa’i phyir de’i tshe tshigs su bcad pa ’di
+ dag gsuṅs so ||</tuv>
+        <tuv lang="English">Then, in order to expand on this point, the Blessed One went on to speak these verses:</tuv>
+      </tu>
+      <tu seg_id="3a708462a5c54db5b7a7e391a0bb661a">
+        <tuv lang="Sanskrit">vidviṣṭā bata me satvā anyam anye parasparaṃ 'prāptā āghātānāṃ sarve daśa āghātavastubhiḥ ||
+</tuv>
+        <tuv lang="Chinese">衆生互憎嫉　皆由十惱生</tuv>
+        <tuv lang="Chinese">衆生瞋最大　各各互相害已現當損害　成十損害事</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">kye ma’o sems can źe sdaṅ ste ||gcig la gcig ni phan tshun du ||kun nas mnar sems dṅos po bcus
+ ||kun la kun nas mnar sems gyur ||</tuv>
+        <tuv lang="English">Alas, sentient beingsrelate to one another with anger,and all their malicestems from the ten
+ kinds of malice.</tuv>
+      </tu>
+      <tu seg_id="42991e061cfb43e1bce7c7a0fcbc6509">
+        <tuv lang="Sanskrit">mama samajñātīnām anarthaḥ kṛtaḥ kariṣyati 'karoti ca {'} anarthāni āghātas tasya jāyate ||</tuv>
+        <tuv lang="Chinese">於我及我親　三世倶惱害</tuv>
+        <tuv lang="Chinese">愛者不生害　已作及當作現作亦復然　不成損害法</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">bdag daṅ bdag gi ñe du la ||gnod par byas daṅ byed pa daṅ ||gnod pa byed par ’gyur ro źes ||de
+ yi kun nas mnar sems skye ||</tuv>
+        <tuv lang="English">“I or my relativeswere treated unjustly, will be treated unjustly,are being treated unjustly.”This
+ gives rise to malice.</tuv>
+      </tu>
+      <tu seg_id="a0e0b7152a0c4826b4638aa6a0f0e8ee">
+        <tuv lang="Sanskrit">ye ca mama amitrāṇi teṣām arthaḥ prakurvvati 'kṛtaṃ kariṣyate caiva āghātas tasya jāyate ||</tuv>
+        <tuv lang="Chinese">或於我非親　起諸饒益相怨憎由此生　三世倶惱害</tuv>
+        <tuv lang="Chinese">於我非友愛　作諸損害事已現當亦然　生損害罪業</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">gaṅ rnams bdag daṅ mi mdza’ ba ||de dag gi ni don byas daṅ ||byed do byed par ’gyur ro źes ||de
+ yi kun nas mnar sems skye ||</tuv>
+        <tuv lang="English">“Those who are not my friends,are receiving benefits,have received them, will receive them.”This
+ gives rise to malice.</tuv>
+      </tu>
+      <tu seg_id="d72aa6a6a208473cad9e97deceeb3b9d">
+        <tuv lang="Sanskrit">anarthadoṣo daśama āghāto yena vardhate 'taṃ ca dṛṣṭvā pravrajīta āghātena anarthikaḥ ||</tuv>
+        <tuv lang="Chinese">第十諸過失　生長怨憎苦我觀如是過　厭患故出家</tuv>
+        <tuv lang="Chinese">并無義過失　十損害纒縛我見損害法　乃淨信出家</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">gnod pa’i sdaṅ daṅ bcu yin de ||gaṅ gis mnar sems ’phel ’gyur ba ||de mthoṅ kun nas mnar sems
+ rnams ||mi ’dod pas na rab tu byuṅ ||</tuv>
+        <tuv lang="English">Unjustified rage is the tenth wayin which malice spreads.I saw all this, and then left behindthe
+ senselessness created by malice.</tuv>
+      </tu>
+      <tu seg_id="5311c3116d5247a18a3f88eb1fe14d1d">
+        <tuv lang="Sanskrit">nānādṛṣṭikṛtaṃ kudṛṣṭigahanapraskannaṃ batemaṃ | gṛhapate lokasanniveśaṃ dṛṣṭvā daśabhir dṛṣṭikṛtakuḍṛṣṭigahanaiḥ
+ |</tuv>
+        <tuv lang="Chinese">復次長者。我觀世間一切衆生。入於十種惡見稠林。由異見故不能自出。</tuv>
+        <tuv lang="Chinese">復次長者。種種見中諸險惡見。世間合集斯苦甚大。險惡見者。有其十種。</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">kye ma’o khyim bdag ’jig rten gnas pa ’di ni lta bar byas pa lta ba ṅan pa thibs po bcus lta
+ bar byas pa sna tshogs daṅ | lta ba ṅan pa (5) thibs po dag gis non par mthoṅ ste ||</tuv>
+        <tuv lang="English">“Alas householder! I have seen that one who is involved with the world is lost in the thicket
+ of dogmatic views and mistaken beliefs due to being ensnared by ten mistaken views and beliefs.
+</tuv>
+      </tu>
+      <tu seg_id="9918228102fe4742a84372c2466d0032">
+        <tuv lang="Sanskrit">katamair daśabhir yad idam ātmadṛṣṭigatakudṛṣṭigahanena '</tuv>
+        <tuv lang="Chinese">何謂爲十。一者我見惡見稠林。</tuv>
+        <tuv lang="Chinese">何等爲十。一者於我見中起險惡見。</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">bcu gaṅ źe na | ’di lta ste | bdag tu lta bar gyur pa lta ba ṅan pa thibs po daṅ |</tuv>
+        <tuv lang="English">What are these ten beliefs? They are the mistaken belief in a self,</tuv>
+      </tu>
+      <tu seg_id="59e8290b5385404997cb8ac7000fb10a">
+        <tuv lang="Sanskrit">satvadṛṣṭigatakudṛṣṭigahanena</tuv>
+        <tuv lang="Chinese">二者有情見惡見稠林。</tuv>
+        <tuv lang="Chinese">二者衆生見中起險惡見。</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">sems can du lta bar gyur pa lta ba ṅan pa thibs po daṅ |</tuv>
+        <tuv lang="English">the mistaken belief in a being,</tuv>
+      </tu>
+      <tu seg_id="a03d11c2d52943a6b1be6f1aefd3aa17">
+        <tuv lang="Sanskrit">jīvadṛṣṭigatakudṛṣṭigahanena '</tuv>
+        <tuv lang="Chinese">三者壽命見惡見稠林。</tuv>
+        <tuv lang="Chinese">三者壽者見中起險惡見。</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">srog tu lta bar gyur pa lta ba ṅan pa thibs po daṅ |</tuv>
+        <tuv lang="English">the mistaken belief in a soul,</tuv>
+      </tu>
+      <tu seg_id="cb4474e2973e4d93b38933ec8cc97443">
+        <tuv lang="Sanskrit">pudgaladṛṣṭigatakudṛṣṭigahanena '</tuv>
+        <tuv lang="Chinese">四者數取趣見惡見稠林。</tuv>
+        <tuv lang="Chinese">四者於人見中起險惡見。</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">gaṅ zag tu lta bar gyur pa lta ba ṅan pa thibs po daṅ |</tuv>
+        <tuv lang="English">the mistaken belief in a person,</tuv>
+      </tu>
+      <tu seg_id="6499599f5e9546b18e589311a8e672e8">
+        <tuv lang="Sanskrit">ucchedadṛṣṭigatakudṛṣṭigahanena |</tuv>
+        <tuv lang="Chinese">五者斷見惡見稠林。</tuv>
+        <tuv lang="Chinese">五者於斷見中起險惡見。</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">chad par lta bar gyur pa lta ba ṅan pa thibs po daṅ |</tuv>
+        <tuv lang="English">the mistaken belief in annihilation,</tuv>
+      </tu>
+      <tu seg_id="70f34ccb85b0451295aa4fa98ef0f3f1">
+        <tuv lang="Sanskrit">śāśvatadṛṣṭigatakudṛṣṭigahanena '</tuv>
+        <tuv lang="Chinese">六者常見惡見稠林。</tuv>
+        <tuv lang="Chinese">六者於常見中起險惡見。</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">rtag par lta bar gyur pa lta ba ṅan pa thibs po daṅ |</tuv>
+        <tuv lang="English">the mistaken belief in eternity,</tuv>
+      </tu>
+      <tu seg_id="2446d93b4949498a841adeeb83307265">
+        <tuv lang="Sanskrit">akriyādṛṣṭigatakudṛṣṭigahanena '</tuv>
+        <tuv lang="Chinese">七者無作見惡見稠林。</tuv>
+        <tuv lang="Chinese">七者無作見中起險惡見。</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">bya ba med par lta bar gyur pa lta ba ṅan pa thibs pa daṅ |</tuv>
+        <tuv lang="English">the mistaken belief that there is no action,</tuv>
+      </tu>
+      <tu seg_id="7ff35ae90f8f4991997121ec9f59d664">
+        <tuv lang="Sanskrit">ahetudṛṣṭigatakudṛṣṭigahanena |</tuv>
+        <tuv lang="Chinese">八者無因見惡見稠林。</tuv>
+        <tuv lang="Chinese">八者無因見中起險惡見。</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">rgyu med par lta bar gyur pa lta ba ṅan pa thibs po daṅ |</tuv>
+        <tuv lang="English">the mistaken belief that there is no causality,</tuv>
+      </tu>
+      <tu seg_id="1ac92721784f430fb0a7b1970f61246f">
+        <tuv lang="Sanskrit">viṣamahetudṛṣṭigatakudṛṣṭigahanena '</tuv>
+        <tuv lang="Chinese">九者不平等因見惡見稠林。</tuv>
+        <tuv lang="Chinese">九者不平等見中起險惡見。</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">mi ’thun pa’i rgyur lta bar gyur pa lta ba ṅan pa thibs po daṅ |</tuv>
+        <tuv lang="English">the mistaken belief that actions have no consequences,</tuv>
+      </tu>
+      <tu seg_id="4d1fee2c1b5240edbf444fb7e77201a7">
+        <tuv lang="Sanskrit">mithyādṛṣṭi[gata]kudṛṣṭigahanena daśamena '</tuv>
+        <tuv lang="Chinese">十者邪見惡見稠林。</tuv>
+        <tuv lang="Chinese">十者於邪見中起險惡見。</tuv>
+        <tuv lang="Tibetan"/>
+        <tuv lang="Tibetan">log par lta bar gyur pa lta ba ṅan pa’i thibs po daṅ bcu’o ||</tuv>
+        <tuv lang="English">and the mistaken belief in false doctrines.</tuv>
+      </tu>
+    </body>
+  </header>
+</tmx>
