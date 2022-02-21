@@ -1,0 +1,33 @@
+id:
+  P45F93ACA:
+    type: origin_type
+    relation: translation
+    language: Sanskrit
+  P427BC74F:
+    type: origin_type
+    relation: translation
+    language: Chinese
+  P808B38B0:
+    type: origin_type
+    relation: translation
+    language: Chinese
+  PE5D65F7B:
+    type: origin_type
+    relation: translation
+    language: Tibetan
+  P38ED9882:
+    type: origin_type
+    relation: translation
+    language: Tibetan
+  P9B187C72:
+    type: origin_type
+    relation: translation
+    language: English
+title: 'Chapter 7: Śīlapāramitā'
+type: translation
+source_metadata:
+  language:
+  - Chinese
+  - English
+  - Sanskrit
+  - Tibetan

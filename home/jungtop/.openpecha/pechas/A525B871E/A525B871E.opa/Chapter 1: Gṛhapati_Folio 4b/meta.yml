@@ -1,0 +1,33 @@
+id:
+  P6F2FB4C8:
+    type: origin_type
+    relation: translation
+    language: Sanskrit
+  P0565C665:
+    type: origin_type
+    relation: translation
+    language: Chinese
+  P433E12C0:
+    type: origin_type
+    relation: translation
+    language: Chinese
+  PC74D4747:
+    type: origin_type
+    relation: translation
+    language: Tibetan
+  PE23E2023:
+    type: origin_type
+    relation: translation
+    language: Tibetan
+  P10790857:
+    type: origin_type
+    relation: translation
+    language: English
+title: 'Chapter 1: Gṛhapati_Folio 4b'
+type: translation
+source_metadata:
+  language:
+  - English
+  - Tibetan
+  - Sanskrit
+  - Chinese

@@ -8,7 +8,8 @@ from openpecha.core.ids import get_alignment_id
 from openpecha import config, github_utils
 from openpecha.utils import dump_yaml, load_yaml
 from copy import deepcopy
-import serialize_to_tmx
+from openpecha import config
+
 
 
 logging.basicConfig(
@@ -42,23 +43,27 @@ class OsloAlignment:
     def create_alignment(self,pechas,pecha_name):
         volumes = self.get_volumes(pechas[0])
         alignment_id = get_alignment_id()
-        alignment_path = f"{alignment_id}/{alignment_id}.opa"
-
+        alignment_path = f"{config.PECHAS_PATH}/{alignment_id}/{alignment_id}.opa"
+        alignment_vol_map=[]
         for volume in volumes:
             alignment = self.create_alignment_yml(pechas,volume)
             meta = self.create_alignment_meta(alignment,volume,pechas)
-            self.write_alignment_repo(f"./{alignment_path}/{volume}",alignment,meta)
-            serialize_to_tmx.create_tmx(alignment,volume)
+            self.write_alignment_repo(f"{alignment_path}/{volume}",alignment,meta)
+            list2 = [alignment,volume]
+            alignment_vol_map.append(list2)
 
         readme = self.create_readme_for_opa(alignment_id,pecha_name,pechas)
-        with open(f"{alignment_path}/readme.md","w") as f:
-            f.write(readme)
+        Path(f"{config.PECHAS_PATH}/{alignment_id}/readme.md").touch(exist_ok=True)
+        Path(f"{config.PECHAS_PATH}/{alignment_id}/readme.md").write_text(readme)
 
         logging.info(f"{alignment_id}:{list(set([pecha['pecha_id'] for pecha in pechas]))}")    
 
+        return alignment_vol_map,alignment_id
+
+
     def get_volumes(self,pecha):
         volumes = []
-        paths = list(Path(f"./{pecha['pecha_id']}/{pecha['pecha_id']}.opf/base").iterdir())
+        paths = list(Path(f"{config.PECHAS_PATH}/{pecha['pecha_id']}/{pecha['pecha_id']}.opf/base").iterdir())
         for path in sorted(paths):
             volumes.append(path.stem)
         return volumes
@@ -96,6 +101,10 @@ class OsloAlignment:
 
         return seg_pairs
 
+    @staticmethod
+    def _mkdir(path: Path):
+        path.mkdir(parents=True, exist_ok=True)
+        return path
 
     def get_ids(self,annotations):
         final_segments = {}
@@ -104,19 +113,16 @@ class OsloAlignment:
             final_segments.update({num:uid})
             num += 1
         return final_segments 
-
-    def path_exist(self,output_path):
-
-        if not os.path.exists(output_path):
-            os.makedirs(output_path)    
+   
 
     def write_alignment_repo(self,alignment_path,alignment,meta=None):
-        self.path_exist(alignment_path)
-        alignment_yml_path = Path(f"{alignment_path}/Alignment.yml")
-        meta_path = Path(f"{alignment_path}/meta.yml")
-        dump_yaml(alignment, alignment_yml_path)
+        alignment_yml_path = Path(f"{alignment_path}")
+        self._mkdir(alignment_yml_path)
+        meta_path = Path(f"{alignment_path}")
+        self._mkdir(meta_path)
+        dump_yaml(alignment, Path(f"{alignment_yml_path}/alignment.yml"))
         if meta:
-            dump_yaml(meta, meta_path)
+            dump_yaml(meta, Path(f"{meta_path}/meta.yml"))
 
 
     def create_alignment_meta(self,alignment,volume,pechas):

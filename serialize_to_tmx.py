@@ -1,8 +1,8 @@
-from __future__ import annotations
 from xml.etree import ElementTree
 from openpecha.utils import dump_yaml, load_yaml
 from xml.dom import minidom
 from pathlib import Path
+from openpecha import config
 import datetime
 
 def create_body(body,seg_pairs,pecha_lang,volume):
@@ -43,18 +43,20 @@ def get_base_text(span,base_text_path):
 
     return base_text[start:end+1]
 
-def create_main(seg_pairs,pecha_lang,volume):
+def create_main(seg_pairs,pecha_lang,volume,tmx_path):
     root = ElementTree.Element('tmx')
     ElementTree.SubElement(root,'header',{"datatype":"Text","creationdate":str(datetime.datetime.now())})
     body = ElementTree.SubElement(root,'body')
     create_body(body,seg_pairs,pecha_lang,volume)
     tree = prettify(root)
-    Path(f"./tmx/{volume}.tmx").write_text(tree)   
+    Path(f"{tmx_path}/{volume}.tmx").write_text(tree)   
 
-def create_tmx(alignment,volume):
+def create_tmx(alignment,volume,tmx_path):
     seg_pairs = alignment['segment_pairs']
     pecha_lang = get_pecha_lang(alignment['segment_sources'])
-    create_main(seg_pairs,pecha_lang,volume)
+    create_main(seg_pairs,pecha_lang,volume,tmx_path)
+
+    return tmx_path
 
 def get_pecha_lang(segment_srcs):
     pecha_lang = {}

@@ -8,6 +8,9 @@ from openpecha.core.annotation import AnnBase, Span
 from uuid import uuid4
 from index import OsloAlignment
 from pathlib import Path
+from openpecha import github_utils,config
+from zipfile import ZipFile
+import serialize_to_tmx
 import re
 
 
@@ -67,20 +70,19 @@ def parse_page(item):
             if link.attrs['class'][0] == "ajax_tree0":
                 par_dir = None
             parse_final(link,par_dir,pechas)
-            
-    obj = OsloAlignment()
-    for pecha in pechas:
-        volumes = obj.get_volumes(pecha)
-        opf_path = create_meta_index(pecha_name,pecha,volumes)
-        readme=create_readme(pecha['pecha_id'],pecha_name,pecha['lang'])
-        with open(f"{opf_path}/readme.md","w") as f:
-            f.write(readme)
 
-    obj.create_alignment(pechas,pecha_name)
+    return pechas,pecha_name    
+
+
+def create_tmx(alignment_vol_map,tmx_path):
+    for map in alignment_vol_map:
+        alignment,volume = map
+        tmx_path = serialize_to_tmx.create_tmx(alignment,volume,tmx_path)
+    return tmx_path
 
 
 def create_meta_index(pecha_name,pecha,volumes):
-    opf_path = f"{pecha['pecha_id']}/{pecha['pecha_id']}.opf"
+    opf_path = f"{config.PECHAS_PATH}/{pecha['pecha_id']}/{pecha['pecha_id']}.opf"
     opf = OpenPechaFS(opf_path=opf_path)
     annotations,work_id_vol_map = get_annotations(volumes,opf_path)
 
@@ -102,8 +104,6 @@ def create_meta_index(pecha_name,pecha,volumes):
     opf._index = index
     opf.save_index()
     opf.save_meta()
-
-    return opf_path
 
 
 def get_vol_meta(work_id_vol_map):
@@ -162,7 +162,6 @@ def get_pecha_ids(cols):
 
 def parse_final(link,par_dir,pechas):
     base_text = {}
-    
     response = make_request(pre_url+link.attrs['href'])
     content = response.html.find('div.infofulltekstfelt div.BolkContainer')
     for block in content:
@@ -175,7 +174,7 @@ def parse_final(link,par_dir,pechas):
         if base_text[pecha['name']]:
             create_opf(base_text[pecha['name']],filename,pecha['pecha_id'])
         else:
-            create_opf(["Chapter Empty"],filename,pecha['pecha_id'])    
+            create_opf(["Chapter Empty"],filename,pecha['pecha_id']) 
 
 
 def write_file(divs,base_dic):
@@ -216,20 +215,10 @@ def change_text_format(text):
             base_text+=text[i]
         prev = base_text[-1]
     return base_text
-
-
-def change_text_format_v2(text):
-    base_text = ""
-    text = text.replace("\n","") 
-    for i in range(0,len(text)):
-        base_text+=text[i]
-        if i!=0 and i%90 == 0:
-            base_text+="\n"
     
-    return base_text
 
 def create_opf(base_text,filename,pecha_id):
-    opf_path = f"{pecha_id}/{pecha_id}.opf"
+    opf_path = f"{config.PECHAS_PATH}/{pecha_id}/{pecha_id}.opf"
     opf = OpenPechaFS(opf_path=opf_path)
     bases = {f"{filename}":get_base_text(base_text)}
     opf.base = bases
@@ -273,9 +262,54 @@ def get_segment_annotation(char_walker,base_text):
     return (segment_annotation,len(base_text))
 
 
+def publish_opf(id):
+    pecha_path = f"{config.PECHAS_PATH}/{id}"
+
+    github_utils.github_publish(
+    pecha_path,
+    not_includes=[],
+    message="initial commit"
+    )  
+
+def create_realease(id,zipped_dir):
+    assest_path =[f"{zipped_dir}"]
+    github_utils.create_release(
+    repo_name=id,
+    asset_paths=assest_path,
+    )
+
+
+def create_tmx_zip(tmx_path,pecha_name):
+    zip_path = f"{pecha_name}.zip"
+    zipObj = ZipFile(zip_path, 'w')
+    tmxs = list(Path(f"{tmx_path}").iterdir())
+    for tmx in tmxs:
+        zipObj.write(tmx.stem)
+    return zip_path
+
+def main(url):
+    pechas,pecha_name = parse_page(url)
+    obj = OsloAlignment()
+    for pecha in pechas:
+        volumes = obj.get_volumes(pecha)
+        create_meta_index(pecha_name,pecha,volumes)
+        readme=create_readme(pecha['pecha_id'],pecha_name,pecha['lang'])
+        Path(f"{config.PECHAS_PATH}/{pecha['pecha_id']}/readme.md").touch(exist_ok=True)
+        Path(f"{config.PECHAS_PATH}/{pecha['pecha_id']}/readme.md").write_text(readme)
+        #publish_opf(pecha['pecha_id'])    
+
+    alignment_vol_map,alignment_id = obj.create_alignment(pechas,pecha_name)
+    tmx_path = Path(f"{config.PECHAS_PATH}/tmx")
+    obj._mkdir(tmx_path)
+    create_tmx(alignment_vol_map,tmx_path)
+    zip_path = create_tmx_zip(tmx_path,pecha_name)
+    publish_opf(alignment_id)
+    create_realease(alignment_id,zip_path)
+
+
 if __name__ == "__main__":
     for val in get_page():
-        parse_page('https://www2.hf.uio.no/polyglotta/index.php?page=volume&vid=233')  
+        main('https://www2.hf.uio.no/polyglotta/index.php?page=volume&vid=233')  
         break  
 
 
