@@ -20,7 +20,6 @@ logging.basicConfig(
 class OsloAlignment:
     def create_alignment_yml(self,pechas,volume):
         seg_pairs = self.get_segment_pairs(pechas,volume)
-
         self.segment_sources = {}
         for pecha in pechas:
             alignment = {
@@ -60,7 +59,7 @@ class OsloAlignment:
     def get_volumes(self,pecha):
         volumes = []
         paths = list(Path(f"./{pecha['pecha_id']}/{pecha['pecha_id']}.opf/base").iterdir())
-        for path in paths:
+        for path in sorted(paths):
             volumes.append(path.stem)
         return volumes
 
@@ -69,19 +68,23 @@ class OsloAlignment:
         segment_length = ""
 
         for pecha in pechas:
-            pecha_yaml = load_yaml(
-                Path(f"./{pecha['pecha_id']}/{pecha['pecha_id']}.opf/layers/{volume}/Segment.yml")
-            )
-            ids = self.get_ids(pecha_yaml["annotations"])
-
-            segment_length = len(ids)
-
-            segments_ids[pecha['pecha_id']]= ids
+            try:
+                pecha_yaml = load_yaml(
+                    Path(f"./{pecha['pecha_id']}/{pecha['pecha_id']}.opf/layers/{volume}/Segment.yml")
+                )
+                ids = self.get_ids(pecha_yaml["annotations"])
+                segment_length = len(ids)
+                segments_ids[pecha['pecha_id']]= ids
+            except:
+                pass  
 
         cur_pair = {}
         pair= {}
         seg_pairs = {}
         
+        if segment_length == "":
+            return seg_pairs
+
         for num in range(1,segment_length+1):
             for pecha in pechas:
                 try:

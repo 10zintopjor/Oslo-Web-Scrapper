@@ -18,12 +18,15 @@ def create_body(body,seg_pairs,pecha_lang,volume):
 
 def get_text(pecha_id,seg_id,volume):
     if seg_id == None:
-        return "------------"
+        return ""
     else:
-        pecha_path = f"./{pecha_id}/{pecha_id}.opf"    
-        base_text_path = f"./{pecha_path}/base/{volume}.txt"
-        layer_path = f"./{pecha_path}/layers/{volume}/Segment.yml"
-        segment_yml = load_yaml(Path(layer_path))
+        try:
+            pecha_path = f"./{pecha_id}/{pecha_id}.opf"    
+            base_text_path = f"./{pecha_path}/base/{volume}.txt"
+            layer_path = f"./{pecha_path}/layers/{volume}/Segment.yml"
+            segment_yml = load_yaml(Path(layer_path))
+        except:
+            return ""    
         annotations = segment_yml.get("annotations",{})
         for id in annotations:
             if id == seg_id:

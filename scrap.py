@@ -1,12 +1,13 @@
 from os import write
 from requests_html import HTMLSession
-from openpecha.core.ids import get_pecha_id
+from openpecha.core.ids import get_pecha_id,get_work_id
 from datetime import datetime
 from openpecha.core.layer import InitialCreationEnum, Layer, LayerEnum, PechaMetaData
 from openpecha.core.pecha import OpenPechaFS 
 from openpecha.core.annotation import AnnBase, Span
 from uuid import uuid4
 from index import OsloAlignment
+from pathlib import Path
 import re
 
 
@@ -49,7 +50,6 @@ def parse_page(item):
     link_iter = iter(nav_bar)
     pecha_name = response.html.find('div.headline',first=True).text
     
-
     par_dir = None
     prev_dir = ""
 
@@ -68,42 +68,85 @@ def parse_page(item):
                 par_dir = None
             parse_final(link,par_dir,pechas)
             
-    
-    for pecha in pechas:
-        save_meta(pecha_name,pecha)
-
     obj = OsloAlignment()
+    for pecha in pechas:
+        volumes = obj.get_volumes(pecha)
+        opf_path = create_meta_index(pecha_name,pecha,volumes)
+        readme=create_readme(pecha['pecha_id'],pecha_name,pecha['lang'])
+        with open(f"{opf_path}/readme.md","w") as f:
+            f.write(readme)
+
     obj.create_alignment(pechas,pecha_name)
 
 
-def save_meta(pecha_name,pecha):
+def create_meta_index(pecha_name,pecha,volumes):
     opf_path = f"{pecha['pecha_id']}/{pecha['pecha_id']}.opf"
     opf = OpenPechaFS(opf_path=opf_path)
-    source_metadata = {
-        "id": "",
-        "title": pecha_name,
-        "language": pecha['lang'],
-        "author": "",
-    }
+    annotations,work_id_vol_map = get_annotations(volumes,opf_path)
 
+    vol_meta=get_vol_meta(work_id_vol_map)
+    
     instance_meta = PechaMetaData(
+        id=pecha['pecha_id'],
         initial_creation_type=InitialCreationEnum.input,
         created_at=datetime.now(),
         last_modified_at=datetime.now(),
-        source_metadata=source_metadata)    
+        source_metadata={
+            "title":pecha_name,
+            "language": pecha['lang'],
+            "volumes":vol_meta
+        })    
 
+    index = Layer(annotation_type=LayerEnum.index, annotations=annotations)
     opf._meta = instance_meta
+    opf._index = index
+    opf.save_index()
     opf.save_meta()
-    readme=create_readme(pecha['pecha_id'],source_metadata)
-    with open(f"{opf_path}/readme.md","w") as f:
-        f.write(readme)
+
+    return opf_path
 
 
-def create_readme(pecha_id,source_metadata):
+def get_vol_meta(work_id_vol_map):
+    meta = {}
+    for id in work_id_vol_map:
+        meta.update({uuid4().hex:{
+            "title":work_id_vol_map[id],
+            "base_file": f"{work_id_vol_map[id]}.txt",
+            "work_id":id
+        }}) 
+
+    return meta
+        
+
+def get_annotations(volumes,opf_path):
+    annotations={}
+    work_id_vol_map={}
+    for volume in volumes:
+        id = get_work_id()
+        work_id_vol_map.update({id:volume})
+        span = get_spans(opf_path,volume)
+        annotation =  {uuid4().hex:{"work_id": id,"span":span}}
+        annotations.update(annotation)
+    return annotations,work_id_vol_map
+
+
+def get_spans(opf_path,volume):
+    path = f"{opf_path}/base/{volume}.txt"
+    try:
+        layer_path = f"{opf_path}/layers/{volume}/Segment.yml"
+        text = Path(path).read_text()
+        end = len(text)
+    except:
+        end = 0    
+    span =  {"vol": volume ,"start": 0, "end": end}
+
+    return span
+
+def create_readme(pecha_id,pecha_name,lang):
     pecha = f"|Pecha id | {pecha_id}"
     Table = "| --- | --- "
-    Title = f"|Title | {source_metadata['title']} "
-    lang = f"|Language | {source_metadata['language']}"
+    Title = f"|Title | {pecha_name}"
+    lang = f"|Language | {lang}"
     readme = f"{pecha}\n{Table}\n{Title}\n{lang}"
     return readme
 
@@ -118,7 +161,6 @@ def get_pecha_ids(cols):
 
 def parse_final(link,par_dir,pechas):
     base_text = {}
-    texts = ""
     
     response = make_request(pre_url+link.attrs['href'])
     content = response.html.find('div.infofulltekstfelt div.BolkContainer')
@@ -129,7 +171,10 @@ def parse_final(link,par_dir,pechas):
     filename = link.text if par_dir == None else f"{par_dir}_{link.text}"
  
     for pecha in pechas:
-        create_opf(base_text[pecha['name']],filename,pecha['pecha_id'])
+        if base_text[pecha['name']]:
+            create_opf(base_text[pecha['name']],filename,pecha['pecha_id'])
+        else:
+            create_opf(["Chapter Empty"],filename,pecha['pecha_id'])    
 
 
 def write_file(divs,base_dic):
@@ -139,12 +184,10 @@ def write_file(divs,base_dic):
         spans = div.find('span')
         for span in spans:
             if len(span.text) != 0:  
-                base_text+=change_text_format(span.text)
-            else:
-                base_text+="--------------"    
+                base_text+=change_text_format(span.text)   
         if len(spans) == 1 and len(spans[0].text) == 0:
             pass
-        else:
+        elif base_text != "":
             base_text+="\n\n"
             base_dic[f"col_{index}"].append(base_text)
         
@@ -175,12 +218,13 @@ def change_text_format(text):
 def create_opf(base_text,filename,pecha_id):
     opf_path = f"{pecha_id}/{pecha_id}.opf"
     opf = OpenPechaFS(opf_path=opf_path)
-    layers = {f"{filename}": {LayerEnum.segment: get_segment_layer(base_text)}}
     bases = {f"{filename}":get_base_text(base_text)}
-    opf.layers = layers
     opf.base = bases
     opf.save_base()
-    opf.save_layers()
+    if base_text != "Chapter Empty":
+        layers = {f"{filename}": {LayerEnum.segment: get_segment_layer(base_text)}}
+        opf.layers = layers
+        opf.save_layers()
     
 
 def get_base_text(base_texts):
