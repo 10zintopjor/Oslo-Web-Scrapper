@@ -76,7 +76,7 @@ class OsloAlignment:
                 segment_length = len(ids)
                 segments_ids[pecha['pecha_id']]= ids
             except:
-                pass  
+                segments_ids[pecha['pecha_id']]= None  
 
         cur_pair = {}
         pair= {}

@@ -134,6 +134,7 @@ def get_spans(opf_path,volume):
     path = f"{opf_path}/base/{volume}.txt"
     try:
         layer_path = f"{opf_path}/layers/{volume}/Segment.yml"
+        Path(layer_path).read_text()
         text = Path(path).read_text()
         end = len(text)
     except:
@@ -195,6 +196,7 @@ def write_file(divs,base_dic):
 
 def change_text_format(text):
     base_text=""
+    prev= ""
     text = text.replace("\n","") 
     ranges = iter(range(len(text)))
     for i in ranges:
@@ -203,16 +205,16 @@ def change_text_format(text):
                 base_text+=text[i]+"\n"
             elif i%90 == 0 and i != 0 and re.search("\S",text[i+1]):
                 while i < len(text)-1 and re.search("\S",text[i+1]):
-                    """ if re.search("\s",text[i]):
-                        break """
                     base_text+=text[i]
                     i = next(ranges) 
                 base_text+=text[i]+"\n"    
+            elif prev == "\n" and re.search("\s",text[i]):
+                continue
             else:
                 base_text+=text[i]
         else:
             base_text+=text[i]
-
+        prev = base_text[-1]
     return base_text
 
 def create_opf(base_text,filename,pecha_id):
@@ -221,7 +223,7 @@ def create_opf(base_text,filename,pecha_id):
     bases = {f"{filename}":get_base_text(base_text)}
     opf.base = bases
     opf.save_base()
-    if base_text != "Chapter Empty":
+    if base_text[0] != "Chapter Empty":
         layers = {f"{filename}": {LayerEnum.segment: get_segment_layer(base_text)}}
         opf.layers = layers
         opf.save_layers()
