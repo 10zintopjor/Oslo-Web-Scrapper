@@ -185,7 +185,7 @@ def write_file(divs,base_dic):
         spans = div.find('span')
         for span in spans:
             if len(span.text) != 0:  
-                base_text+=change_text_format(span.text)   
+                base_text+=change_text_format(span.text)+"\n"   
         if len(spans) == 1 and len(spans[0].text) == 0:
             pass
         elif base_text != "":
@@ -215,6 +215,17 @@ def change_text_format(text):
         else:
             base_text+=text[i]
         prev = base_text[-1]
+    return base_text
+
+
+def change_text_format_v2(text):
+    base_text = ""
+    text = text.replace("\n","") 
+    for i in range(0,len(text)):
+        base_text+=text[i]
+        if i!=0 and i%90 == 0:
+            base_text+="\n"
+    
     return base_text
 
 def create_opf(base_text,filename,pecha_id):

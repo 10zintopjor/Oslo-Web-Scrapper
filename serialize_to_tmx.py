@@ -3,6 +3,7 @@ from xml.etree import ElementTree
 from openpecha.utils import dump_yaml, load_yaml
 from xml.dom import minidom
 from pathlib import Path
+import datetime
 
 def create_body(body,seg_pairs,pecha_lang,volume):
     for seg_id in seg_pairs:
@@ -12,7 +13,7 @@ def create_body(body,seg_pairs,pecha_lang,volume):
             segment_id = seg_pairs[seg_id][elem]
             text = get_text(pecha_id,segment_id,volume)
             if text!="":
-                tuv = ElementTree.SubElement(tu,"tuv",{"lang":pecha_lang[pecha_id]})     
+                tuv = ElementTree.SubElement(tu,"tuv",{"xml:lang":pecha_lang[pecha_id],"creationdate":str(datetime.datetime.now()),"creationid":"esukhia"})     
                 tuv.text=text
 
 
@@ -44,11 +45,10 @@ def get_base_text(span,base_text_path):
 
 def create_main(seg_pairs,pecha_lang,volume):
     root = ElementTree.Element('tmx')
-    header = ElementTree.SubElement(root,'header')
-    body = ElementTree.SubElement(header,'body')
+    ElementTree.SubElement(root,'header',{"datatype":"Text","creationdate":str(datetime.datetime.now())})
+    body = ElementTree.SubElement(root,'body')
     create_body(body,seg_pairs,pecha_lang,volume)
     tree = prettify(root)
-    #tree.write(f"./tmx/{volume}.tmx","UTF-8") 
     Path(f"./tmx/{volume}.tmx").write_text(tree)   
 
 def create_tmx(alignment,volume):
