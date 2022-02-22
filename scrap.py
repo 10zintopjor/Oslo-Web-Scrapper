@@ -155,7 +155,15 @@ def create_readme(pecha_id,pecha_name,lang):
 def get_pecha_ids(cols):
     pecha_ids = [] 
     for index,col in enumerate(cols,start=0):
-        pecha_id = {"name":f"col_{index}","pecha_id":get_pecha_id(),"lang":col.attrs["class"][0]}
+        if col.attrs["class"][0] == "Tibetan":
+            lang = "bo"
+        elif col.attrs["class"][0] == "English":
+            lang = "en"
+        elif col.attrs["class"][0] == "Chinese":
+            lang = "zh"
+        elif col.attrs["class"][0] == "Sanskrit":
+            lang = "sa"       
+        pecha_id = {"name":f"col_{index}","pecha_id":get_pecha_id(),"lang":lang}
         pecha_ids.append(pecha_id)
     return pecha_ids
 
@@ -280,11 +288,11 @@ def create_realease(id,zipped_dir):
 
 
 def create_tmx_zip(tmx_path,pecha_name):
-    zip_path = f"{pecha_name}.zip"
+    zip_path = f"{config.PECHAS_PATH}/{pecha_name}.zip"
     zipObj = ZipFile(zip_path, 'w')
     tmxs = list(Path(f"{tmx_path}").iterdir())
     for tmx in tmxs:
-        zipObj.write(tmx.stem)
+        zipObj.write(tmx)
     return zip_path
 
 def main(url):
