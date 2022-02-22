@@ -4,8 +4,9 @@ from xml.dom import minidom
 from pathlib import Path
 from openpecha import config
 import datetime
+from scrap import root_path
 
-def create_body(body,seg_pairs,pecha_lang,volume):
+def create_body(body,seg_pairs,pecha_langs,volume):
     for seg_id in seg_pairs:
         tu =ElementTree.SubElement(body,'tu',{"seg_id":seg_id})
         for elem in seg_pairs[seg_id]:
@@ -13,7 +14,7 @@ def create_body(body,seg_pairs,pecha_lang,volume):
             segment_id = seg_pairs[seg_id][elem]
             text = get_text(pecha_id,segment_id,volume)
             if text!="":
-                tuv = ElementTree.SubElement(tu,"tuv",{"xml:lang":pecha_lang[pecha_id],"creationdate":str(datetime.datetime.now()),"creationid":"esukhia"})     
+                tuv = ElementTree.SubElement(tu,"tuv",{"xml:lang":pecha_langs[pecha_id],"creationdate":str(datetime.datetime.now()),"creationid":"esukhia"})     
                 tuv.text=text
 
 
@@ -22,9 +23,9 @@ def get_text(pecha_id,seg_id,volume):
         return ""
     else:
         try:
-            pecha_path = f"./{pecha_id}/{pecha_id}.opf"    
-            base_text_path = f"./{pecha_path}/base/{volume}.txt"
-            layer_path = f"./{pecha_path}/layers/{volume}/Segment.yml"
+            pecha_path = f"{root_path}/{pecha_id}/{pecha_id}.opf"    
+            base_text_path = f"{pecha_path}/base/{volume}.txt"
+            layer_path = f"{pecha_path}/layers/{volume}/Segment.yml"
             segment_yml = load_yaml(Path(layer_path))
         except:
             return ""    
@@ -43,22 +44,21 @@ def get_base_text(span,base_text_path):
 
     return base_text[start:end+1]
 
-def create_main(seg_pairs,pecha_lang,volume,tmx_path):
+def create_main(seg_pairs,pecha_langs,volume,tmx_path):
     root = ElementTree.Element('tmx')
     ElementTree.SubElement(root,'header',{"datatype":"Text","creationdate":str(datetime.datetime.now())})
     body = ElementTree.SubElement(root,'body')
-    create_body(body,seg_pairs,pecha_lang,volume)
+    create_body(body,seg_pairs,pecha_langs,volume)
     tree = prettify(root)
     Path(f"{tmx_path}/{volume}.tmx").write_text(tree)   
 
 def create_tmx(alignment,volume,tmx_path):
     seg_pairs = alignment['segment_pairs']
-    pecha_lang = get_pecha_lang(alignment['segment_sources'])
-    create_main(seg_pairs,pecha_lang,volume,tmx_path)
+    pecha_langs = get_pecha_langs(alignment['segment_sources'])
+    create_main(seg_pairs,pecha_langs,volume,tmx_path)
 
-    return tmx_path
 
-def get_pecha_lang(segment_srcs):
+def get_pecha_langs(segment_srcs):
     pecha_lang = {}
     for seg in segment_srcs:
         pecha_lang.update({seg:segment_srcs[seg]['language']})

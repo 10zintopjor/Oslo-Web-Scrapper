@@ -14,7 +14,7 @@ import serialize_to_tmx
 import re
 
 
-root_path = config.PECHAS_PATH
+root_path = "./opfs"
 start_url = "https://www2.hf.uio.no/polyglotta/index.php?page=library&bid=2"
 pre_url = "https://www2.hf.uio.no/"
 
@@ -41,9 +41,10 @@ def get_page():
 
 def parse_page(item):
     response = make_request(item)
-    links = response.html.find('div.venstrefelt table a',first=True)
+    """ links = response.html.find('div.venstrefelt table a',first=True)
     response = make_request(pre_url+links.attrs['href'])
-    coninuous_bar = response.html.find('div.divControlMain li#nav-2 a',first=True)
+    print(pre_url+links.attrs['href']) """
+    coninuous_bar = response.html.find('div.divControlMain div#nav-menu li#nav-2 a',first=True)
     coninuous_bar_href = coninuous_bar.attrs['href']  
     response = make_request(pre_url+coninuous_bar_href)
     nav_bar = response.html.find('div.venstrefulltekstfelt table a')
@@ -63,8 +64,8 @@ def parse_page(item):
             if nxt.attrs['class'][0] == "ajax_tree0":
                 par_dir = None
             elif nxt.attrs['class'][0] == "ajax_tree1":
-                par_dir = par_dir.replace(f"_{prev_dir}","") if par_dir != None else par_dir
-            par_dir = nxt.text if par_dir == None else f"{par_dir}_{nxt.text}"
+                par_dir = par_dir.replace(f" {prev_dir}","") if par_dir != None else par_dir
+            par_dir = nxt.text if par_dir == None else f"{par_dir} {nxt.text}"
             prev_dir = nxt.text
         elif link.text != "Complete text":
             if link.attrs['class'][0] == "ajax_tree0":
@@ -76,9 +77,9 @@ def parse_page(item):
 
 def create_tmx(alignment_vol_map,tmx_path):
     for map in alignment_vol_map:
-        alignment,volume = map
-        tmx_path = serialize_to_tmx.create_tmx(alignment,volume,tmx_path)
-    return tmx_path
+        alignment,volume = map   
+        serialize_to_tmx.create_tmx(alignment,volume,tmx_path)
+    
 
 
 def create_meta_index(pecha_name,pecha,volumes):
@@ -278,6 +279,7 @@ def publish_opf(id):
     not_includes=[],
     message="initial commit"
     )  
+    print(f"{id} PUBLISHED")
 
 def create_realease(id,zipped_dir):
     assest_path =[f"{zipped_dir}"]
@@ -285,6 +287,7 @@ def create_realease(id,zipped_dir):
     repo_name=id,
     asset_paths=assest_path,
     )
+    print(f"Updated asset to {id}")
 
 
 def create_tmx_zip(tmx_path,pecha_name):
@@ -308,19 +311,20 @@ def main(url):
         #publish_opf(pecha['pecha_id'])    
 
     alignment_vol_map,alignment_id = obj.create_alignment(pechas,pecha_name)
-    tmx_path = Path(f"{root_path}/tmx")
+    tmx_path = Path(f"{root_path}./tmx")
     obj._mkdir(tmx_path)
     create_tmx(alignment_vol_map,tmx_path)
     zip_path = create_tmx_zip(tmx_path,pecha_name)
-    publish_opf(alignment_id)
-    create_realease(alignment_id,zip_path)
+    #publish_opf(alignment_id)
+    #create_realease(alignment_id,zip_path)
 
 
 if __name__ == "__main__":
+    i=0
     for val in get_page():
-        main('https://www2.hf.uio.no/polyglotta/index.php?page=volume&vid=233')  
-        break  
-
+        main('https://www2.hf.uio.no/polyglotta/index.php?page=volume&vid=435')  
+        break
+        
 
 
 #https://www2.hf.uio.no/polyglotta/index.php?page=volume&vid=511
