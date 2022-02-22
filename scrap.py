@@ -39,11 +39,32 @@ def get_page():
         yield item
 
 
+def int_to_Roman(num):
+        val = [
+            1000, 900, 500, 400,
+            100, 90, 50, 40,
+            10, 9, 5, 4,
+            1
+            ]
+        syb = [
+            "M", "CM", "D", "CD",
+            "C", "XC", "L", "XL",
+            "X", "IX", "V", "IV",
+            "I"
+            ]
+        roman_num = ''
+        i = 0
+        while  num > 0:
+            for _ in range(num // val[i]):
+                roman_num += syb[i]
+                num -= val[i]
+            i += 1
+        return roman_num
+
+
 def parse_page(item):
     response = make_request(item)
-    """ links = response.html.find('div.venstrefelt table a',first=True)
-    response = make_request(pre_url+links.attrs['href'])
-    print(pre_url+links.attrs['href']) """
+
     coninuous_bar = response.html.find('div.divControlMain div#nav-menu li#nav-2 a',first=True)
     coninuous_bar_href = coninuous_bar.attrs['href']  
     response = make_request(pre_url+coninuous_bar_href)
@@ -57,23 +78,32 @@ def parse_page(item):
     par_dir = None
     prev_dir = ""
     prefix= 0
+    chapter = set()
+    chapter_no_title = {}
 
     for link in link_iter:       
         if 'onclick' in link.attrs:
-            prefix +=1
             nxt  = next(link_iter)
             if nxt.attrs['class'][0] == "ajax_tree0":
                 par_dir = None       
             elif nxt.attrs['class'][0] == "ajax_tree1":
-                par_dir = par_dir.replace(f" {prev_dir}","") 
+                par_dir = par_dir.replace(f" {prev_dir}","")
+                continue 
             par_dir = f"{par_dir} {nxt.text}" if par_dir != None else f"{nxt.text}"
             prev_dir = nxt.text
         elif link.text != "Complete text":
             if link.attrs['class'][0] == "ajax_tree0":
                 par_dir = None
-            parse_final(link,par_dir,pechas)
-
-    return pechas,pecha_name    
+                cno = par_dir
+            else:
+                if par_dir not in chapter:
+                    prefix+=1
+                    chapter.add(par_dir)
+                    chapter_no_title.update({f"C{int_to_Roman(prefix)}":par_dir})
+                cno = prefix
+                
+            parse_text_page(link,cno,pechas)
+    return pechas,pecha_name,chapter_no_title   
 
 
 def create_tmx(alignment_vol_map,tmx_path):
@@ -83,7 +113,7 @@ def create_tmx(alignment_vol_map,tmx_path):
     
 
 
-def create_meta_index(pecha_name,pecha,volumes):
+def create_meta_index(pecha_name,pecha,volumes,chapter_no_title):
     opf_path = f"{root_path}/{pecha['pecha_id']}/{pecha['pecha_id']}.opf"
     opf = OpenPechaFS(opf_path=opf_path)
     annotations,work_id_vol_map = get_annotations(volumes,opf_path)
@@ -98,7 +128,8 @@ def create_meta_index(pecha_name,pecha,volumes):
         source_metadata={
             "title":pecha_name,
             "language": pecha['lang'],
-            "volumes":vol_meta
+            "volumes":vol_meta,
+            "chapter_to_tile":chapter_no_title,
         })    
 
     index = Layer(annotation_type=LayerEnum.index, annotations=annotations)
@@ -170,7 +201,7 @@ def get_pecha_ids(cols):
     return pecha_ids
 
 
-def parse_final(link,par_dir,pechas):
+def parse_text_page(link,par_dir,pechas):
     base_text = {}
     response = make_request(pre_url+link.attrs['href'])
     content = response.html.find('div.infofulltekstfelt div.BolkContainer')
@@ -178,7 +209,7 @@ def parse_final(link,par_dir,pechas):
         div = block.find('div.textvar div.Tibetan,div.Chinese,div.English,div.Sanskrit')
         if len(div) != 0:
             base_text = write_file(div,base_text)
-    filename = link.text if par_dir == None else f"{par_dir}_{link.text}"
+    filename = link.text if par_dir == None else f"C{int_to_Roman(par_dir)}_{link.text}"
  
     for pecha in pechas:
         if base_text[pecha['name']]:
@@ -301,18 +332,18 @@ def create_tmx_zip(tmx_path,pecha_name):
 
 
 def main(url):
-    pechas,pecha_name = parse_page(url)
+    pechas,pecha_name,chapter_no_title = parse_page(url)
     obj = OsloAlignment(root_path)
     for pecha in pechas:
         volumes = obj.get_volumes(pecha)
-        create_meta_index(pecha_name,pecha,volumes)
+        create_meta_index(pecha_name,pecha,volumes,chapter_no_title)
         readme=create_readme(pecha['pecha_id'],pecha_name,pecha['lang'])
         Path(f"{root_path}/{pecha['pecha_id']}/readme.md").touch(exist_ok=True)
         Path(f"{root_path}/{pecha['pecha_id']}/readme.md").write_text(readme)
         #publish_opf(pecha['pecha_id'])    
 
     alignment_vol_map,alignment_id = obj.create_alignment(pechas,pecha_name)
-    tmx_path = Path(f"{root_path}./tmx")
+    tmx_path = Path(f"{root_path}/tmx")
     obj._mkdir(tmx_path)
     create_tmx(alignment_vol_map,tmx_path)
     zip_path = create_tmx_zip(tmx_path,pecha_name)
@@ -323,7 +354,7 @@ def main(url):
 if __name__ == "__main__":
     i=0
     for val in get_page():
-        main('https://www2.hf.uio.no/polyglotta/index.php?page=volume&vid=424')  
+        main('https://www2.hf.uio.no/polyglotta/index.php?page=volume&vid=435')  
         break
         
 
