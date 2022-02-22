@@ -1,3 +1,4 @@
+from email.mime import base
 from os import write
 from requests_html import HTMLSession
 from openpecha.core.ids import get_pecha_id,get_work_id
@@ -224,12 +225,13 @@ def write_file(divs,base_dic):
         base_dic[f"col_{index}"] = [] if f"col_{index}" not in base_dic else base_dic[f"col_{index}"]
         spans = div.find('span')
         for span in spans:
-            if len(span.text) != 0:  
-                base_text+=change_text_format(span.text)+"\n"   
+            if len(span.text) != 0:
+                base_text+=span.text 
         if len(spans) == 1 and len(spans[0].text) == 0:
             pass
         elif base_text != "":
-            base_text+="\n\n"
+            base_text=change_text_format(base_text)  
+            base_text+="\n"if base_text[-1] != "\n" else ""
             base_dic[f"col_{index}"].append(base_text)
         
     return base_dic
@@ -241,13 +243,17 @@ def change_text_format(text):
     ranges = iter(range(len(text)))
     for i in ranges:
         if i<len(text)-1:
+            cur_char = text[i]
+            test_char = text[i+1]
             if i%90 == 0 and i != 0 and re.search("\s",text[i+1]):
                 base_text+=text[i]+"\n"
             elif i%90 == 0 and i != 0 and re.search("\S",text[i+1]):
                 while i < len(text)-1 and re.search("\S",text[i+1]):
+                    loop_cur_char = text[i]
+                    loop_next_char= text[i+1]
                     base_text+=text[i]
                     i = next(ranges) 
-                base_text+=text[i]+"\n"    
+                base_text+=text[i]+"\n" 
             elif prev == "\n" and re.search("\s",text[i]):
                 continue
             else:
@@ -297,7 +303,7 @@ def get_segment_layer(base_texts):
 def get_segment_annotation(char_walker,base_text):
     
     segment_annotation = {
-        uuid4().hex:AnnBase(span=Span(start=char_walker, end=char_walker + len(base_text) - 3))
+        uuid4().hex:AnnBase(span=Span(start=char_walker, end=char_walker + len(base_text) - 2))
     }
 
     return (segment_annotation,len(base_text))
