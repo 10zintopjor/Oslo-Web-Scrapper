@@ -5,11 +5,9 @@ from uuid import uuid4
 import os
 import logging
 from openpecha.core.ids import get_alignment_id
-from openpecha import config, github_utils
 from openpecha.utils import dump_yaml, load_yaml
 from copy import deepcopy
-from openpecha import config
-
+from datetime import date, datetime
 
 
 logging.basicConfig(
@@ -19,6 +17,9 @@ logging.basicConfig(
 )
 
 class OsloAlignment:
+    def __init__(self,path):
+        self.root_path = path
+
     def create_alignment_yml(self,pechas,volume):
         seg_pairs = self.get_segment_pairs(pechas,volume)
         self.segment_sources = {}
@@ -43,18 +44,18 @@ class OsloAlignment:
     def create_alignment(self,pechas,pecha_name):
         volumes = self.get_volumes(pechas[0])
         alignment_id = get_alignment_id()
-        alignment_path = f"{config.PECHAS_PATH}/{alignment_id}/{alignment_id}.opa"
+        alignment_path = f"{self.root_path}/{alignment_id}/{alignment_id}.opa"
         alignment_vol_map=[]
         for volume in volumes:
             alignment = self.create_alignment_yml(pechas,volume)
-            meta = self.create_alignment_meta(alignment,volume,pechas)
+            meta = self.create_alignment_meta(alignment_id,volume,pechas)
             self.write_alignment_repo(f"{alignment_path}/{volume}",alignment,meta)
             list2 = [alignment,volume]
             alignment_vol_map.append(list2)
 
         readme = self.create_readme_for_opa(alignment_id,pecha_name,pechas)
-        Path(f"{config.PECHAS_PATH}/{alignment_id}/readme.md").touch(exist_ok=True)
-        Path(f"{config.PECHAS_PATH}/{alignment_id}/readme.md").write_text(readme)
+        Path(f"{self.root_path}/{alignment_id}/readme.md").touch(exist_ok=True)
+        Path(f"{self.root_path}/{alignment_id}/readme.md").write_text(readme)
 
         logging.info(f"{alignment_id}:{list(set([pecha['pecha_id'] for pecha in pechas]))}")    
 
@@ -63,7 +64,7 @@ class OsloAlignment:
 
     def get_volumes(self,pecha):
         volumes = []
-        paths = list(Path(f"{config.PECHAS_PATH}/{pecha['pecha_id']}/{pecha['pecha_id']}.opf/base").iterdir())
+        paths = list(Path(f"{self.root_path}/{pecha['pecha_id']}/{pecha['pecha_id']}.opf/base").iterdir())
         for path in sorted(paths):
             volumes.append(path.stem)
         return volumes
@@ -75,7 +76,7 @@ class OsloAlignment:
         for pecha in pechas:
             try:
                 pecha_yaml = load_yaml(
-                    Path(f"./{pecha['pecha_id']}/{pecha['pecha_id']}.opf/layers/{volume}/Segment.yml")
+                    Path(f"{self.root_path}/{pecha['pecha_id']}/{pecha['pecha_id']}.opf/layers/{volume}/Segment.yml")
                 )
                 ids = self.get_ids(pecha_yaml["annotations"])
                 segment_length = len(ids)
@@ -116,23 +117,26 @@ class OsloAlignment:
    
 
     def write_alignment_repo(self,alignment_path,alignment,meta=None):
-        alignment_yml_path = Path(f"{alignment_path}")
-        self._mkdir(alignment_yml_path)
-        meta_path = Path(f"{alignment_path}")
-        self._mkdir(meta_path)
-        dump_yaml(alignment, Path(f"{alignment_yml_path}/alignment.yml"))
+        alignment_path = Path(f"{alignment_path}")
+        self._mkdir(alignment_path)
+        dump_yaml(alignment, Path(f"{alignment_path}/Alignment.yml"))
         if meta:
-            dump_yaml(meta, Path(f"{meta_path}/meta.yml"))
+            dump_yaml(meta, Path(f"{alignment_path}/meta.yml"))
 
 
-    def create_alignment_meta(self,alignment,volume,pechas):
+    def create_alignment_meta(self,alignment_id,volume,pechas):
         lang  = list(set([pecha['lang'] for pecha in pechas]))
 
         metadata = {
-            "id": alignment['segment_sources'],
+            "id": alignment_id,
             "title": volume,
             "type": "translation",
-            "source_metadata":{"language":lang},
+            "source_metadata":{
+                "languages":lang,
+                "datatype":"PlainText",
+                "created_at":datetime.now(),
+                "last_modified_at":datetime.now()
+                },
         }
         return metadata
 
@@ -149,13 +153,3 @@ class OsloAlignment:
         readme = f"{alignment}\n{Table}\n{Title}\n{type}\n{languages}"
         return readme
 
-
-    def publish_pecha(self,pecha_path):
-        github_utils.github_publish(
-        pecha_path,
-        message="initial commit",
-        not_includes=[],
-        layers=[],
-        org="Openpecha",
-        token=os.environ.get("GITHUB_TOKEN"),
-    )

@@ -14,7 +14,7 @@ import serialize_to_tmx
 import re
 
 
-
+root_path = config.PECHAS_PATH
 start_url = "https://www2.hf.uio.no/polyglotta/index.php?page=library&bid=2"
 pre_url = "https://www2.hf.uio.no/"
 
@@ -82,7 +82,7 @@ def create_tmx(alignment_vol_map,tmx_path):
 
 
 def create_meta_index(pecha_name,pecha,volumes):
-    opf_path = f"{config.PECHAS_PATH}/{pecha['pecha_id']}/{pecha['pecha_id']}.opf"
+    opf_path = f"{root_path}/{pecha['pecha_id']}/{pecha['pecha_id']}.opf"
     opf = OpenPechaFS(opf_path=opf_path)
     annotations,work_id_vol_map = get_annotations(volumes,opf_path)
 
@@ -226,7 +226,7 @@ def change_text_format(text):
     
 
 def create_opf(base_text,filename,pecha_id):
-    opf_path = f"{config.PECHAS_PATH}/{pecha_id}/{pecha_id}.opf"
+    opf_path = f"{root_path}/{pecha_id}/{pecha_id}.opf"
     opf = OpenPechaFS(opf_path=opf_path)
     bases = {f"{filename}":get_base_text(base_text)}
     opf.base = bases
@@ -271,7 +271,7 @@ def get_segment_annotation(char_walker,base_text):
 
 
 def publish_opf(id):
-    pecha_path = f"{config.PECHAS_PATH}/{id}"
+    pecha_path = f"{root_path}/{id}"
 
     github_utils.github_publish(
     pecha_path,
@@ -288,26 +288,27 @@ def create_realease(id,zipped_dir):
 
 
 def create_tmx_zip(tmx_path,pecha_name):
-    zip_path = f"{config.PECHAS_PATH}/{pecha_name}.zip"
+    zip_path = f"{root_path}/{pecha_name}.zip"
     zipObj = ZipFile(zip_path, 'w')
     tmxs = list(Path(f"{tmx_path}").iterdir())
     for tmx in tmxs:
         zipObj.write(tmx)
     return zip_path
 
+
 def main(url):
     pechas,pecha_name = parse_page(url)
-    obj = OsloAlignment()
+    obj = OsloAlignment(root_path)
     for pecha in pechas:
         volumes = obj.get_volumes(pecha)
         create_meta_index(pecha_name,pecha,volumes)
         readme=create_readme(pecha['pecha_id'],pecha_name,pecha['lang'])
-        Path(f"{config.PECHAS_PATH}/{pecha['pecha_id']}/readme.md").touch(exist_ok=True)
-        Path(f"{config.PECHAS_PATH}/{pecha['pecha_id']}/readme.md").write_text(readme)
+        Path(f"{root_path}/{pecha['pecha_id']}/readme.md").touch(exist_ok=True)
+        Path(f"{root_path}/{pecha['pecha_id']}/readme.md").write_text(readme)
         #publish_opf(pecha['pecha_id'])    
 
     alignment_vol_map,alignment_id = obj.create_alignment(pechas,pecha_name)
-    tmx_path = Path(f"{config.PECHAS_PATH}/tmx")
+    tmx_path = Path(f"{root_path}/tmx")
     obj._mkdir(tmx_path)
     create_tmx(alignment_vol_map,tmx_path)
     zip_path = create_tmx_zip(tmx_path,pecha_name)
