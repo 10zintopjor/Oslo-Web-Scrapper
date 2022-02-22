@@ -56,16 +56,17 @@ def parse_page(item):
     
     par_dir = None
     prev_dir = ""
+    prefix= 0
 
-    for link in link_iter:
-        
+    for link in link_iter:       
         if 'onclick' in link.attrs:
-            nxt  = next(link_iter)    
+            prefix +=1
+            nxt  = next(link_iter)
             if nxt.attrs['class'][0] == "ajax_tree0":
-                par_dir = None
+                par_dir = None       
             elif nxt.attrs['class'][0] == "ajax_tree1":
-                par_dir = par_dir.replace(f" {prev_dir}","") if par_dir != None else par_dir
-            par_dir = nxt.text if par_dir == None else f"{par_dir} {nxt.text}"
+                par_dir = par_dir.replace(f" {prev_dir}","") 
+            par_dir = f"{par_dir} {nxt.text}" if par_dir != None else f"{nxt.text}"
             prev_dir = nxt.text
         elif link.text != "Complete text":
             if link.attrs['class'][0] == "ajax_tree0":
@@ -322,7 +323,7 @@ def main(url):
 if __name__ == "__main__":
     i=0
     for val in get_page():
-        main('https://www2.hf.uio.no/polyglotta/index.php?page=volume&vid=435')  
+        main('https://www2.hf.uio.no/polyglotta/index.php?page=volume&vid=424')  
         break
         
 
