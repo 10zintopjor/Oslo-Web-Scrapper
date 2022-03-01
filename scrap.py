@@ -13,11 +13,17 @@ from openpecha import github_utils,config
 from zipfile import ZipFile
 import serialize_to_tmx
 import re
+import logging
+import csv
 
+token = "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"
+pechas_catalog = ''
+alignment_catalog = ''
+err_log = ''    
 
-root_path = "./opfs"
+root_path = ""
 start_url = "https://www2.hf.uio.no/polyglotta/index.php?page=library&bid=2"
-pre_url = "https://www2.hf.uio.no/"
+pre_url = "https://www2.hf.uio.no"
 
 
 def make_request(url):
@@ -64,6 +70,7 @@ def int_to_Roman(num):
 
 
 def parse_page(item):
+    global root_path
     response = make_request(item)
 
     coninuous_bar = response.html.find('div.divControlMain div#nav-menu li#nav-2 a',first=True)
@@ -75,6 +82,7 @@ def parse_page(item):
     pechas = get_pecha_ids(cols)
     link_iter = iter(nav_bar)
     pecha_name = response.html.find('div.headline',first=True).text
+    root_path = f"./opfs/{pecha_name}"
     
     par_dir = None
     prev_dir = ""
@@ -243,14 +251,10 @@ def change_text_format(text):
     ranges = iter(range(len(text)))
     for i in ranges:
         if i<len(text)-1:
-            cur_char = text[i]
-            test_char = text[i+1]
             if i%90 == 0 and i != 0 and re.search("\s",text[i+1]):
                 base_text+=text[i]+"\n"
             elif i%90 == 0 and i != 0 and re.search("\S",text[i+1]):
                 while i < len(text)-1 and re.search("\S",text[i+1]):
-                    loop_cur_char = text[i]
-                    loop_next_char= text[i+1]
                     base_text+=text[i]
                     i = next(ranges) 
                 base_text+=text[i]+"\n" 
@@ -315,7 +319,8 @@ def publish_opf(id):
     github_utils.github_publish(
     pecha_path,
     not_includes=[],
-    message="initial commit"
+    message="initial commit",
+    token = token
     )  
     print(f"{id} PUBLISHED")
 
@@ -324,6 +329,7 @@ def create_realease(id,zipped_dir):
     github_utils.create_release(
     repo_name=id,
     asset_paths=assest_path,
+    token =token
     )
     print(f"Updated asset to {id}")
 
@@ -336,8 +342,35 @@ def create_tmx_zip(tmx_path,pecha_name):
         zipObj.write(tmx)
     return zip_path
 
+def create_csv(alignment_id,pechas):
+    filename = ""
+    for i,pecha in enumerate(pechas):
+        filename+=pecha['lang']
+        if len(pechas) > i+1:
+            filename+='-'
+    with open(f"{root_path}/{alignment_id}/{filename}.csv",'w') as f:
+        writer = csv.writer(f)
+        writer.writerow(["pecha id","language","url"])
+        for pecha in pechas:
+            lang = pecha['lang']
+            pechaid = pecha['pecha_id']
+            url = f"https://github.com/OpenPecha/{pechaid}"
+            writer.writerow([pechaid,lang,url])
+
+
+def set_up_logger(logger_name):
+    logger = logging.getLogger(logger_name)
+    formatter = logging.Formatter("%(message)s")
+    fileHandler = logging.FileHandler(f"{logger_name}.log")
+    fileHandler.setFormatter(formatter)
+    logger.setLevel(logging.INFO)
+    logger.addHandler(fileHandler)
+
+    return logger
+
 
 def main(url):
+
     pechas,pecha_name,chapter_no_title = parse_page(url)
     obj = OsloAlignment(root_path)
     for pecha in pechas:
@@ -346,25 +379,37 @@ def main(url):
         readme=create_readme(pecha['pecha_id'],pecha_name,pecha['lang'])
         Path(f"{root_path}/{pecha['pecha_id']}/readme.md").touch(exist_ok=True)
         Path(f"{root_path}/{pecha['pecha_id']}/readme.md").write_text(readme)
-        #publish_opf(pecha['pecha_id'])    
+        pechas_catalog.info(f"{pecha['pecha_id']},{pecha['lang']},{pecha_name},https://github.com/OpenPecha/{pecha['pecha_id']}")
+        publish_opf(pecha['pecha_id'])    
 
     alignment_vol_map,alignment_id = obj.create_alignment(pechas,pecha_name)
-    tmx_path = Path(f"{root_path}/tmx")
+    alignment_catalog.info(f"{alignment_id},{pecha_name},https://github.com/OpenPecha/{alignment_id}")
+    create_csv(alignment_id,pechas)
+    tmx_path = Path(f"./tmx/{pecha_name}")
     obj._mkdir(tmx_path)
     create_tmx(alignment_vol_map,tmx_path)
     zip_path = create_tmx_zip(tmx_path,pecha_name)
-    #publish_opf(alignment_id)
-    #create_realease(alignment_id,zip_path)
+    publish_opf(alignment_id)
+    create_realease(alignment_id,zip_path)
+
+
+def main1():
+    global pechas_catalog,alignment_catalog,err_log
+    pechas_catalog = set_up_logger("pechas_catalog")
+    alignment_catalog =set_up_logger("alignment_catalog")
+    err_log = set_up_logger('err')
+     
+    for val in get_page():
+        try:
+            main(val['ref'])  
+            if "https" in val['ref']:
+                main(val['ref'])
+            else:
+                main(pre_url+val['ref']) 
+        except:
+            err_log.info(f"{val}")
 
 
 if __name__ == "__main__":
-    i=0
-    for val in get_page():
-        main('https://www2.hf.uio.no/polyglotta/index.php?page=volume&vid=435')  
-        break
+    main1()
         
-
-
-#https://www2.hf.uio.no/polyglotta/index.php?page=volume&vid=511
-
-#https://www2.hf.uio.no/polyglotta/index.php?page=volume&vid=1124

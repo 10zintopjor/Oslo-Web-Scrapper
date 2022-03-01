@@ -10,12 +10,6 @@ from copy import deepcopy
 from datetime import date, datetime
 
 
-logging.basicConfig(
-    filename="alignment_opf_map.log",
-    format="%(levelname)s: %(message)s",
-    level=logging.INFO,
-)
-
 class OsloAlignment:
     def __init__(self,path):
         self.root_path = path
@@ -57,7 +51,6 @@ class OsloAlignment:
         Path(f"{self.root_path}/{alignment_id}/readme.md").touch(exist_ok=True)
         Path(f"{self.root_path}/{alignment_id}/readme.md").write_text(readme)
 
-        logging.info(f"{alignment_id}:{list(set([pecha['pecha_id'] for pecha in pechas]))}")    
 
         return alignment_vol_map,alignment_id
 
