@@ -16,7 +16,6 @@ import re
 import logging
 import csv
 
-token = "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"
 pechas_catalog = ''
 alignment_catalog = ''
 err_log = ''    
@@ -82,8 +81,8 @@ def parse_page(item):
     pechas = get_pecha_ids(cols)
     link_iter = iter(nav_bar)
     pecha_name = response.html.find('div.headline',first=True).text
-    root_path = f"./opfs/{pecha_name}"
-    
+    root_path = f"opfs/{pecha_name}"
+    print(pecha_name)
     par_dir = None
     prev_dir = ""
     prefix= 0
@@ -319,8 +318,7 @@ def publish_opf(id):
     github_utils.github_publish(
     pecha_path,
     not_includes=[],
-    message="initial commit",
-    token = token
+    message="initial commit"
     )  
     print(f"{id} PUBLISHED")
 
@@ -328,8 +326,7 @@ def create_realease(id,zipped_dir):
     assest_path =[f"{zipped_dir}"]
     github_utils.create_release(
     repo_name=id,
-    asset_paths=assest_path,
-    token =token
+    asset_paths=assest_path
     )
     print(f"Updated asset to {id}")
 
@@ -398,17 +395,24 @@ def main1():
     pechas_catalog = set_up_logger("pechas_catalog")
     alignment_catalog =set_up_logger("alignment_catalog")
     err_log = set_up_logger('err')
-     
-    for val in get_page():
+
+    val = 'http://www2.hf.uio.no/common/apps/permlink/permlink.php?app=polyglotta&context=volume&uid=5fb208a3-189e-11e4-856a-001cc4ddf0f4'
+    if "http" in val:
+                main(val)
+    else:
+        main(pre_url+val) 
+
+
+    """ for val in get_page():
         try:
             main(val['ref'])  
-            if "https" in val['ref']:
+            if "http" in val['ref']:
                 main(val['ref'])
             else:
                 main(pre_url+val['ref']) 
         except:
             err_log.info(f"{val}")
-
+ """
 
 if __name__ == "__main__":
     main1()

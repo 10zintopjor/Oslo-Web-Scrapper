@@ -1,4 +1,4 @@
-#!/home/gawa/parser/oslo_scrap_v2/.env/bin/python3
+#!/home/jungtop/dev/oslo_scrap_v2/.env/bin/python3
 # -*- coding: utf-8 -*-
 import re
 import sys
