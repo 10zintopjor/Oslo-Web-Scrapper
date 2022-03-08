@@ -23,7 +23,7 @@ err_log = ''
 root_path = ""
 start_url = "https://www2.hf.uio.no/polyglotta/index.php?page=library&bid=2"
 pre_url = "https://www2.hf.uio.no"
-
+token = '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'
 
 def make_request(url):
     s=HTMLSession()
@@ -77,7 +77,7 @@ def parse_page(item):
     response = make_request(pre_url+coninuous_bar_href)
     nav_bar = response.html.find('div.venstrefulltekstfelt table a')
     content = response.html.find('div.infofulltekstfelt div.BolkContainer')
-    cols = content[0].find('div.textvar div.Tibetan,div.Chinese,div.English,div.Sanskrit')
+    cols = content[0].find('div.textvar div.Tibetan,div.Chinese,div.English,div.Sanskrit,div.German,div.Pāli,div.Gāndhārī,div.Uighur,div.French')
     pechas = get_pecha_ids(cols)
     link_iter = iter(nav_bar)
     pecha_name = response.html.find('div.headline',first=True).text
@@ -203,7 +203,18 @@ def get_pecha_ids(cols):
         elif col.attrs["class"][0] == "Chinese":
             lang = "zh"
         elif col.attrs["class"][0] == "Sanskrit":
-            lang = "sa"       
+            lang = "sa"   
+        elif col.attrs["class"][0] == "German":
+            lang = "de"
+        elif col.attrs["class"][0] == "Pāli":
+            lang = "pi"
+        elif col.attrs["class"][0] == "Gāndhārī":
+            lang = "pgd"
+        elif col.attrs["class"][0] == "Uighur":
+            lang = "ug"
+        elif col.attrs["class"][0] == "French":
+            lang = "fr"
+           
         pecha_id = {"name":f"col_{index}","pecha_id":get_pecha_id(),"lang":lang}
         pecha_ids.append(pecha_id)
     return pecha_ids
@@ -214,11 +225,12 @@ def parse_text_page(link,par_dir,pechas):
     response = make_request(pre_url+link.attrs['href'])
     content = response.html.find('div.infofulltekstfelt div.BolkContainer')
     for block in content:
-        div = block.find('div.textvar div.Tibetan,div.Chinese,div.English,div.Sanskrit')
+        div = block.find('div.textvar div.Tibetan,div.Chinese,div.English,div.Sanskrit,div.German,div.Pāli,div.Gāndhārī,div.Uighur,div.French')
         if len(div) != 0:
             base_text = write_file(div,base_text)
     filename = link.text if par_dir == None else f"C{int_to_Roman(par_dir)}_{link.text}"
- 
+    if filename == "":
+        filename = "Complete text" 
     for pecha in pechas:
         if base_text[pecha['name']]:
             create_opf(base_text[pecha['name']],filename,pecha['pecha_id'])
@@ -318,7 +330,8 @@ def publish_opf(id):
     github_utils.github_publish(
     pecha_path,
     not_includes=[],
-    message="initial commit"
+    message="initial commit",
+    token = token
     )  
     print(f"{id} PUBLISHED")
 
@@ -326,7 +339,8 @@ def create_realease(id,zipped_dir):
     assest_path =[f"{zipped_dir}"]
     github_utils.create_release(
     repo_name=id,
-    asset_paths=assest_path
+    asset_paths=assest_path,
+    token = token
     )
     print(f"Updated asset to {id}")
 
@@ -396,23 +410,23 @@ def main1():
     alignment_catalog =set_up_logger("alignment_catalog")
     err_log = set_up_logger('err')
 
-    val = 'http://www2.hf.uio.no/common/apps/permlink/permlink.php?app=polyglotta&context=volume&uid=5fb208a3-189e-11e4-856a-001cc4ddf0f4'
+    val = 'https://www2.hf.uio.no/polyglotta/index.php?page=volume&vid=843'
     if "http" in val:
-                main(val)
+        main(val)
     else:
         main(pre_url+val) 
 
 
     """ for val in get_page():
+        val['ref'] = 'https://www2.hf.uio.no/polyglotta/index.php?page=volume&vid=417'
         try:
-            main(val['ref'])  
             if "http" in val['ref']:
                 main(val['ref'])
             else:
                 main(pre_url+val['ref']) 
         except:
             err_log.info(f"{val}")
- """
+        break """    
 
 if __name__ == "__main__":
     main1()
