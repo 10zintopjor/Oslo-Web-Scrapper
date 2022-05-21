@@ -11,8 +11,9 @@ from datetime import date, datetime
 
 
 class OsloAlignment:
-    def __init__(self,path):
-        self.root_path = path
+    def __init__(self,root_path):
+        self.root_alignment_path = f"{root_path}/alignments"
+        self.root_opf_path = f"{root_path}/opfs"
 
     def create_alignment_yml(self,pechas,volume):
         seg_pairs = self.get_segment_pairs(pechas,volume)
@@ -38,7 +39,7 @@ class OsloAlignment:
     def create_alignment(self,pechas,pecha_name):
         volumes = self.get_volumes(pechas[0])
         alignment_id = get_alignment_id()
-        alignment_path = f"{self.root_path}/{alignment_id}/{alignment_id}.opa"
+        alignment_path = f"{self.root_alignment_path}/{alignment_id}/{alignment_id}.opa"
         alignment_vol_map=[]
         for volume in volumes:
             alignment = self.create_alignment_yml(pechas,volume)
@@ -48,8 +49,8 @@ class OsloAlignment:
             alignment_vol_map.append(list2)
 
         readme = self.create_readme_for_opa(alignment_id,pecha_name,pechas)
-        Path(f"{self.root_path}/{alignment_id}/readme.md").touch(exist_ok=True)
-        Path(f"{self.root_path}/{alignment_id}/readme.md").write_text(readme)
+        Path(f"{self.root_alignment_path}/{alignment_id}/readme.md").touch(exist_ok=True)
+        Path(f"{self.root_alignment_path}/{alignment_id}/readme.md").write_text(readme)
 
 
         return alignment_vol_map,alignment_id
@@ -57,7 +58,7 @@ class OsloAlignment:
 
     def get_volumes(self,pecha):
         volumes = []
-        paths = list(Path(f"{self.root_path}/{pecha['pecha_id']}/{pecha['pecha_id']}.opf/base").iterdir())
+        paths = list(Path(f"{self.root_opf_path}/{pecha['pecha_id']}/{pecha['pecha_id']}.opf/base").iterdir())
         for path in sorted(paths):
             volumes.append(path.stem)
         return volumes
@@ -69,7 +70,7 @@ class OsloAlignment:
         for pecha in pechas:
             try:
                 pecha_yaml = load_yaml(
-                    Path(f"{self.root_path}/{pecha['pecha_id']}/{pecha['pecha_id']}.opf/layers/{volume}/Segment.yml")
+                    Path(f"{self.root_opf_path}/{pecha['pecha_id']}/{pecha['pecha_id']}.opf/layers/{volume}/Segment.yml")
                 )
                 ids = self.get_ids(pecha_yaml["annotations"])
                 segment_length = len(ids)

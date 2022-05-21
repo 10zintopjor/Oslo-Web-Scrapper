@@ -30,48 +30,43 @@ def make_request(url):
     response =s.get(url)
     return response
 
-
 def get_page():
     response = make_request(start_url)
-
     li = response.html.find('ul li a')
-
     for link in li:
         item = {
         'name' : link.text,
         'ref' : link.attrs['href']
         }
-
         yield item
 
 
 def int_to_Roman(num):
-        val = [
-            1000, 900, 500, 400,
-            100, 90, 50, 40,
-            10, 9, 5, 4,
-            1
-            ]
-        syb = [
-            "M", "CM", "D", "CD",
-            "C", "XC", "L", "XL",
-            "X", "IX", "V", "IV",
-            "I"
-            ]
-        roman_num = ''
-        i = 0
-        while  num > 0:
-            for _ in range(num // val[i]):
-                roman_num += syb[i]
-                num -= val[i]
-            i += 1
-        return roman_num
+    val = [
+        1000, 900, 500, 400,
+        100, 90, 50, 40,
+        10, 9, 5, 4,
+        1
+        ]
+    syb = [
+        "M", "CM", "D", "CD",
+        "C", "XC", "L", "XL",
+        "X", "IX", "V", "IV",
+        "I"
+        ]
+    roman_num = ''
+    i = 0
+    while  num > 0:
+        for _ in range(num // val[i]):
+            roman_num += syb[i]
+            num -= val[i]
+        i += 1
+    return roman_num
 
 
 def parse_page(item):
     global root_path
     response = make_request(item)
-
     coninuous_bar = response.html.find('div.divControlMain div#nav-menu li#nav-2 a',first=True)
     coninuous_bar_href = coninuous_bar.attrs['href']  
     response = make_request(pre_url+coninuous_bar_href)
@@ -381,7 +376,6 @@ def set_up_logger(logger_name):
 
 
 def main(url):
-
     pechas,pecha_name,chapter_no_title = parse_page(url)
     obj = OsloAlignment(root_path)
     for pecha in pechas:

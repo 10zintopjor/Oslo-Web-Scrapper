@@ -12,6 +12,8 @@ from pathlib import Path
 from openpecha import github_utils,config
 from zipfile import ZipFile
 from serialize_to_tmx import Tmx
+from pywebcopy import save_webpage
+
 import re
 import logging
 import csv
@@ -24,6 +26,7 @@ class OsloScrapper(OsloAlignment):
         self.root_opf_path = f"{root_path}/opfs"
         self.root_tmx_path = f"{root_path}/tmx"
         self.root_tmx_zip_path = f"{root_path}/tmxZip"
+        self.source_path = f"{root_path}/sourceFile"
 
         super().__init__(root_path)
 
@@ -156,8 +159,14 @@ class OsloScrapper(OsloAlignment):
                 self.create_opf(base_text[pecha['name']],base_id,pecha['pecha_id'])
             else:
                 self.create_opf(["Chapter Empty"],base_id,pecha['pecha_id']) 
-
+        self.save_source(self.pre_url+link.attrs['href'],title)
         return {base_id:title}
+
+    def save_source(self,url,title):
+        response = self.make_request(url)
+        self._mkdir(Path(self.source_path))
+        with open(f"{self.source_path}/{title}.html","w") as file:
+            file.write(response.text.strip())
 
     def write_file(self,divs,base_dic):
         for index,div in enumerate(divs,start=0):
@@ -288,6 +297,7 @@ class OsloScrapper(OsloAlignment):
         
         instance_meta = PechaMetaData(
             id=pecha['pecha_id'],
+            source = self.start_url,
             initial_creation_type=InitialCreationEnum.input,
             source_metadata={
                 "title":self.pecha_name,
