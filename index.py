@@ -37,7 +37,7 @@ class OsloAlignment:
         return alignments        
 
     def create_alignment(self,pechas,pecha_name):
-        volumes = self.get_volumes(pechas[0])
+        volumes = self.get_bases(pechas[0])
         alignment_id = get_alignment_id()
         alignment_path = f"{self.root_alignment_path}/{alignment_id}/{alignment_id}.opa"
         alignment_vol_map=[]
@@ -52,16 +52,16 @@ class OsloAlignment:
         Path(f"{self.root_alignment_path}/{alignment_id}/readme.md").touch(exist_ok=True)
         Path(f"{self.root_alignment_path}/{alignment_id}/readme.md").write_text(readme)
 
-
         return alignment_vol_map,alignment_id
 
 
-    def get_volumes(self,pecha):
+    def get_bases(self,pecha):
         volumes = []
         paths = list(Path(f"{self.root_opf_path}/{pecha['pecha_id']}/{pecha['pecha_id']}.opf/base").iterdir())
         for path in sorted(paths):
             volumes.append(path.stem)
         return volumes
+
 
     def get_segment_pairs(self,pechas,volume):
         segments_ids = {}
