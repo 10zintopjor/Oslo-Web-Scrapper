@@ -1,4 +1,5 @@
 from email.mime import base
+from lib2to3.pytree import convert
 from os import write
 from requests_html import HTMLSession
 from openpecha.core.ids import get_pecha_id,get_work_id,get_base_id
@@ -12,7 +13,8 @@ from pathlib import Path
 from openpecha import github_utils,config
 from zipfile import ZipFile
 from serialize_to_tmx import Tmx
-
+from converter import Converter
+from pyewts import pyewts
 import re
 import logging
 import csv
@@ -155,11 +157,27 @@ class OsloScrapper(OsloAlignment):
             title = "Complete text" 
         for pecha in self.pechas:
             if base_text[pecha['name']]:
-                self.create_opf(base_text[pecha['name']],base_id,pecha['pecha_id'])
+                if pecha['lang'] == "bo":
+                    bases = self.convert_to_uni(base_text[pecha['name']])
+                    self.create_opf(bases,base_id,pecha['pecha_id'])
+                else:    
+                    self.create_opf(base_text[pecha['name']],base_id,pecha['pecha_id'])
             else:
                 self.create_opf(["Chapter Empty"],base_id,pecha['pecha_id']) 
         self.save_source(self.pre_url+link.attrs['href'],title)
         return {base_id:title}
+
+    def convert_to_uni(self,bases):
+        obj = Converter()
+        converter = pyewts()
+
+        new_bases = []
+        for base in bases:
+            ewts = obj.alacToEwts(base)
+            uni =converter.toUnicode(ewts)
+            new_bases.append(uni)
+        
+        return new_bases
 
     def save_source(self,url,title):
         response = self.make_request(url)
@@ -403,7 +421,7 @@ class OsloScrapper(OsloAlignment):
         paths = []
         err_log = self.set_up_logger('err')
         for val in self.get_page():
-            path = self.scrap("https://www2.hf.uio.no/polyglotta/index.php?page=volume&vid=560")
+            path = self.scrap("https://www2.hf.uio.no/polyglotta/index.php?page=volume&vid=1020")
             paths.append(path)
             """ try:
                 if "http" in val['ref']:
@@ -434,9 +452,9 @@ def create_realease(id,paths):
 if __name__ == "__main__":
     obj = OsloScrapper("./root")
     paths = obj.scrap_all()
-    for path in paths:
+    """ for path in paths:
         opf_paths,opa_path,tmx_path,source_path = path
         for opf_path in opf_paths:
             publish_opf(opf_path)
         publish_opf(opa_path)
-        create_realease(Path(opa_path).stem,[tmx_path,source_path])    
+        create_realease(Path(opa_path).stem,[tmx_path,source_path])     """
