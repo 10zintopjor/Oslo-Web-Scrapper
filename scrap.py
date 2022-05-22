@@ -212,7 +212,7 @@ class OsloScrapper(OsloAlignment):
                 if i%90 == 0 and i != 0 and re.search("\s",text[i+1]):
                     base_text+=text[i]+"\n"
                 elif i%90 == 0 and i != 0 and re.search("\S",text[i+1]):
-                    while i < len(text)-1 and re.search("\S",text[i+1]):
+                    while i < min(10,len(text)-1) and re.search("\S",text[i+1]):
                         base_text+=text[i]
                         i = next(ranges) 
                     base_text+=text[i]+"\n" 
