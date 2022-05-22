@@ -175,7 +175,8 @@ class OsloScrapper(OsloAlignment):
         for base in bases:
             ewts = obj.alacToEwts(base)
             uni =converter.toUnicode(ewts)
-            new_bases.append(uni)
+            formatted_text = self.change_text_format(uni,270)+"\n"
+            new_bases.append(formatted_text)
         
         return new_bases
 
@@ -202,17 +203,17 @@ class OsloScrapper(OsloAlignment):
         return base_dic
     
     @staticmethod
-    def change_text_format(text):
+    def change_text_format(text,th=120):
         base_text=""
         prev= ""
         text = text.replace("\n","") 
         ranges = iter(range(len(text)))
         for i in ranges:
             if i<len(text)-1:
-                if i%90 == 0 and i != 0 and re.search("\s",text[i+1]):
+                if i%th == 0 and i != 0 and re.search("\s",text[i+1]):
                     base_text+=text[i]+"\n"
-                elif i%90 == 0 and i != 0 and re.search("\S",text[i+1]):
-                    while i < min(10,len(text)-1) and re.search("\S",text[i+1]):
+                elif i%th == 0 and i != 0 and re.search("\S",text[i+1]):
+                    while i < min(20,len(text)-1) and re.search("\S",text[i+1]):
                         base_text+=text[i]
                         i = next(ranges) 
                     base_text+=text[i]+"\n" 
@@ -421,7 +422,7 @@ class OsloScrapper(OsloAlignment):
         paths = []
         err_log = self.set_up_logger('err')
         for val in self.get_page():
-            path = self.scrap("https://www2.hf.uio.no/polyglotta/index.php?page=volume&vid=1020")
+            path = self.scrap(val['ref'])
             paths.append(path)
             """ try:
                 if "http" in val['ref']:
@@ -452,9 +453,10 @@ def create_realease(id,paths):
 if __name__ == "__main__":
     obj = OsloScrapper("./root")
     paths = obj.scrap_all()
-    """ for path in paths:
+    for path in paths:
         opf_paths,opa_path,tmx_path,source_path = path
         for opf_path in opf_paths:
             publish_opf(opf_path)
+            create_realease(Path(opf_path).stem,[source_path])
         publish_opf(opa_path)
-        create_realease(Path(opa_path).stem,[tmx_path,source_path])     """
+        create_realease(Path(opa_path).stem,[tmx_path])    
