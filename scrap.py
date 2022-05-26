@@ -2,7 +2,7 @@ from email.mime import base
 from lib2to3.pytree import convert
 from os import write
 from requests_html import HTMLSession
-from openpecha.core.ids import get_pecha_id,get_work_id,get_base_id
+from openpecha.core.ids import get_pecha_id,get_work_id,get_base_id,get_source_id
 from datetime import datetime
 from openpecha.core.layer import InitialCreationEnum, Layer, LayerEnum, PechaMetaData
 from openpecha.core.pecha import OpenPechaFS 
@@ -12,6 +12,7 @@ from index import OsloAlignment
 from pathlib import Path
 from openpecha import github_utils,config
 from zipfile import ZipFile
+from push_align import publish_opf
 from serialize_to_tmx import Tmx
 from converter import Converter
 from pyewts import pyewts
@@ -147,7 +148,6 @@ class OsloScrapper(OsloAlignment):
         base_id = "f"+get_base_id()
         response = self.make_request(self.pre_url+link.attrs['href'])
         content = response.html.find('div.infofulltekstfelt div.BolkContainer')
-        self._mkdir(Path(f"{self.source_path}/{self.pecha_name}"))
         for block in content:
             div = block.find('div.textvar div.Tibetan,div.Chinese,div.English,div.Sanskrit,div.German,div.Pāli,div.Gāndhārī,div.Uighur,div.French')
             if len(div) != 0:
@@ -182,8 +182,8 @@ class OsloScrapper(OsloAlignment):
 
     def save_source(self,url,title):
         response = self.make_request(url)
-        self._mkdir(Path(self.source_path))
-        with open(f"{self.source_path}/{self.pecha_name}/{title}.html","w") as file:
+        self._mkdir(Path(f"{self.source_path}/{self.source_id}/{self.pecha_name}"))
+        with open(f"{self.source_path}/{self.source_id}/{self.pecha_name}/{title}.html","w") as file:
             file.write(response.text.strip())
 
     def write_file(self,divs,base_dic):
@@ -316,6 +316,7 @@ class OsloScrapper(OsloAlignment):
         instance_meta = PechaMetaData(
             id=pecha['pecha_id'],
             source = self.start_url,
+            source_file=f"https://github.com/OpenPecha/{self.source_id}",
             initial_creation_type=InitialCreationEnum.input,
             source_metadata={
                 "title":self.pecha_name,
@@ -385,18 +386,15 @@ class OsloScrapper(OsloAlignment):
             zipObj.write(tmx)
         return zip_path    
 
-    def create_sourceFile_zip(self,path):
-        zip_path = f"{self.source_path}/{self.pecha_name}_html.zip"
-        zipObj = ZipFile(zip_path,'w')
-        srcFiles = list(Path(f"{path}").iterdir())
-        for file in srcFiles:
-            zipObj.write(file)
-        return zip_path
-
-    def scrap(self,url):
+    def create_source_directory(self):
+        source_id = get_source_id()
+        src_path = f"{self.source_path}/{source_id}"
+        self._mkdir(Path(src_path))
+        return source_id
+        
+    def scrap(self,url,pechas_catalog,alignment_catalog):
         opf_paths = []
-        pechas_catalog = self.set_up_logger("pechas_catalog")
-        alignment_catalog =self.set_up_logger("alignment_catalog")
+        self.source_id = self.create_source_directory()
         chapter_to_title,base_id_title_maps = self.parse_page(url)
         for pecha in self.pechas:
             bases = self.get_bases(pecha)
@@ -404,59 +402,66 @@ class OsloScrapper(OsloAlignment):
             readme=self.create_readme(pecha['pecha_id'],self.pecha_name,pecha['lang'])
             Path(f"{self.root_opf_path}/{pecha['pecha_id']}/readme.md").touch(exist_ok=True)
             Path(f"{self.root_opf_path}/{pecha['pecha_id']}/readme.md").write_text(readme)
+            self.publish_opf(f"{self.root_opf_path}/{pecha['pecha_id']}")
             pechas_catalog.info(f"{pecha['pecha_id']},{pecha['lang']},{self.pecha_name},https://github.com/OpenPecha/{pecha['pecha_id']}")
-            opf_paths.append(f"{self.root_opf_path}/{pecha['pecha_id']}")
+            #opf_paths.append(f"{self.root_opf_path}/{pecha['pecha_id']}")
 
         alignment_vol_map,alignment_id = self.create_alignment(self.pechas,self.pecha_name)
         alignment_catalog.info(f"{alignment_id},{self.pecha_name},https://github.com/OpenPecha/{alignment_id}")
         self.create_csv(alignment_id)
         opa_path = f"{self.root_alignment_path}/{alignment_id}"
         tmx_path = self.create_tmx(alignment_vol_map)
-        src_path = f"{self.source_path}/{self.pecha_name}"
-        self._mkdir(Path(src_path))
-        source_path =self.create_sourceFile_zip(src_path)
+        self.publish_opf(f"{self.source_path}/{self.source_id}")
+        self.publish_opf(opa_path)
+        self.create_realease(alignment_id,[tmx_path])
         
-        return [opf_paths,opa_path,tmx_path,source_path]
+        return [opf_paths,opa_path,tmx_path]
 
     def scrap_all(self):
         paths = []
+        pechas_catalog = self.set_up_logger("pechas_catalog")
+        alignment_catalog =self.set_up_logger("alignment_catalog")
         err_log = self.set_up_logger('err')
         for val in self.get_page():
-            path = self.scrap(val['ref'])
-            paths.append(path)
+            if "http" in val['ref']:
+                    path = self.scrap(val['ref'],pechas_catalog,alignment_catalog)
+                    paths.append(path)
+            else:
+                self.scrap(self,self.pre_url+val['ref'],pechas_catalog,alignment_catalog) 
+            break
             """ try:
                 if "http" in val['ref']:
-                    print(val["ref"])
-                    self.scrap(val['ref'])
+                    path = self.scrap(val['ref'],pechas_catalog,alignment_catalog)
+                    paths.append(path)
                 else:
-                    self.main(self,self.pre_url+val['ref']) 
+                    self.scrap(self,self.pre_url+val['ref'],pechas_catalog,alignment_catalog) 
             except:
-                err_log.info(f"{val}") """
-            break   
+                err_log.info(f"{val}") """ 
         return paths
 
-def publish_opf(path):
-    github_utils.github_publish(
-    path,
-    not_includes=[],
-    message="initial commit",
-    )  
-    print(f"{path} PUBLISHED")
+    def publish_opf(self,path):
+        github_utils.github_publish(
+        path,
+        not_includes=[],
+        message="initial commit",
+        )  
+        print(f"{path} PUBLISHED")
 
-def create_realease(id,paths):
-    github_utils.create_release(
-    repo_name=id,
-    asset_paths=paths
-    )
-    print(f"Updated asset to {id}")
+    def create_realease(self,id,paths):
+        github_utils.create_release(
+        repo_name=id,
+        asset_paths=paths
+        )
+        print(f"Updated asset to {id}")
 
 if __name__ == "__main__":
     obj = OsloScrapper("./root")
     paths = obj.scrap_all()
-    for path in paths:
+    """ for path in paths:
         opf_paths,opa_path,tmx_path,source_path = path
         for opf_path in opf_paths:
             publish_opf(opf_path)
             create_realease(Path(opf_path).stem,[source_path])
         publish_opf(opa_path)
-        create_realease(Path(opa_path).stem,[tmx_path])    
+        create_realease(Path(opa_path).stem,[tmx_path])
+ """

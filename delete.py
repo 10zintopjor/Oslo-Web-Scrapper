@@ -2,21 +2,14 @@ from urllib import response
 from openpecha import github_utils
 import csv
 import requests
-
+from pathlib import Path
 from pkg_resources import DEVELOP_DIST
 
-token = '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'
 
-def get_ids():
-    with open("new_alignmnet_catalog.csv","r") as f:
-        obj = csv.reader(f)
-        for row in obj:
-            try:
-                github_utils.delete_repo(row[0],token)
-                print("deleted")
-            except:
-                print("Not deletd ",row[0])
-                pass    
+def get_ids(path):
+    github_utils.delete_repo(path)
+    print("deleted")
+            
 
 def remove_duplicates():
     del_id = []
@@ -57,6 +50,9 @@ def check_url():
 
 
 if __name__ == "__main__":
-    #get_ids()
+    path = "./new_root/alignments/"
+    paths =  Path(path).iterdir()
+    for path in paths:
+        get_ids(path.stem)
     #remove_duplicates()
-    check_url()
+    #check_url()
