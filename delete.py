@@ -50,9 +50,9 @@ def check_url():
 
 
 if __name__ == "__main__":
-    path = "./new_root/alignments/"
-    paths =  Path(path).iterdir()
-    for path in paths:
-        get_ids(path.stem)
+     with open("alignment_catalog.csv","r") as f1:
+        obj1 = csv.reader(f1)
+        for row1 in obj1:
+            get_ids(row1[0])
     #remove_duplicates()
     #check_url()

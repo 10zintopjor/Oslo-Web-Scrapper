@@ -2,17 +2,19 @@ from email.mime import base
 from lib2to3.pytree import convert
 from os import write
 from requests_html import HTMLSession
-from openpecha.core.ids import get_pecha_id,get_work_id,get_base_id,get_source_id
+from openpecha.core.ids import get_base_id,get_initial_pecha_id
 from datetime import datetime
-from openpecha.core.layer import InitialCreationEnum, Layer, LayerEnum, PechaMetaData
+from openpecha.core.layer import Layer, LayerEnum
 from openpecha.core.pecha import OpenPechaFS 
+from openpecha.core.metadata import InitialPechaMetadata,InitialCreationType
+
+
 from openpecha.core.annotation import AnnBase, Span
 from uuid import uuid4
 from index import OsloAlignment
 from pathlib import Path
 from openpecha import github_utils,config
 from zipfile import ZipFile
-from push_align import publish_opf
 from serialize_to_tmx import Tmx
 from converter import Converter
 from pyewts import pyewts
@@ -139,7 +141,7 @@ class OsloScrapper(OsloAlignment):
             elif col.attrs["class"][0] == "French":
                 lang = "fr"
             
-            pecha_id = {"name":f"col_{index}","pecha_id":get_pecha_id(),"lang":lang}
+            pecha_id = {"name":f"col_{index}","pecha_id":get_initial_pecha_id(),"lang":lang}
             pecha_ids.append(pecha_id)
         return pecha_ids
 
@@ -182,9 +184,9 @@ class OsloScrapper(OsloAlignment):
 
     def save_source(self,url,title):
         response = self.make_request(url)
-        self._mkdir(Path(f"{self.source_path}/{self.source_id}/{self.pecha_name}"))
-        with open(f"{self.source_path}/{self.source_id}/{self.pecha_name}/{title}.html","w") as file:
-            file.write(response.text.strip())
+        for pecha in self.pechas:
+            self._mkdir(Path(f"{self.root_opf_path}/{pecha['pecha_id']}/Source"))
+            Path(f"{self.root_opf_path}/{pecha['pecha_id']}/Source/{title}.html").write_text(response.text.strip())
 
     def write_file(self,divs,base_dic):
         for index,div in enumerate(divs,start=0):
@@ -313,11 +315,10 @@ class OsloScrapper(OsloAlignment):
         annotations = self.get_annotations(bases,opf_path)
         base_meta=self.get_base_meta(base_id_title_maps)
         
-        instance_meta = PechaMetaData(
+        instance_meta = InitialPechaMetadata(
             id=pecha['pecha_id'],
             source = self.start_url,
-            source_file=f"https://github.com/OpenPecha/{self.source_id}",
-            initial_creation_type=InitialCreationEnum.input,
+            initial_creation_type=InitialCreationType.input,
             source_metadata={
                 "title":self.pecha_name,
                 "language": pecha['lang'],
@@ -386,23 +387,18 @@ class OsloScrapper(OsloAlignment):
             zipObj.write(tmx)
         return zip_path    
 
-    def create_source_directory(self):
-        source_id = get_source_id()
-        src_path = f"{self.source_path}/{source_id}"
-        self._mkdir(Path(src_path))
-        return source_id
+    
         
     def scrap(self,url,pechas_catalog,alignment_catalog):
         opf_paths = []
-        self.source_id = self.create_source_directory()
         chapter_to_title,base_id_title_maps = self.parse_page(url)
         for pecha in self.pechas:
             bases = self.get_bases(pecha)
             self.create_meta_index(pecha,bases,chapter_to_title,base_id_title_maps)
             readme=self.create_readme(pecha['pecha_id'],self.pecha_name,pecha['lang'])
-            Path(f"{self.root_opf_path}/{pecha['pecha_id']}/readme.md").touch(exist_ok=True)
+            #Path(f"{self.root_opf_path}/{pecha['pecha_id']}/readme.md").touch(exist_ok=True)
             Path(f"{self.root_opf_path}/{pecha['pecha_id']}/readme.md").write_text(readme)
-            self.publish_opf(f"{self.root_opf_path}/{pecha['pecha_id']}")
+            #self.publish_opf(f"{self.root_opf_path}/{pecha['pecha_id']}")
             pechas_catalog.info(f"{pecha['pecha_id']},{pecha['lang']},{self.pecha_name},https://github.com/OpenPecha/{pecha['pecha_id']}")
             #opf_paths.append(f"{self.root_opf_path}/{pecha['pecha_id']}")
 
@@ -411,10 +407,9 @@ class OsloScrapper(OsloAlignment):
         self.create_csv(alignment_id)
         opa_path = f"{self.root_alignment_path}/{alignment_id}"
         tmx_path = self.create_tmx(alignment_vol_map)
-        self.publish_opf(f"{self.source_path}/{self.source_id}")
-        self.publish_opf(opa_path)
-        self.create_realease(alignment_id,[tmx_path])
-        
+        #self.publish_opf(opa_path)
+        #self.create_realease(alignment_id,[tmx_path])
+        print("DONE")
         return [opf_paths,opa_path,tmx_path]
 
     def scrap_all(self):
@@ -428,7 +423,6 @@ class OsloScrapper(OsloAlignment):
                     paths.append(path)
             else:
                 self.scrap(self,self.pre_url+val['ref'],pechas_catalog,alignment_catalog) 
-            break
             """ try:
                 if "http" in val['ref']:
                     path = self.scrap(val['ref'],pechas_catalog,alignment_catalog)
@@ -436,7 +430,7 @@ class OsloScrapper(OsloAlignment):
                 else:
                     self.scrap(self,self.pre_url+val['ref'],pechas_catalog,alignment_catalog) 
             except:
-                err_log.info(f"{val}") """ 
+                err_log.info(f"{val}")  """
         return paths
 
     def publish_opf(self,path):
