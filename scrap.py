@@ -1,13 +1,15 @@
 from email.mime import base
 from lib2to3.pytree import convert
 from os import write
+from requests import request
+import requests
 from requests_html import HTMLSession
 from openpecha.core.ids import get_base_id,get_initial_pecha_id
 from datetime import datetime
 from openpecha.core.layer import Layer, LayerEnum
 from openpecha.core.pecha import OpenPechaFS 
 from openpecha.core.metadata import InitialPechaMetadata,InitialCreationType
-
+from bs4 import BeautifulSoup
 
 from openpecha.core.annotation import AnnBase, Span
 from uuid import uuid4
@@ -74,18 +76,30 @@ class OsloScrapper(OsloAlignment):
             yield item  
 
     def parse_page(self,item):
+        base_title_map ={}
         response = self.make_request(item)
         coninuous_bar = response.html.find('div.divControlMain div#nav-menu li#nav-2 a',first=True)
         coninuous_bar_href = coninuous_bar.attrs['href']  
-        response = self.make_request(self.pre_url+coninuous_bar_href)
-        nav_bar = response.html.find('div.venstrefulltekstfelt table a')
-        content = response.html.find('div.infofulltekstfelt div.BolkContainer')
-        cols = content[0].find('div.textvar div.Tibetan,div.Chinese,div.English,div.Sanskrit,div.German,div.Pāli,div.Gāndhārī,div.Uighur,div.French')
+        response = requests.get(self.pre_url+coninuous_bar_href)
+        soup = BeautifulSoup(response.text,'html.parser')
+        nav_bar = soup.select_one('div.venstrefulltekstfelt')
+        links = nav_bar.findChildren('table',recursive=False)
+        content = soup.select('div.infofulltekstfelt div.BolkContainer')
+        cols = content[0].select('div.textvar div.Tibetan,div.Chinese,div.English,div.Sanskrit,div.German,div.Pāli,div.Gāndhārī,div.Uighur,div.French,div.Mongolian')
         self.pechas = self.get_pechas(cols)
-        link_iter = iter(nav_bar)
-        self.pecha_name = response.html.find('div.headline',first=True).text
-        chapter_to_title,base_id_title_maps = self.parse_links(link_iter)
-        return chapter_to_title,base_id_title_maps 
+        self.pecha_name = soup.select_one('div.headline').text
+
+        for link in links:
+            hrefs = link.select('a')
+            for href in hrefs:
+                if href.text == "Complete text" or href['href'] == "javascript:;":
+                    continue
+                else:
+                    print(href['href'])
+                    base_id = self.parse_text_page(href)
+                    base_title_map.update({base_id:href.text.strip()})
+        
+        return base_title_map
 
     def parse_links(self,link_iter):
         par_dir = None
@@ -140,21 +154,23 @@ class OsloScrapper(OsloAlignment):
                 lang = "ug"
             elif col.attrs["class"][0] == "French":
                 lang = "fr"
+            elif col.attrs["class"][0] == "Mongolian":
+                lang = "mon"    
             
             pecha_id = {"name":f"col_{index}","pecha_id":get_initial_pecha_id(),"lang":lang}
             pecha_ids.append(pecha_id)
         return pecha_ids
 
-    def parse_text_page(self,link,par_dir):
+    def parse_text_page(self,link):
         base_text = {}
-        base_id = "f"+get_base_id()
-        response = self.make_request(self.pre_url+link.attrs['href'])
+        base_id = get_base_id()
+        response = self.make_request(self.pre_url+link['href'])
         content = response.html.find('div.infofulltekstfelt div.BolkContainer')
         for block in content:
-            div = block.find('div.textvar div.Tibetan,div.Chinese,div.English,div.Sanskrit,div.German,div.Pāli,div.Gāndhārī,div.Uighur,div.French')
+            div = block.find('div.textvar div.Tibetan,div.Chinese,div.English,div.Sanskrit,div.German,div.Pāli,div.Gāndhārī,div.Uighur,div.French,div.Mongolian')
             if len(div) != 0:
                 base_text = self.write_file(div,base_text)
-        title = link.text if par_dir == None else f"C{self.int_to_roman(par_dir)}_{link.text}"
+        title = link.text
         if title == "":
             title = "Complete text" 
         for pecha in self.pechas:
@@ -167,7 +183,7 @@ class OsloScrapper(OsloAlignment):
             else:
                 self.create_opf(["Chapter Empty"],base_id,pecha['pecha_id']) 
         self.save_source(self.pre_url+link.attrs['href'],title)
-        return {base_id:title}
+        return base_id
 
     def convert_to_uni(self,bases):
         obj = Converter()
@@ -309,10 +325,10 @@ class OsloScrapper(OsloAlignment):
 
         return base_meta
 
-    def create_meta_index(self,pecha,bases,chapter_no_title,base_id_title_maps):
+    def create_meta(self,pecha,base_id_title_maps):
         opf_path = f"{self.root_opf_path}/{pecha['pecha_id']}/{pecha['pecha_id']}.opf"
         opf = OpenPechaFS(path=opf_path)
-        annotations = self.get_annotations(bases,opf_path)
+        #annotations = self.get_annotations(base_id_title_maps)
         base_meta=self.get_base_meta(base_id_title_maps)
         
         instance_meta = InitialPechaMetadata(
@@ -323,13 +339,9 @@ class OsloScrapper(OsloAlignment):
                 "title":self.pecha_name,
                 "language": pecha['lang'],
                 "base":base_meta,
-                "chapter_to_tile":chapter_no_title,
             })    
 
-        index = Layer(annotation_type=LayerEnum.index, annotations=annotations)
         opf._meta = instance_meta
-        opf._index = index
-        opf.save_index()
         opf.save_meta()
 
     def create_readme(self,pecha_id,pecha_name,lang):
@@ -391,10 +403,9 @@ class OsloScrapper(OsloAlignment):
         
     def scrap(self,url,pechas_catalog,alignment_catalog):
         opf_paths = []
-        chapter_to_title,base_id_title_maps = self.parse_page(url)
+        base_id_title_maps = self.parse_page(url)
         for pecha in self.pechas:
-            bases = self.get_bases(pecha)
-            self.create_meta_index(pecha,bases,chapter_to_title,base_id_title_maps)
+            self.create_meta(pecha,base_id_title_maps)
             readme=self.create_readme(pecha['pecha_id'],self.pecha_name,pecha['lang'])
             #Path(f"{self.root_opf_path}/{pecha['pecha_id']}/readme.md").touch(exist_ok=True)
             Path(f"{self.root_opf_path}/{pecha['pecha_id']}/readme.md").write_text(readme)
@@ -448,9 +459,18 @@ class OsloScrapper(OsloAlignment):
         )
         print(f"Updated asset to {id}")
 
-if __name__ == "__main__":
+def main():
+    
     obj = OsloScrapper("./root")
-    paths = obj.scrap_all()
+    pechas_catalog = obj.set_up_logger("pechas_catalog")
+    alignment_catalog =obj.set_up_logger("alignment_catalog")
+    url = "https://www2.hf.uio.no/polyglotta/index.php?page=volume&vid=1120"
+    obj.scrap(url,pechas_catalog,alignment_catalog)
+
+if __name__ == "__main__":
+    main()
+    """ obj = OsloScrapper("./root")
+    paths = obj.scrap_all """
     """ for path in paths:
         opf_paths,opa_path,tmx_path,source_path = path
         for opf_path in opf_paths:
