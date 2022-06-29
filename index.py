@@ -57,9 +57,9 @@ class OsloAlignment:
 
     def get_bases(self,pecha):
         volumes = []
-        paths = list(Path(f"{self.root_opf_path}/{pecha['pecha_id']}/{pecha['pecha_id']}.opf/base").iterdir())
-        for path in sorted(paths):
-            volumes.append(path.stem)
+        bases = list(Path(f"{self.root_opf_path}/{pecha['pecha_id']}/{pecha['pecha_id']}.opf/base").iterdir())
+        for base in bases:
+            volumes.append(base.stem)
         return volumes
 
 

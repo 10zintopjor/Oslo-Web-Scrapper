@@ -76,7 +76,8 @@ class OsloScrapper(OsloAlignment):
             yield item  
 
     def parse_page(self,item):
-        base_title_map ={}
+        chapters =[]
+        base_texts = []
         response = self.make_request(item)
         coninuous_bar = response.html.find('div.divControlMain div#nav-menu li#nav-2 a',first=True)
         coninuous_bar_href = coninuous_bar.attrs['href']  
@@ -88,49 +89,27 @@ class OsloScrapper(OsloAlignment):
         cols = content[0].select('div.textvar div.Tibetan,div.Chinese,div.English,div.Sanskrit,div.German,div.Pāli,div.Gāndhārī,div.Uighur,div.French,div.Mongolian')
         self.pechas = self.get_pechas(cols)
         self.pecha_name = soup.select_one('div.headline').text
-
+        complete_text_link = ""
         for link in links:
             hrefs = link.select('a')
             for href in hrefs:
-                if href.text == "Complete text" or href['href'] == "javascript:;":
+                if href.text == "Complete text":
+                    complete_text_link = href["href"]
+                elif href['href'] == "javascript:;":
                     continue
                 else:
-                    print(href['href'])
-                    base_id = self.parse_text_page(href)
-                    base_title_map.update({base_id:href.text.strip()})
+                    chapters.append(href.text)
+                    base_texts.append(self.parse_text_page(href))
+        base_id = get_base_id()
+        for pecha in self.pechas:
+            self.create_opf(base_texts,pecha,base_id)
+            self.save_source(self.pre_url+complete_text_link,base_id,pecha)  
+            self.create_meta(pecha,base_texts,base_id,chapters)
+            readme=self.create_readme(pecha['pecha_id'],self.pecha_name,pecha['lang']) 
+            Path(f"{self.root_opf_path}/{pecha['pecha_id']}/readme.md").write_text(readme)
         
-        return base_title_map
+        return 
 
-    def parse_links(self,link_iter):
-        par_dir = None
-        prev_dir = ""
-        prefix= 0
-        chapter = set()
-        chapter_no_title = {}
-        base_id_title_maps = {}
-        for link in link_iter:       
-            if 'onclick' in link.attrs:
-                nxt  = next(link_iter)
-                if nxt.attrs['class'][0] == "ajax_tree0":
-                    par_dir = None       
-                elif nxt.attrs['class'][0] == "ajax_tree1":
-                    par_dir = par_dir.replace(f" {prev_dir}","")
-                    continue 
-                par_dir = f"{par_dir} {nxt.text}" if par_dir != None else f"{nxt.text}"
-                prev_dir = nxt.text
-            elif link.text != "Complete text":
-                if link.attrs['class'][0] == "ajax_tree0":
-                    par_dir = None
-                    cno = par_dir
-                else:
-                    if par_dir not in chapter:
-                        prefix+=1
-                        chapter.add(par_dir)
-                        chapter_no_title.update({f"C{self.int_to_roman(prefix)}":par_dir})
-                    cno = prefix    
-                base_id_title_map = self.parse_text_page(link,cno)
-                base_id_title_maps.update(base_id_title_map)
-        return chapter_no_title,base_id_title_maps
 
     @staticmethod
     def get_pechas(cols):
@@ -163,117 +142,96 @@ class OsloScrapper(OsloAlignment):
 
     def parse_text_page(self,link):
         base_text = {}
-        base_id = get_base_id()
         response = self.make_request(self.pre_url+link['href'])
         content = response.html.find('div.infofulltekstfelt div.BolkContainer')
         for block in content:
             div = block.find('div.textvar div.Tibetan,div.Chinese,div.English,div.Sanskrit,div.German,div.Pāli,div.Gāndhārī,div.Uighur,div.French,div.Mongolian')
             if len(div) != 0:
                 base_text = self.write_file(div,base_text)
-        title = link.text
-        if title == "":
-            title = "Complete text" 
-        for pecha in self.pechas:
-            if base_text[pecha['name']]:
-                if pecha['lang'] == "bo":
-                    bases = self.convert_to_uni(base_text[pecha['name']])
-                    self.create_opf(bases,base_id,pecha['pecha_id'])
-                else:    
-                    self.create_opf(base_text[pecha['name']],base_id,pecha['pecha_id'])
-            else:
-                self.create_opf(["Chapter Empty"],base_id,pecha['pecha_id']) 
-        self.save_source(self.pre_url+link.attrs['href'],title)
-        return base_id
 
-    def convert_to_uni(self,bases):
+        return base_text        
+        
+        
+
+    def convert_to_uni(self,text):
         obj = Converter()
         converter = pyewts()
 
-        new_bases = []
-        for base in bases:
-            ewts = obj.alacToEwts(base)
-            uni =converter.toUnicode(ewts)
-            formatted_text = self.change_text_format(uni,270)+"\n"
-            new_bases.append(formatted_text)
+        ewts = obj.alacToEwts(text)
+        uni =converter.toUnicode(ewts)
+        formatted_text = self.change_text_format(uni)
         
-        return new_bases
+        return formatted_text
 
-    def save_source(self,url,title):
+    def save_source(self,url,base_id,pecha):
         response = self.make_request(url)
-        for pecha in self.pechas:
-            self._mkdir(Path(f"{self.root_opf_path}/{pecha['pecha_id']}/Source"))
-            Path(f"{self.root_opf_path}/{pecha['pecha_id']}/Source/{title}.html").write_text(response.text.strip())
+        self._mkdir(Path(f"{self.root_opf_path}/{pecha['pecha_id']}/Source"))
+        Path(f"{self.root_opf_path}/{pecha['pecha_id']}/Source/{base_id}.html").write_text(response.text.strip())
 
     def write_file(self,divs,base_dic):
         for index,div in enumerate(divs,start=0):
             base_text=""
-            base_dic[f"col_{index}"] = [] if f"col_{index}" not in base_dic else base_dic[f"col_{index}"]
+            base_dic[f"col_{index}"] = "" if f"col_{index}" not in base_dic else base_dic[f"col_{index}"]
             spans = div.find('span')
             for span in spans:
                 if len(span.text) != 0:
                     base_text+=span.text 
             if len(spans) == 1 and len(spans[0].text) == 0:
-                pass
+                base_dic[f"col_{index}"]+="\n"
             elif base_text != "":
+                if div.attrs["class"][0] == "Tibetan":
+                    base_text = self.convert_to_uni(base_text)
                 base_text=self.change_text_format(base_text)  
-                base_text+="\n"if base_text[-1] != "\n" else ""
-                base_dic[f"col_{index}"].append(base_text)
+                base_text+="\n"
+                base_dic[f"col_{index}"]+=self.remove_noises(base_text)
         return base_dic
     
-    @staticmethod
-    def change_text_format(text,th=120):
-        base_text=""
-        prev= ""
-        text = text.replace("\n","") 
-        ranges = iter(range(len(text)))
-        for i in ranges:
-            if i<len(text)-1:
-                if i%th == 0 and i != 0 and re.search("\s",text[i+1]):
-                    base_text+=text[i]+"\n"
-                elif i%th == 0 and i != 0 and re.search("\S",text[i+1]):
-                    while i < min(20,len(text)-1) and re.search("\S",text[i+1]):
-                        base_text+=text[i]
-                        i = next(ranges) 
-                    base_text+=text[i]+"\n" 
-                elif prev == "\n" and re.search("\s",text[i]):
-                    continue
-                else:
-                    base_text+=text[i]
-            else:
-                base_text+=text[i]
-            prev = base_text[-1]
-        return base_text      
+    def remove_noises(self,text):
+        text = re.sub("\(\d+\)", "", text)
+        text = re.sub("༼.*༽", "", text)
+        text = re.sub("\|\|\d+\|\|", "", text)
+        text = re.sub("\|", "", text)
 
 
-    def create_opf(self,base_text,filename,pecha_id):
-        opf_path = f"{self.root_opf_path}/{pecha_id}/{pecha_id}.opf"
+
+        return text
         
+
+    @staticmethod
+    def change_text_format(text):
+        text = text.replace("\n"," ")
+        return text
+
+    def create_opf(self,base_text,pecha,base_id):
+        pecha_id = pecha["pecha_id"]
+        base_text = self.get_base_text(base_text,pecha)
+        opf_path = f"{self.root_opf_path}/{pecha_id}/{pecha_id}.opf"
         opf = OpenPechaFS(path =opf_path)
-        bases = {f"{filename}":self.get_base_text(base_text)}
+        bases = {f"{base_id}":base_text}
         opf.base = bases
         opf.save_base()
         if base_text[0] != "Chapter Empty":
-            layers = {f"{filename}": {LayerEnum.segment: self.get_segment_layer(base_text)}}
+            layers = {f"{base_id}": {LayerEnum.segment: self.get_segment_layer(base_text)}}
             opf.layers = layers
             opf.save_layers() 
-            
+        return base_id
+        
 
+    def get_base_text(self,base_texts,pecha):
 
-    def get_base_text(self,base_texts):
         text = ""
-        for base_text in base_texts: 
-            if base_text:
-                text+=base_text
-            text+="\n"
+        col_no = pecha["name"]
+        for base_text in base_texts:
+            text+=base_text[col_no]
+        
         return text              
     
     def get_segment_layer(self,base_texts):
         segment_annotations = {}
         char_walker =0
-        for base_text in base_texts:
-            segment_annotation,end = self.get_segment_annotation(char_walker,base_text)
+        for base_text in base_texts.splitlines():
+            segment_annotation,char_walker = self.get_segment_annotation(char_walker,base_text)
             segment_annotations.update(segment_annotation)
-            char_walker += end+1
 
         segment_layer = Layer(annotation_type= LayerEnum.segment,
         annotations=segment_annotations
@@ -285,18 +243,20 @@ class OsloScrapper(OsloAlignment):
     def get_segment_annotation(self,char_walker,base_text):
         
         segment_annotation = {
-            uuid4().hex:AnnBase(span=Span(start=char_walker, end=char_walker + len(base_text) - 2))
+            uuid4().hex:AnnBase(span=Span(start=char_walker, end=char_walker + len(base_text)))
         }
 
-        return (segment_annotation,len(base_text))
+        return (segment_annotation,len(base_text)+1+char_walker)
 
-    def get_annotations(self,bases,opf_path):
-        annotations={}
-        for base in bases:
-            span = self.get_spans(opf_path,base)
-            annotation =  {uuid4().hex:{"base":f"{base}.txt","span":span}}
-            annotations.update(annotation)
-
+    def get_annotations(self,pecha,base_id,base_texts,chapters):
+        prev_end = 0
+        annotation = []
+        col_no = pecha["name"]
+        for base_text,chapter in zip(base_texts,chapters):
+            text = base_text[col_no]
+            annotation.append({"title":chapter.replace("\n",""),"span":{"start":prev_end,"end":prev_end+len(text)}})
+            prev_end+=len(text)+1
+        annotations =  {uuid4().hex:{"base":f"{base_id}.txt","Chapters":annotation}}
         return annotations
 
     def get_spans(self,opf_path,base):
@@ -312,37 +272,36 @@ class OsloScrapper(OsloAlignment):
 
         return span   
 
-    def get_base_meta(self,base_id_title_maps):
-        base_meta = {}
+    def get_base_meta(self,base_id):
         order = 1
-        for id in base_id_title_maps.keys():
-            base_meta.update({id:{
-                "title":base_id_title_maps[id],
-                "base_file": f"{id}.txt",
+        base_meta = {base_id:{
+                "title": base_id,
+                "base_file": f"{base_id}.txt",
                 "order":order
-            }}) 
-            order+=1
+            }}
+        order+=1
 
         return base_meta
 
-    def create_meta(self,pecha,base_id_title_maps):
+    def create_meta(self,pecha,base_texts,base_id,chapters):
         opf_path = f"{self.root_opf_path}/{pecha['pecha_id']}/{pecha['pecha_id']}.opf"
         opf = OpenPechaFS(path=opf_path)
-        #annotations = self.get_annotations(base_id_title_maps)
-        base_meta=self.get_base_meta(base_id_title_maps)
-        
         instance_meta = InitialPechaMetadata(
             id=pecha['pecha_id'],
             source = self.start_url,
             initial_creation_type=InitialCreationType.input,
             source_metadata={
                 "title":self.pecha_name,
-                "language": pecha['lang'],
-                "base":base_meta,
+                "language": pecha['lang']
             })    
 
+        annotations = self.get_annotations(pecha,base_id,base_texts,chapters)
+        index = Layer(annotation_type=LayerEnum.index, annotations=annotations)
         opf._meta = instance_meta
+        opf._index = index
         opf.save_meta()
+        opf.save_index()
+
 
     def create_readme(self,pecha_id,pecha_name,lang):
         pecha = f"|Pecha id | {pecha_id}"
@@ -403,12 +362,9 @@ class OsloScrapper(OsloAlignment):
         
     def scrap(self,url,pechas_catalog,alignment_catalog):
         opf_paths = []
-        base_id_title_maps = self.parse_page(url)
+        self.parse_page(url)
         for pecha in self.pechas:
-            self.create_meta(pecha,base_id_title_maps)
-            readme=self.create_readme(pecha['pecha_id'],self.pecha_name,pecha['lang'])
             #Path(f"{self.root_opf_path}/{pecha['pecha_id']}/readme.md").touch(exist_ok=True)
-            Path(f"{self.root_opf_path}/{pecha['pecha_id']}/readme.md").write_text(readme)
             #self.publish_opf(f"{self.root_opf_path}/{pecha['pecha_id']}")
             pechas_catalog.info(f"{pecha['pecha_id']},{pecha['lang']},{self.pecha_name},https://github.com/OpenPecha/{pecha['pecha_id']}")
             #opf_paths.append(f"{self.root_opf_path}/{pecha['pecha_id']}")
@@ -417,11 +373,11 @@ class OsloScrapper(OsloAlignment):
         alignment_catalog.info(f"{alignment_id},{self.pecha_name},https://github.com/OpenPecha/{alignment_id}")
         self.create_csv(alignment_id)
         opa_path = f"{self.root_alignment_path}/{alignment_id}"
-        tmx_path = self.create_tmx(alignment_vol_map)
+        #tmx_path = self.create_tmx(alignment_vol_map)
         #self.publish_opf(opa_path)
         #self.create_realease(alignment_id,[tmx_path])
         print("DONE")
-        return [opf_paths,opa_path,tmx_path]
+        return 
 
     def scrap_all(self):
         paths = []
