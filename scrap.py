@@ -1,6 +1,3 @@
-from email.mime import base
-from lib2to3.pytree import convert
-from os import write
 from requests import request
 import requests
 from requests_html import HTMLSession
@@ -144,11 +141,11 @@ class OsloScrapper(OsloAlignment):
         base_text = {}
         response = self.make_request(self.pre_url+link['href'])
         content = response.html.find('div.infofulltekstfelt div.BolkContainer')
-        for block in content:
+        for index,block in enumerate(content,start=1):
             div = block.find('div.textvar div.Tibetan,div.Chinese,div.English,div.Sanskrit,div.German,div.Pāli,div.Gāndhārī,div.Uighur,div.French,div.Mongolian')
             if len(div) != 0:
                 base_text = self.write_file(div,base_text)
-
+            lines = base_text["col_1"].count('\n')
         return base_text        
         
         
@@ -169,6 +166,7 @@ class OsloScrapper(OsloAlignment):
         Path(f"{self.root_opf_path}/{pecha['pecha_id']}/Source/{base_id}.html").write_text(response.text.strip())
 
     def write_file(self,divs,base_dic):
+        prev_base_dic = base_dic.copy()
         for index,div in enumerate(divs,start=0):
             base_text=""
             base_dic[f"col_{index}"] = "" if f"col_{index}" not in base_dic else base_dic[f"col_{index}"]
@@ -176,7 +174,9 @@ class OsloScrapper(OsloAlignment):
             for span in spans:
                 if len(span.text) != 0:
                     base_text+=span.text 
-            if len(spans) == 1 and len(spans[0].text) == 0:
+            if base_text == "" and index == 3:
+                return prev_base_dic
+            elif len(spans) == 1 and len(spans[0].text) == 0:
                 base_dic[f"col_{index}"]+="\n"
             elif base_text != "":
                 if div.attrs["class"][0] == "Tibetan":
