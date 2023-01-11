@@ -17,7 +17,7 @@ def load_alignments(path):
     alignment = from_yaml(Path(path))
     return alignment
 
-def extract_text(alignment):
+def extract_text(alignment,seg_pair_id):
     seg_pairs = alignment["segment_pairs"]
     for seg_id in seg_pairs.keys():
         al = seg_pairs[seg_id]
@@ -46,8 +46,13 @@ def get_span(segment_yml,seg_id):
     return span
 
 def main():
-    alignmnet_path = "root/alignments/A4948ADF9/A4948ADF9.opa/07FD/Alignment.yml"
+    alignmnet_path = "root/opas/A38C93B93/A38C93B93.opa/F667.yml"
     alignment  = load_alignments(alignmnet_path)
     extract_text(alignment)
+
+def check_span():
+    text = Path("root/opfs/I85C94595/I85C94595.opf/base/4ADE.txt").read_text(encoding="utf-8")
+    print(text[74770:74971])
+
 if __name__ == "__main__":
-    main()
+    check_span()

@@ -97,8 +97,9 @@ class OsloScrapper(OsloAlignment):
                 else:
                     chapters.append(href.text)
                     base_texts.append(self.parse_text_page(href))
-        base_id = get_base_id()
         for pecha in self.pechas:
+            base_id = get_base_id()
+            pecha.update({"base_id":base_id})
             self.create_opf(base_texts,pecha,base_id)
             self.save_source(self.pre_url+complete_text_link,base_id,pecha)  
             self.create_meta(pecha,base_texts,base_id,chapters)
@@ -207,8 +208,7 @@ class OsloScrapper(OsloAlignment):
         base_text = self.get_base_text(base_text,pecha)
         opf_path = f"{self.root_opf_path}/{pecha_id}/{pecha_id}.opf"
         opf = OpenPechaFS(path =opf_path)
-        bases = {f"{base_id}":base_text}
-        opf.base = bases
+        opf.bases = {base_id:base_text}
         opf.save_base()
         if base_text[0] != "Chapter Empty":
             layers = {f"{base_id}": {LayerEnum.segment: self.get_segment_layer(base_text)}}
@@ -255,7 +255,7 @@ class OsloScrapper(OsloAlignment):
         for base_text,chapter in zip(base_texts,chapters):
             text = base_text[col_no]
             annotation.append({"title":chapter.replace("\n",""),"span":{"start":prev_end,"end":prev_end+len(text)}})
-            prev_end+=len(text)+1
+            prev_end+=len(text)
         annotations =  {uuid4().hex:{"base":f"{base_id}.txt","Chapters":annotation}}
         return annotations
 
@@ -369,7 +369,7 @@ class OsloScrapper(OsloAlignment):
             pechas_catalog.info(f"{pecha['pecha_id']},{pecha['lang']},{self.pecha_name},https://github.com/OpenPecha/{pecha['pecha_id']}")
             #opf_paths.append(f"{self.root_opf_path}/{pecha['pecha_id']}")
 
-        alignment_vol_map,alignment_id = self.create_alignment(self.pechas,self.pecha_name)
+        alignment_id = self.create_alignment(self.pechas,self.pecha_name)
         alignment_catalog.info(f"{alignment_id},{self.pecha_name},https://github.com/OpenPecha/{alignment_id}")
         self.create_csv(alignment_id)
         opa_path = f"{self.root_alignment_path}/{alignment_id}"

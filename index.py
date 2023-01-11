@@ -4,7 +4,7 @@ from pathlib import Path
 from uuid import uuid4
 import os
 import logging
-from openpecha.core.ids import get_alignment_id
+from openpecha.core.ids import get_alignment_id,get_base_id
 from openpecha.utils import dump_yaml, load_yaml
 from copy import deepcopy
 from datetime import date, datetime
@@ -12,11 +12,11 @@ from datetime import date, datetime
 
 class OsloAlignment:
     def __init__(self,root_path):
-        self.root_alignment_path = f"{root_path}/alignments"
+        self.root_alignment_path = f"{root_path}/opas"
         self.root_opf_path = f"{root_path}/opfs"
 
-    def create_alignment_yml(self,pechas,volume):
-        seg_pairs = self.get_segment_pairs(pechas,volume)
+    def create_alignment_yml(self,pechas):
+        seg_pairs = self.get_segment_pairs(pechas)
         self.segment_sources = {}
         for pecha in pechas:
             alignment = {
@@ -24,6 +24,7 @@ class OsloAlignment:
                     "type": "origin_type",
                     "relation": "translation",
                     "language": pecha['lang'],
+                    "base":pecha["base_id"]
                 }
 
             }
@@ -37,22 +38,19 @@ class OsloAlignment:
         return alignments        
 
     def create_alignment(self,pechas,pecha_name):
-        volumes = self.get_bases(pechas[0])
         alignment_id = get_alignment_id()
         alignment_path = f"{self.root_alignment_path}/{alignment_id}/{alignment_id}.opa"
-        alignment_vol_map=[]
-        for volume in volumes:
-            alignment = self.create_alignment_yml(pechas,volume)
-            meta = self.create_alignment_meta(alignment_id,volume,pechas)
-            self.write_alignment_repo(f"{alignment_path}/{volume}",alignment,meta)
-            list2 = [alignment,volume]
-            alignment_vol_map.append(list2)
-
+        alignment_to_base={}
+        alignment = self.create_alignment_yml(pechas)
+        base_id = self.write_alignment(alignment_path,alignment)
+        for pecha in pechas:
+            alignment_to_base.update({f"{pecha['pecha_id']}/{pecha['base_id']}":base_id})
+        meta = self.create_alignment_meta(alignment_id,pechas,alignment_to_base,pecha_name)
         readme = self.create_readme_for_opa(alignment_id,pecha_name,pechas)
-        Path(f"{self.root_alignment_path}/{alignment_id}/readme.md").touch(exist_ok=True)
+        dump_yaml(meta,Path(f"{alignment_path}/meta.yml"))
         Path(f"{self.root_alignment_path}/{alignment_id}/readme.md").write_text(readme)
 
-        return alignment_vol_map,alignment_id
+        return alignment_id
 
 
     def get_bases(self,pecha):
@@ -63,14 +61,14 @@ class OsloAlignment:
         return volumes
 
 
-    def get_segment_pairs(self,pechas,volume):
+    def get_segment_pairs(self,pechas):
         segments_ids = {}
         segment_length = ""
 
         for pecha in pechas:
             try:
                 pecha_yaml = load_yaml(
-                    Path(f"{self.root_opf_path}/{pecha['pecha_id']}/{pecha['pecha_id']}.opf/layers/{volume}/Segment.yml")
+                    Path(f"{self.root_opf_path}/{pecha['pecha_id']}/{pecha['pecha_id']}.opf/layers/{pecha['base_id']}/Segment.yml")
                 )
                 ids = self.get_ids(pecha_yaml["annotations"])
                 segment_length = len(ids)
@@ -110,27 +108,29 @@ class OsloAlignment:
         return final_segments 
    
 
-    def write_alignment_repo(self,alignment_path,alignment,meta=None):
+    def write_alignment(self,alignment_path,alignment):
+        base_id = get_base_id()
         alignment_path = Path(f"{alignment_path}")
         self._mkdir(alignment_path)
-        dump_yaml(alignment, Path(f"{alignment_path}/Alignment.yml"))
-        if meta:
-            dump_yaml(meta, Path(f"{alignment_path}/meta.yml"))
+        dump_yaml(alignment, Path(f"{alignment_path}/{base_id}.yml"))
+        return base_id
 
 
-    def create_alignment_meta(self,alignment_id,volume,pechas):
+    def create_alignment_meta(self,alignment_id,pechas,alignment_to_base,pecha_name):
         lang  = list(set([pecha['lang'] for pecha in pechas]))
-
+        pecha_ids = [pecha["pecha_id"] for pecha in pechas]
         metadata = {
             "id": alignment_id,
-            "title": volume,
+            "title": pecha_name,
             "type": "translation",
+            "pechas":pecha_ids,
             "source_metadata":{
                 "languages":lang,
                 "datatype":"PlainText",
                 "created_at":datetime.now(),
                 "last_modified_at":datetime.now()
                 },
+            "alignment_to_base":alignment_to_base
         }
         return metadata
 
