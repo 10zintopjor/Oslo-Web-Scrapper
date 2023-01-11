@@ -205,13 +205,13 @@ class OsloScrapper(OsloAlignment):
 
     def create_opf(self,base_text,pecha,base_id):
         pecha_id = pecha["pecha_id"]
-        base_text = self.get_base_text(base_text,pecha)
+        base_text,cleaned_base_text = self.get_base_text(base_text,pecha)
         opf_path = f"{self.root_opf_path}/{pecha_id}/{pecha_id}.opf"
         opf = OpenPechaFS(path =opf_path)
-        opf.bases = {base_id:base_text}
+        opf.bases = {base_id:cleaned_base_text}
         opf.save_base()
         if base_text[0] != "Chapter Empty":
-            layers = {f"{base_id}": {LayerEnum.segment: self.get_segment_layer(base_text)}}
+            layers = {f"{base_id}": {LayerEnum.segment: self.get_segment_layer(base_text,pecha_id)}}
             opf.layers = layers
             opf.save_layers() 
         return base_id
@@ -221,17 +221,32 @@ class OsloScrapper(OsloAlignment):
 
         text = ""
         col_no = pecha["name"]
+        cleaned_text = ""
         for base_text in base_texts:
+            clenaed_string = self.remove_consec_duplicates(base_text[col_no]) 
+            cleaned_text+=clenaed_string
+            
             text+=base_text[col_no]
         
-        return text              
-    
-    def get_segment_layer(self,base_texts):
+        return text,cleaned_text
+
+
+    def remove_consec_duplicates(self,s):
+        new_s = re.sub("\n\n*","\n",s)
+
+        return new_s[1:0] if new_s[0] == "\n" else new_s
+
+    def get_segment_layer(self,base_texts,pecha_id):
         segment_annotations = {}
         char_walker =0
+        self.pecha_id_to_seg_id_list[pecha_id] = []
         for base_text in base_texts.splitlines():
-            segment_annotation,char_walker = self.get_segment_annotation(char_walker,base_text)
+            if base_text == "":
+                self.pecha_id_to_seg_id_list[pecha_id].append(None)
+                continue
+            segment_annotation,char_walker,seg_id = self.get_segment_annotation(char_walker,base_text)
             segment_annotations.update(segment_annotation)
+            self.pecha_id_to_seg_id_list[pecha_id].append(seg_id)
 
         segment_layer = Layer(annotation_type= LayerEnum.segment,
         annotations=segment_annotations
@@ -241,12 +256,13 @@ class OsloScrapper(OsloAlignment):
 
 
     def get_segment_annotation(self,char_walker,base_text):
+        seg_id = uuid4().hex
         
         segment_annotation = {
-            uuid4().hex:AnnBase(span=Span(start=char_walker, end=char_walker + len(base_text)))
+            seg_id:AnnBase(span=Span(start=char_walker, end=char_walker + len(base_text)))
         }
 
-        return (segment_annotation,len(base_text)+1+char_walker)
+        return (segment_annotation,len(base_text)+1+char_walker,seg_id)
 
     def get_annotations(self,pecha,base_id,base_texts,chapters):
         prev_end = 0
@@ -362,6 +378,7 @@ class OsloScrapper(OsloAlignment):
         
     def scrap(self,url,pechas_catalog,alignment_catalog):
         opf_paths = []
+        self.pecha_id_to_seg_id_list = {}
         self.parse_page(url)
         for pecha in self.pechas:
             #Path(f"{self.root_opf_path}/{pecha['pecha_id']}/readme.md").touch(exist_ok=True)

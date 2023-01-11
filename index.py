@@ -62,35 +62,18 @@ class OsloAlignment:
 
 
     def get_segment_pairs(self,pechas):
-        segments_ids = {}
-        segment_length = ""
-
-        for pecha in pechas:
-            try:
-                pecha_yaml = load_yaml(
-                    Path(f"{self.root_opf_path}/{pecha['pecha_id']}/{pecha['pecha_id']}.opf/layers/{pecha['base_id']}/Segment.yml")
-                )
-                ids = self.get_ids(pecha_yaml["annotations"])
-                segment_length = len(ids)
-                segments_ids[pecha['pecha_id']]= ids
-            except:
-                segments_ids[pecha['pecha_id']]= None  
-
-        cur_pair = {}
-        pair= {}
         seg_pairs = {}
-        
-        if segment_length == "":
-            return seg_pairs
+        first_pecha = pechas[0]["pecha_id"]
+        len_of_seg = len(self.pecha_id_to_seg_id_list[first_pecha])
 
-        for num in range(1,segment_length+1):
+        for i in range(len_of_seg):
+            seg_id = uuid4().hex
+            seg_pair = {}
             for pecha in pechas:
-                try:
-                    cur_pair[pecha['pecha_id']]=segments_ids[pecha['pecha_id']][num]
-                except:
-                    cur_pair[pecha['pecha_id']]="None"
-            pair[uuid4().hex] = deepcopy(cur_pair)
-            seg_pairs.update(pair)
+                pecha_id = pecha["pecha_id"]
+                seg_ann = self.pecha_id_to_seg_id_list[pecha_id][i]
+                seg_pair.update({pecha_id:seg_ann})
+            seg_pairs.update({seg_id:seg_pair})
 
         return seg_pairs
 
