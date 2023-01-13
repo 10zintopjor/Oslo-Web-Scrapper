@@ -18,6 +18,7 @@ from serialize_to_tmx import Tmx
 from converter import Converter
 from pyewts import pyewts
 import re
+import os
 import logging
 import csv
 
@@ -83,7 +84,7 @@ class OsloScrapper(OsloAlignment):
         nav_bar = soup.select_one('div.venstrefulltekstfelt')
         links = nav_bar.findChildren('table',recursive=False)
         content = soup.select('div.infofulltekstfelt div.BolkContainer')
-        cols = content[0].select('div.textvar div.Tibetan,div.Chinese,div.English,div.Sanskrit,div.German,div.Pāli,div.Gāndhārī,div.Uighur,div.French,div.Mongolian')
+        cols = content[0].select('div.textvar div.Tibetan,div.Chinese,div.English,div.Sanskrit,div.German,div.Pāli,div.Uighur,div.French,div.Mongolian')
         self.pechas = self.get_pechas(cols)
         self.pecha_name = soup.select_one('div.headline').text
         complete_text_link = ""
@@ -95,8 +96,10 @@ class OsloScrapper(OsloAlignment):
                 elif href['href'] == "javascript:;":
                     continue
                 else:
-                    chapters.append(href.text)
-                    base_texts.append(self.parse_text_page(href))
+                    chapters.append(href.text)                    
+                    base_text = self.parse_text_page(href)
+                    self.check_base_length(base_text,href.text)
+                    base_texts.append(base_text)
         for pecha in self.pechas:
             base_id = get_base_id()
             pecha.update({"base_id":base_id})
@@ -107,6 +110,17 @@ class OsloScrapper(OsloAlignment):
             Path(f"{self.root_opf_path}/{pecha['pecha_id']}/readme.md").write_text(readme)
         
         return 
+
+    def check_base_length(self,base_text,title):
+        set_count = set()
+        for col_no,text in base_text.items():
+            set_count.add(text.count("\n"))
+            
+        if len(set_count) > 1:
+            print(title)
+            for col_no,text in base_text.items():
+                print(col_no+"  "+str(text.count("\n")))
+        
 
 
     @staticmethod
@@ -125,8 +139,6 @@ class OsloScrapper(OsloAlignment):
                 lang = "de"
             elif col.attrs["class"][0] == "Pāli":
                 lang = "pi"
-            elif col.attrs["class"][0] == "Gāndhārī":
-                lang = "pgd"
             elif col.attrs["class"][0] == "Uighur":
                 lang = "ug"
             elif col.attrs["class"][0] == "French":
@@ -140,13 +152,12 @@ class OsloScrapper(OsloAlignment):
 
     def parse_text_page(self,link):
         base_text = {}
-        response = self.make_request(self.pre_url+link['href'])
+        response = self.make_request(self.pre_url+link["href"])
         content = response.html.find('div.infofulltekstfelt div.BolkContainer')
-        for index,block in enumerate(content,start=1):
-            div = block.find('div.textvar div.Tibetan,div.Chinese,div.English,div.Sanskrit,div.German,div.Pāli,div.Gāndhārī,div.Uighur,div.French,div.Mongolian')
+        for index,block in enumerate(content):
+            div = block.find('div.textvar div.Tibetan,div.Chinese,div.English,div.Sanskrit,div.German,div.Pāli,div.Uighur,div.French,div.Mongolian')
             if len(div) != 0:
                 base_text = self.write_file(div,base_text)
-            lines = base_text["col_1"].count('\n')
         return base_text        
         
         
@@ -175,9 +186,8 @@ class OsloScrapper(OsloAlignment):
             for span in spans:
                 if len(span.text) != 0:
                     base_text+=span.text 
-            if base_text == "" and index == 3:
-                return prev_base_dic
-            elif len(spans) == 1 and len(spans[0].text) == 0:
+            
+            if len(spans) == 1 and len(spans[0].text) == 0:
                 base_dic[f"col_{index}"]+="\n"
             elif base_text != "":
                 if div.attrs["class"][0] == "Tibetan":
@@ -185,6 +195,9 @@ class OsloScrapper(OsloAlignment):
                 base_text=self.change_text_format(base_text)  
                 base_text+="\n"
                 base_dic[f"col_{index}"]+=self.remove_noises(base_text)
+            elif base_text == "":
+                base_dic[f"col_{index}"]+="\n"
+
         return base_dic
     
     def remove_noises(self,text):
@@ -398,15 +411,20 @@ class OsloScrapper(OsloAlignment):
 
     def scrap_all(self):
         paths = []
+        skip = ["http://www2.hf.uio.no/common/apps/permlink/permlink.php?app=polyglotta&context=volume&uid=b7e8f921-01f7-11e4-a105-001cc4ddf0f4"]
         pechas_catalog = self.set_up_logger("pechas_catalog")
         alignment_catalog =self.set_up_logger("alignment_catalog")
         err_log = self.set_up_logger('err')
         for val in self.get_page():
-            if "http" in val['ref']:
-                    path = self.scrap(val['ref'],pechas_catalog,alignment_catalog)
-                    paths.append(path)
+            print(val['ref'])
+            if val["ref"] in skip:
+                continue
+            elif "http" in val['ref']:
+                path = self.scrap(val['ref'],pechas_catalog,alignment_catalog)
+                paths.append(path)
             else:
-                self.scrap(self,self.pre_url+val['ref'],pechas_catalog,alignment_catalog) 
+                path = self.scrap(self.pre_url+val['ref'],pechas_catalog,alignment_catalog) 
+                paths.append(path)
             """ try:
                 if "http" in val['ref']:
                     path = self.scrap(val['ref'],pechas_catalog,alignment_catalog)
@@ -414,41 +432,46 @@ class OsloScrapper(OsloAlignment):
                 else:
                     self.scrap(self,self.pre_url+val['ref'],pechas_catalog,alignment_catalog) 
             except:
-                err_log.info(f"{val}")  """
+                err_log.info(f"{val['ref']}")
+            break """
+
         return paths
 
-    def publish_opf(self,path):
-        github_utils.github_publish(
-        path,
-        not_includes=[],
+
+def publish_repo(pecha_path, asset_paths=None):
+    github_utils.github_publish(
+        pecha_path,
         message="initial commit",
-        )  
-        print(f"{path} PUBLISHED")
-
-    def create_realease(self,id,paths):
+        not_includes=[],
+        layers=[],
+        org=os.environ.get("OPENPECHA_DATA_GITHUB_ORG"),
+        token=os.environ.get("GITHUB_TOKEN")
+       )
+    if asset_paths:
+        repo_name = pecha_path.stem
+        #asset_name = asset_path.stem
+        #shutil.make_archive(asset_path.parent / asset_name, "zip", asset_path)
+        #asset_paths.append(f"{asset_path.parent / asset_name}.zip")
         github_utils.create_release(
-        repo_name=id,
-        asset_paths=paths
+            repo_name,
+            prerelease=False,
+            asset_paths=asset_paths, 
+            org=os.environ.get("OPENPECHA_DATA_GITHUB_ORG"),
+            token=os.environ.get("GITHUB_TOKEN")
         )
-        print(f"Updated asset to {id}")
-
 def main():
-    
     obj = OsloScrapper("./root")
     pechas_catalog = obj.set_up_logger("pechas_catalog")
     alignment_catalog =obj.set_up_logger("alignment_catalog")
-    url = "https://www2.hf.uio.no/polyglotta/index.php?page=volume&vid=1120"
+    url = "http://www2.hf.uio.no/common/apps/permlink/permlink.php?app=polyglotta&context=volume&uid=b7e8f921-01f7-11e4-a105-001cc4ddf0f4"
     obj.scrap(url,pechas_catalog,alignment_catalog)
 
 if __name__ == "__main__":
-    main()
-    """ obj = OsloScrapper("./root")
-    paths = obj.scrap_all """
-    """ for path in paths:
+    obj = OsloScrapper("./root")
+    paths = obj.scrap_all()
+    for path in paths:
         opf_paths,opa_path,tmx_path,source_path = path
         for opf_path in opf_paths:
-            publish_opf(opf_path)
-            create_realease(Path(opf_path).stem,[source_path])
-        publish_opf(opa_path)
-        create_realease(Path(opa_path).stem,[tmx_path])
- """
+            #publish_repo(pecha_path = opf_path,asset_paths=[source_path])
+            continue
+        #publish_repo(pecha_path = opa_path,asset_paths=[tmx_path])
