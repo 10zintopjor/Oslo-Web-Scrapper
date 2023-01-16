@@ -51,8 +51,8 @@ def main():
     extract_text(alignment)
 
 def check_span():
-    text = Path("root/opfs/I58CF1F15/I58CF1F15.opf/base/B388.txt").read_text(encoding="utf-8")
-    print(text[89326:89406])
+    text = Path("root/opfs/I5EE1E8D1/I5EE1E8D1.opf/base/6955.txt").read_text(encoding="utf-8")
+    print(text[241:1110])
 
 if __name__ == "__main__":
-    get_span()
+    check_span()

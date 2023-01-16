@@ -21,6 +21,7 @@ import re
 import os
 import logging
 import csv
+from tqdm import tqdm
 
 class OsloScrapper(OsloAlignment):
     start_url = "https://www2.hf.uio.no/polyglotta/index.php?page=library&bid=2"
@@ -64,6 +65,7 @@ class OsloScrapper(OsloAlignment):
         return roman_num
 
     def get_page(self):
+        items = []
         response = self.make_request(self.start_url)
         li = response.html.find('ul li a')
         for link in li:
@@ -71,7 +73,8 @@ class OsloScrapper(OsloAlignment):
             'name' : link.text,
             'ref' : link.attrs['href']
             }
-            yield item  
+            items.append(item)
+        return items
 
     def parse_page(self,item):
         chapters =[]
@@ -84,6 +87,8 @@ class OsloScrapper(OsloAlignment):
         nav_bar = soup.select_one('div.venstrefulltekstfelt')
         links = nav_bar.findChildren('table',recursive=False)
         content = soup.select('div.infofulltekstfelt div.BolkContainer')
+        if not content:
+            return
         cols = content[0].select('div.textvar div.Tibetan,div.Chinese,div.English,div.Sanskrit,div.German,div.Pāli,div.Uighur,div.French,div.Mongolian')
         self.pechas = self.get_pechas(cols)
         self.pecha_name = soup.select_one('div.headline').text
@@ -222,11 +227,12 @@ class OsloScrapper(OsloAlignment):
         opf_path = f"{self.root_opf_path}/{pecha_id}/{pecha_id}.opf"
         opf = OpenPechaFS(path =opf_path)
         opf.bases = {base_id:cleaned_base_text}
-        opf.save_base()
         if base_text[0] != "Chapter Empty":
             layers = {f"{base_id}": {LayerEnum.segment: self.get_segment_layer(base_text,pecha_id)}}
             opf.layers = layers
             opf.save_layers() 
+        opf.save_base()
+    
         return base_id
         
 
@@ -247,7 +253,7 @@ class OsloScrapper(OsloAlignment):
     def remove_consec_duplicates(self,s):
         new_s = re.sub("\n\n*","\n",s)
 
-        return new_s[1:0] if new_s[0] == "\n" else new_s
+        return new_s[1:] if new_s[0] == "\n" else new_s
 
     def get_segment_layer(self,base_texts,pecha_id):
         segment_annotations = {}
@@ -393,6 +399,8 @@ class OsloScrapper(OsloAlignment):
         opf_paths = []
         self.pecha_id_to_seg_id_list = {}
         self.parse_page(url)
+        if not hasattr(self,"pechas"):
+            return
         for pecha in self.pechas:
             #Path(f"{self.root_opf_path}/{pecha['pecha_id']}/readme.md").touch(exist_ok=True)
             #self.publish_opf(f"{self.root_opf_path}/{pecha['pecha_id']}")
@@ -406,25 +414,33 @@ class OsloScrapper(OsloAlignment):
         #tmx_path = self.create_tmx(alignment_vol_map)
         #self.publish_opf(opa_path)
         #self.create_realease(alignment_id,[tmx_path])
-        print("DONE")
-        return 
 
     def scrap_all(self):
+        bool_try = None
         paths = []
-        skip = ["http://www2.hf.uio.no/common/apps/permlink/permlink.php?app=polyglotta&context=volume&uid=b7e8f921-01f7-11e4-a105-001cc4ddf0f4"]
+        skip = ["http://www2.hf.uio.no/common/apps/permlink/permlink.php?app=polyglotta&context=volume&uid=b7e8f921-01f7-11e4-a105-001cc4ddf0f4"
+        ,"http://www2.hf.uio.no/common/apps/permlink/permlink.php?app=polyglotta&context=volume&uid=405e3a68-e661-11e3-942f-001cc4ddf0f4",
+        "http://www2.hf.uio.no/common/apps/permlink/permlink.php?app=polyglotta&context=volume&uid=30400045-e664-11e3-942f-001cc4ddf0f4",
+        "http://www2.hf.uio.no/common/apps/permlink/permlink.php?app=polyglotta&context=volume&uid=976155db-e670-11e3-942f-001cc4ddf0f4"]
         pechas_catalog = self.set_up_logger("pechas_catalog")
         alignment_catalog =self.set_up_logger("alignment_catalog")
         err_log = self.set_up_logger('err')
-        for val in self.get_page():
-            print(val['ref'])
-            if val["ref"] in skip:
-                continue
-            elif "http" in val['ref']:
-                path = self.scrap(val['ref'],pechas_catalog,alignment_catalog)
-                paths.append(path)
-            else:
-                path = self.scrap(self.pre_url+val['ref'],pechas_catalog,alignment_catalog) 
-                paths.append(path)
+        items = self.get_page()
+        for item in tqdm(items):
+            if bool_try:
+                print(item['ref'])
+                if item["ref"] in skip:
+                    continue
+                elif "http" in item['ref']:
+                    path = self.scrap(item['ref'],pechas_catalog,alignment_catalog)
+                    paths.append(path)
+                else:
+                    path = self.scrap(self.pre_url+item['ref'],pechas_catalog,alignment_catalog) 
+                    paths.append(path)
+                
+                
+            if item["ref"] == "http://www2.hf.uio.no/common/apps/permlink/permlink.php?app=polyglotta&context=volume&uid=64064ed8-3f39-11e0-8f33-001cc4df1abe":
+                bool_try = True
             """ try:
                 if "http" in val['ref']:
                     path = self.scrap(val['ref'],pechas_catalog,alignment_catalog)
@@ -463,15 +479,18 @@ def main():
     obj = OsloScrapper("./root")
     pechas_catalog = obj.set_up_logger("pechas_catalog")
     alignment_catalog =obj.set_up_logger("alignment_catalog")
-    url = "http://www2.hf.uio.no/common/apps/permlink/permlink.php?app=polyglotta&context=volume&uid=b7e8f921-01f7-11e4-a105-001cc4ddf0f4"
+    url = "http://www2.hf.uio.no/common/apps/permlink/permlink.php?app=polyglotta&context=volume&uid=64064ed8-3f39-11e0-8f33-001cc4df1abe"
     obj.scrap(url,pechas_catalog,alignment_catalog)
+    
 
 if __name__ == "__main__":
-    obj = OsloScrapper("./root")
+
+    main()
+    """ obj = OsloScrapper("./root")
     paths = obj.scrap_all()
     for path in paths:
         opf_paths,opa_path,tmx_path,source_path = path
         for opf_path in opf_paths:
             #publish_repo(pecha_path = opf_path,asset_paths=[source_path])
             continue
-        #publish_repo(pecha_path = opa_path,asset_paths=[tmx_path])
+        #publish_repo(pecha_path = opa_path,asset_paths=[tmx_path]) """
