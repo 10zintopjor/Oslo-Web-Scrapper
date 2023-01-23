@@ -7,8 +7,12 @@ from pkg_resources import DEVELOP_DIST
 
 
 def get_ids(path):
-    github_utils.delete_repo(path)
-    print("deleted")
+    try:
+        github_utils.delete_repo(path)
+        print("Succesfful",path)
+
+    except:
+       print("Unsuccesfful",path)
             
 
 def remove_duplicates():

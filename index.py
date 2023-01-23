@@ -65,17 +65,18 @@ class OsloAlignment:
         seg_pairs = {}
         first_pecha = pechas[0]["pecha_id"]
         len_of_seg = len(self.pecha_id_to_seg_id_list[first_pecha])
-
         for i in range(len_of_seg):
             seg_id = uuid4().hex
             seg_pair = {}
             for pecha in pechas:
                 pecha_id = pecha["pecha_id"]
                 seg_ann = self.pecha_id_to_seg_id_list[pecha_id][i]
-                seg_pair.update({pecha_id:seg_ann})
-            seg_pairs.update({seg_id:seg_pair})
-
+                if seg_ann != None:
+                    seg_pair.update({pecha_id:seg_ann})
+            if len(seg_pair)>1:
+                seg_pairs.update({seg_id:seg_pair})
         return seg_pairs
+
 
     @staticmethod
     def _mkdir(path: Path):

@@ -92,7 +92,6 @@ class OsloScrapper(OsloAlignment):
         cols = content[0].select('div.textvar div.Tibetan,div.Chinese,div.English,div.Sanskrit,div.German,div.Pāli,div.Uighur,div.French,div.Mongolian')
         self.pechas = self.get_pechas(cols)
         self.pecha_name = soup.select_one('div.headline').text
-        complete_text_link = ""
         for link in links:
             hrefs = link.select('a')
             for href in hrefs:
@@ -108,13 +107,11 @@ class OsloScrapper(OsloAlignment):
         for pecha in self.pechas:
             base_id = get_base_id()
             pecha.update({"base_id":base_id})
-            self.create_opf(base_texts,pecha,base_id)
-            self.save_source(self.pre_url+complete_text_link,base_id,pecha)  
-            self.create_meta(pecha,base_texts,base_id,chapters)
+            self.create_opf(base_texts,pecha,base_id,chapters)
             readme=self.create_readme(pecha['pecha_id'],self.pecha_name,pecha['lang']) 
             Path(f"{self.root_opf_path}/{pecha['pecha_id']}/readme.md").write_text(readme)
         
-        return 
+        return complete_text_link
 
     def check_base_length(self,base_text,title):
         set_count = set()
@@ -177,14 +174,9 @@ class OsloScrapper(OsloAlignment):
         
         return formatted_text
 
-    def save_source(self,url,base_id,pecha):
-        response = self.make_request(url)
-        self._mkdir(Path(f"{self.root_opf_path}/{pecha['pecha_id']}/Source"))
-        Path(f"{self.root_opf_path}/{pecha['pecha_id']}/Source/{base_id}.html").write_text(response.text.strip())
-
     def write_file(self,divs,base_dic):
-        prev_base_dic = base_dic.copy()
         for index,div in enumerate(divs,start=0):
+            lang = div.attrs["class"][0]
             base_text=""
             base_dic[f"col_{index}"] = "" if f"col_{index}" not in base_dic else base_dic[f"col_{index}"]
             spans = div.find('span')
@@ -194,8 +186,10 @@ class OsloScrapper(OsloAlignment):
             
             if len(spans) == 1 and len(spans[0].text) == 0:
                 base_dic[f"col_{index}"]+="\n"
+            elif re.match("\.\.*",base_text):
+                base_dic[f"col_{index}"]+="\n"
             elif base_text != "":
-                if div.attrs["class"][0] == "Tibetan":
+                if  lang == "Tibetan":
                     base_text = self.convert_to_uni(base_text)
                 base_text=self.change_text_format(base_text)  
                 base_text+="\n"
@@ -219,20 +213,28 @@ class OsloScrapper(OsloAlignment):
     @staticmethod
     def change_text_format(text):
         text = text.replace("\n"," ")
+
         return text
 
-    def create_opf(self,base_text,pecha,base_id):
+    def create_opf(self,base_text_list,pecha,base_id,chapters):
         pecha_id = pecha["pecha_id"]
-        base_text,cleaned_base_text = self.get_base_text(base_text,pecha)
+        base_text,cleaned_base_text,clean_base_text_list = self.get_base_text(base_text_list,pecha)
         opf_path = f"{self.root_opf_path}/{pecha_id}/{pecha_id}.opf"
         opf = OpenPechaFS(path =opf_path)
         opf.bases = {base_id:cleaned_base_text}
+        opf.save_base()
         if base_text[0] != "Chapter Empty":
             layers = {f"{base_id}": {LayerEnum.segment: self.get_segment_layer(base_text,pecha_id)}}
             opf.layers = layers
             opf.save_layers() 
-        opf.save_base()
-    
+        meta =  self.get_meta(pecha,base_id)
+        opf._meta = meta
+        annotations = self.get_annotations(pecha,base_id,clean_base_text_list,chapters)
+        index = Layer(annotation_type=LayerEnum.index, annotations=annotations)        
+        opf._index = index
+        opf.save_index()
+        opf.save_meta()
+
         return base_id
         
 
@@ -241,13 +243,14 @@ class OsloScrapper(OsloAlignment):
         text = ""
         col_no = pecha["name"]
         cleaned_text = ""
+        cleaned_text_list = []
         for base_text in base_texts:
-            clenaed_string = self.remove_consec_duplicates(base_text[col_no]) 
-            cleaned_text+=clenaed_string
-            
+            cleaned_string = self.remove_consec_duplicates(base_text[col_no]) 
+            cleaned_text+=cleaned_string
+            cleaned_text_list.append(cleaned_string)
             text+=base_text[col_no]
         
-        return text,cleaned_text
+        return text,cleaned_text[:-1],cleaned_text_list
 
 
     def remove_consec_duplicates(self,s):
@@ -288,8 +291,10 @@ class OsloScrapper(OsloAlignment):
         annotation = []
         col_no = pecha["name"]
         for base_text,chapter in zip(base_texts,chapters):
-            text = base_text[col_no]
-            annotation.append({"title":chapter.replace("\n",""),"span":{"start":prev_end,"end":prev_end+len(text)}})
+            text = base_text
+            if len(text) == 0:
+                continue
+            annotation.append({"title":chapter.replace("\n",""),"span":{"start":prev_end,"end":prev_end+len(text)-1}})
             prev_end+=len(text)
         annotations =  {uuid4().hex:{"base":f"{base_id}.txt","Chapters":annotation}}
         return annotations
@@ -318,24 +323,24 @@ class OsloScrapper(OsloAlignment):
 
         return base_meta
 
-    def create_meta(self,pecha,base_texts,base_id,chapters):
-        opf_path = f"{self.root_opf_path}/{pecha['pecha_id']}/{pecha['pecha_id']}.opf"
-        opf = OpenPechaFS(path=opf_path)
+    def get_meta(self,pecha,base_id):
         instance_meta = InitialPechaMetadata(
             id=pecha['pecha_id'],
             source = self.start_url,
             initial_creation_type=InitialCreationType.input,
+            bases={
+                base_id:{
+                    "base_file":f"{base_id}.txt",
+                    "order":1
+                }
+            },
             source_metadata={
                 "title":self.pecha_name,
                 "language": pecha['lang']
             })    
 
-        annotations = self.get_annotations(pecha,base_id,base_texts,chapters)
-        index = Layer(annotation_type=LayerEnum.index, annotations=annotations)
-        opf._meta = instance_meta
-        opf._index = index
-        opf.save_meta()
-        opf.save_index()
+        
+        return instance_meta
 
 
     def create_readme(self,pecha_id,pecha_name,lang):
@@ -398,26 +403,33 @@ class OsloScrapper(OsloAlignment):
     def scrap(self,url,pechas_catalog,alignment_catalog):
         opf_paths = []
         self.pecha_id_to_seg_id_list = {}
-        self.parse_page(url)
+        complete_text_link = self.parse_page(url)
         if not hasattr(self,"pechas"):
             return
         for pecha in self.pechas:
-            #Path(f"{self.root_opf_path}/{pecha['pecha_id']}/readme.md").touch(exist_ok=True)
-            #self.publish_opf(f"{self.root_opf_path}/{pecha['pecha_id']}")
+            Path(f"{self.root_opf_path}/{pecha['pecha_id']}/readme.md").touch(exist_ok=True)
             pechas_catalog.info(f"{pecha['pecha_id']},{pecha['lang']},{self.pecha_name},https://github.com/OpenPecha/{pecha['pecha_id']}")
-            #opf_paths.append(f"{self.root_opf_path}/{pecha['pecha_id']}")
+            opf_paths.append(f"{self.root_opf_path}/{pecha['pecha_id']}")
 
+        source_page_path = self.get_source_page(complete_text_link)
         alignment_id = self.create_alignment(self.pechas,self.pecha_name)
         alignment_catalog.info(f"{alignment_id},{self.pecha_name},https://github.com/OpenPecha/{alignment_id}")
         self.create_csv(alignment_id)
         opa_path = f"{self.root_alignment_path}/{alignment_id}"
-        #tmx_path = self.create_tmx(alignment_vol_map)
-        #self.publish_opf(opa_path)
-        #self.create_realease(alignment_id,[tmx_path])
+        paths = (opf_paths,opa_path,source_page_path)
+        self.publish(paths)
+        
+
+    def get_source_page(self,complete_text_link):
+        res = self.make_request(self.pre_url+complete_text_link)
+        self._mkdir(Path("./root/source"))
+        source_page_path = "./root/source/source.html"
+        Path(source_page_path).write_text(res.text)
+        return source_page_path
+
 
     def scrap_all(self):
-        bool_try = None
-        paths = []
+        bool_try = True
         skip = ["http://www2.hf.uio.no/common/apps/permlink/permlink.php?app=polyglotta&context=volume&uid=b7e8f921-01f7-11e4-a105-001cc4ddf0f4"
         ,"http://www2.hf.uio.no/common/apps/permlink/permlink.php?app=polyglotta&context=volume&uid=405e3a68-e661-11e3-942f-001cc4ddf0f4",
         "http://www2.hf.uio.no/common/apps/permlink/permlink.php?app=polyglotta&context=volume&uid=30400045-e664-11e3-942f-001cc4ddf0f4",
@@ -427,32 +439,24 @@ class OsloScrapper(OsloAlignment):
         err_log = self.set_up_logger('err')
         items = self.get_page()
         for item in tqdm(items):
-            if bool_try:
-                print(item['ref'])
+            print(item['ref'])
+            try:
                 if item["ref"] in skip:
                     continue
                 elif "http" in item['ref']:
-                    path = self.scrap(item['ref'],pechas_catalog,alignment_catalog)
-                    paths.append(path)
+                    self.scrap(item['ref'],pechas_catalog,alignment_catalog)
                 else:
-                    path = self.scrap(self.pre_url+item['ref'],pechas_catalog,alignment_catalog) 
-                    paths.append(path)
-                
-                
-            if item["ref"] == "http://www2.hf.uio.no/common/apps/permlink/permlink.php?app=polyglotta&context=volume&uid=64064ed8-3f39-11e0-8f33-001cc4df1abe":
-                bool_try = True
-            """ try:
-                if "http" in val['ref']:
-                    path = self.scrap(val['ref'],pechas_catalog,alignment_catalog)
-                    paths.append(path)
-                else:
-                    self.scrap(self,self.pre_url+val['ref'],pechas_catalog,alignment_catalog) 
+                    self.scrap(self.pre_url+item['ref'],pechas_catalog,alignment_catalog) 
             except:
-                err_log.info(f"{val['ref']}")
-            break """
+                err_log.info(f"{item['ref']}")
 
-        return paths
-
+    def publish(self,paths):
+        opf_paths,opa_path,source_path = paths
+        publish_repo(pecha_path = opa_path)
+        for opf_path in opf_paths:
+            publish_repo(pecha_path = opf_path,asset_paths=[source_path])
+                
+        
 
 def publish_repo(pecha_path, asset_paths=None):
     github_utils.github_publish(
@@ -464,7 +468,7 @@ def publish_repo(pecha_path, asset_paths=None):
         token=os.environ.get("GITHUB_TOKEN")
        )
     if asset_paths:
-        repo_name = pecha_path.stem
+        repo_name = Path(pecha_path).stem
         #asset_name = asset_path.stem
         #shutil.make_archive(asset_path.parent / asset_name, "zip", asset_path)
         #asset_paths.append(f"{asset_path.parent / asset_name}.zip")
@@ -479,18 +483,11 @@ def main():
     obj = OsloScrapper("./root")
     pechas_catalog = obj.set_up_logger("pechas_catalog")
     alignment_catalog =obj.set_up_logger("alignment_catalog")
-    url = "http://www2.hf.uio.no/common/apps/permlink/permlink.php?app=polyglotta&context=volume&uid=64064ed8-3f39-11e0-8f33-001cc4df1abe"
+    url = "http://www2.hf.uio.no/common/apps/permlink/permlink.php?app=polyglotta&context=volume&uid=32c7b633-70e7-11e9-8a71-0050569f23b2"
     obj.scrap(url,pechas_catalog,alignment_catalog)
     
 
 if __name__ == "__main__":
-
-    main()
-    """ obj = OsloScrapper("./root")
+    obj = OsloScrapper("./root")
     paths = obj.scrap_all()
-    for path in paths:
-        opf_paths,opa_path,tmx_path,source_path = path
-        for opf_path in opf_paths:
-            #publish_repo(pecha_path = opf_path,asset_paths=[source_path])
-            continue
-        #publish_repo(pecha_path = opa_path,asset_paths=[tmx_path]) """
+    
