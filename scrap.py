@@ -2,7 +2,6 @@ from requests import request
 import requests
 from requests_html import HTMLSession
 from openpecha.core.ids import get_base_id,get_initial_pecha_id
-from datetime import datetime
 from openpecha.core.layer import Layer, LayerEnum
 from openpecha.core.pecha import OpenPechaFS 
 from openpecha.core.metadata import InitialPechaMetadata,InitialCreationType
@@ -21,6 +20,7 @@ import re
 import os
 import logging
 import csv
+import datetime
 from tqdm import tqdm
 
 class OsloScrapper(OsloAlignment):
@@ -327,7 +327,10 @@ class OsloScrapper(OsloAlignment):
         instance_meta = InitialPechaMetadata(
             id=pecha['pecha_id'],
             source = self.start_url,
+            parser="https://github.com/jungtop/oslo_scrap_v2/blob/main/scrap.py",
             initial_creation_type=InitialCreationType.input,
+            imported=datetime.datetime.now(),
+            default_language=pecha['lang'],
             bases={
                 base_id:{
                     "base_file":f"{base_id}.txt",
@@ -429,7 +432,6 @@ class OsloScrapper(OsloAlignment):
 
 
     def scrap_all(self):
-        bool_try = True
         skip = ["http://www2.hf.uio.no/common/apps/permlink/permlink.php?app=polyglotta&context=volume&uid=b7e8f921-01f7-11e4-a105-001cc4ddf0f4"
         ,"http://www2.hf.uio.no/common/apps/permlink/permlink.php?app=polyglotta&context=volume&uid=405e3a68-e661-11e3-942f-001cc4ddf0f4",
         "http://www2.hf.uio.no/common/apps/permlink/permlink.php?app=polyglotta&context=volume&uid=30400045-e664-11e3-942f-001cc4ddf0f4",
@@ -450,6 +452,7 @@ class OsloScrapper(OsloAlignment):
             except:
                 err_log.info(f"{item['ref']}")
 
+
     def publish(self,paths):
         opf_paths,opa_path,source_path = paths
         publish_repo(pecha_path = opa_path)
@@ -469,9 +472,6 @@ def publish_repo(pecha_path, asset_paths=None):
        )
     if asset_paths:
         repo_name = Path(pecha_path).stem
-        #asset_name = asset_path.stem
-        #shutil.make_archive(asset_path.parent / asset_name, "zip", asset_path)
-        #asset_paths.append(f"{asset_path.parent / asset_name}.zip")
         github_utils.create_release(
             repo_name,
             prerelease=False,
