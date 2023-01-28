@@ -1,12 +1,7 @@
-from asyncore import read
-from ctypes import alignment
 from pathlib import Path
 from uuid import uuid4
-import os
-import logging
 from openpecha.core.ids import get_alignment_id,get_base_id
 from openpecha.utils import dump_yaml, load_yaml
-from copy import deepcopy
 from datetime import date, datetime
 
 
@@ -23,7 +18,7 @@ class OsloAlignment:
                 pecha['pecha_id']:{
                     "type": "origin_type",
                     "relation": "translation",
-                    "language": pecha['lang'],
+                    "lang": pecha['lang'],
                     "base":pecha["base_id"]
                 }
 
@@ -39,8 +34,8 @@ class OsloAlignment:
 
     def create_alignment(self,pechas,pecha_name):
         alignment_id = get_alignment_id()
-        alignment_path = f"{self.root_alignment_path}/{alignment_id}/{alignment_id}.opa"
         alignment_to_base={}
+        alignment_path = f"{self.root_alignment_path}/{alignment_id}/{alignment_id}.opa"
         alignment = self.create_alignment_yml(pechas)
         base_id = self.write_alignment(alignment_path,alignment)
         for pecha in pechas:

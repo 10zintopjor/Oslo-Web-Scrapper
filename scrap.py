@@ -159,15 +159,13 @@ class OsloScrapper(OsloAlignment):
         for index,block in enumerate(content):
             div = block.find('div.textvar div.Tibetan,div.Chinese,div.English,div.Sanskrit,div.German,div.Pāli,div.Uighur,div.French,div.Mongolian')
             if len(div) != 0:
-                base_text = self.write_file(div,base_text)
+                self.write_file(div,base_text)
         return base_text        
         
         
-
     def convert_to_uni(self,text):
         obj = Converter()
         converter = pyewts()
-
         ewts = obj.alacToEwts(text)
         uni =converter.toUnicode(ewts)
         formatted_text = self.change_text_format(uni)
@@ -183,19 +181,15 @@ class OsloScrapper(OsloAlignment):
             for span in spans:
                 if len(span.text) != 0:
                     base_text+=span.text 
-            
-            if len(spans) == 1 and len(spans[0].text) == 0:
-                base_dic[f"col_{index}"]+="\n"
-            elif re.match("\.\.*",base_text):
-                base_dic[f"col_{index}"]+="\n"
+            if (len(spans) == 1 and len(spans[0].text) == 0) or base_text == "" or re.match("\.\.*",base_text):
+                base_dic[f"col_{index}"]+="----------\n"
             elif base_text != "":
                 if  lang == "Tibetan":
                     base_text = self.convert_to_uni(base_text)
-                base_text=self.change_text_format(base_text)  
+                base_text=self.change_text_format(base_text)
+
                 base_text+="\n"
-                base_dic[f"col_{index}"]+=self.remove_noises(base_text)
-            elif base_text == "":
-                base_dic[f"col_{index}"]+="\n"
+                base_dic[f"col_{index}"]+= base_text
 
         return base_dic
     
@@ -205,16 +199,13 @@ class OsloScrapper(OsloAlignment):
         text = re.sub("\|\|\d+\|\|", "", text)
         text = re.sub("\|", "", text)
 
-
-
         return text
         
 
     @staticmethod
     def change_text_format(text):
         text = text.replace("\n"," ")
-
-        return text
+        return text.strip(" ")
 
     def create_opf(self,base_text_list,pecha,base_id,chapters):
         pecha_id = pecha["pecha_id"]
@@ -234,12 +225,10 @@ class OsloScrapper(OsloAlignment):
         opf._index = index
         opf.save_index()
         opf.save_meta()
-
         return base_id
         
 
     def get_base_text(self,base_texts,pecha):
-
         text = ""
         col_no = pecha["name"]
         cleaned_text = ""
@@ -249,23 +238,24 @@ class OsloScrapper(OsloAlignment):
             cleaned_text+=cleaned_string
             cleaned_text_list.append(cleaned_string)
             text+=base_text[col_no]
-        
         return text,cleaned_text[:-1],cleaned_text_list
 
 
     def remove_consec_duplicates(self,s):
         new_s = re.sub("\n\n*","\n",s)
+        if len(new_s) == 0:
+            return new_s
+        elif new_s[0] == "\n":
+            return new_s[1:]
+        else:
+            return new_s
 
-        return new_s[1:] if new_s[0] == "\n" else new_s
 
     def get_segment_layer(self,base_texts,pecha_id):
         segment_annotations = {}
         char_walker =0
         self.pecha_id_to_seg_id_list[pecha_id] = []
         for base_text in base_texts.splitlines():
-            if base_text == "":
-                self.pecha_id_to_seg_id_list[pecha_id].append(None)
-                continue
             segment_annotation,char_walker,seg_id = self.get_segment_annotation(char_walker,base_text)
             segment_annotations.update(segment_annotation)
             self.pecha_id_to_seg_id_list[pecha_id].append(seg_id)
@@ -279,7 +269,6 @@ class OsloScrapper(OsloAlignment):
 
     def get_segment_annotation(self,char_walker,base_text):
         seg_id = uuid4().hex
-        
         segment_annotation = {
             seg_id:AnnBase(span=Span(start=char_walker, end=char_walker + len(base_text)))
         }
@@ -299,6 +288,7 @@ class OsloScrapper(OsloAlignment):
         annotations =  {uuid4().hex:{"base":f"{base_id}.txt","Chapters":annotation}}
         return annotations
 
+
     def get_spans(self,opf_path,base):
         path = f"{opf_path}/base/{base}.txt"
         try:
@@ -311,6 +301,7 @@ class OsloScrapper(OsloAlignment):
         span =  {"start": 0, "end": end}
 
         return span   
+
 
     def get_base_meta(self,base_id):
         order = 1
@@ -342,7 +333,6 @@ class OsloScrapper(OsloAlignment):
                 "language": pecha['lang']
             })    
 
-        
         return instance_meta
 
 
@@ -362,7 +352,6 @@ class OsloScrapper(OsloAlignment):
         fileHandler.setFormatter(formatter)
         logger.setLevel(logging.INFO)
         logger.addHandler(fileHandler)
-
         return logger
 
 
@@ -400,8 +389,6 @@ class OsloScrapper(OsloAlignment):
         for tmx in tmxs:
             zipObj.write(tmx)
         return zip_path    
-
-    
         
     def scrap(self,url,pechas_catalog,alignment_catalog):
         opf_paths = []
@@ -451,6 +438,7 @@ class OsloScrapper(OsloAlignment):
                     self.scrap(self.pre_url+item['ref'],pechas_catalog,alignment_catalog) 
             except:
                 err_log.info(f"{item['ref']}")
+            break
 
 
     def publish(self,paths):
@@ -462,6 +450,7 @@ class OsloScrapper(OsloAlignment):
         
 
 def publish_repo(pecha_path, asset_paths=None):
+    return
     github_utils.github_publish(
         pecha_path,
         message="initial commit",
@@ -483,7 +472,8 @@ def main():
     obj = OsloScrapper("./root")
     pechas_catalog = obj.set_up_logger("pechas_catalog")
     alignment_catalog =obj.set_up_logger("alignment_catalog")
-    url = "http://www2.hf.uio.no/common/apps/permlink/permlink.php?app=polyglotta&context=volume&uid=32c7b633-70e7-11e9-8a71-0050569f23b2"
+    url = "https://www2.hf.uio.no/polyglotta/index.php?page=volume&vid=1119"
+    url = "https://www2.hf.uio.no/polyglotta/index.php?page=volume&vid=779"
     obj.scrap(url,pechas_catalog,alignment_catalog)
     
 

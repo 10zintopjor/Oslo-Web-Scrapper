@@ -53,14 +53,14 @@ def get_span(segment_yml,seg_id):
     return span
 
 def main():
-    alignment_path = "root/opas/A146479A5/A146479A5.opa/D587.yml"
-    seg_id = "7301520db3c74b7f8f18498ae1c8c2e2"
+    alignment_path = "root/opas/AE92897F9/AE92897F9.opa/55C1.yml"
+    seg_id = "bcdb643b4d6c4856901edcac817eedca"
     alignment  = load_alignments(alignment_path)
     extract_text(alignment,seg_id)
 
 def check_span():
-    text = Path("root/opfs/I9FC61ADA/I9FC61ADA.opf/base/5BE7.txt").read_text(encoding="utf-8")
-    print(text[79:5912])
+    text = Path("root/opfs/I689F5A8D/I689F5A8D.opf/base/4ED2.txt").read_text(encoding="utf-8")
+    print(text[8226:10344])
 
 if __name__ == "__main__":
-    check_span()
+    main()
