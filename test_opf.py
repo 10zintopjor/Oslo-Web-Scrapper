@@ -3,7 +3,9 @@ from importlib.resources import read_text
 from regex import P
 import yaml
 from pathlib import Path
+from urllib.parse import urlparse, urlunsplit
 
+from pydantic import parse_obj_as, AnyHttpUrl
 
   
 def toyaml(dict):
@@ -62,5 +64,9 @@ def check_span():
     text = Path("root/opfs/I689F5A8D/I689F5A8D.opf/base/4ED2.txt").read_text(encoding="utf-8")
     print(text[8226:10344])
 
+def test_url(url:AnyHttpUrl):
+    print(url)
+
 if __name__ == "__main__":
-    main()
+   url=parse_obj_as(AnyHttpUrl, "https://www.test.com")
+   

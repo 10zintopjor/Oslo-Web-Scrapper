@@ -1,7 +1,8 @@
-from requests import request
 import requests
 from requests_html import HTMLSession
 from openpecha.core.ids import get_base_id,get_initial_pecha_id
+from pydantic import parse_obj_as, AnyHttpUrl
+
 from openpecha.core.layer import Layer, LayerEnum
 from openpecha.core.pecha import OpenPechaFS 
 from openpecha.core.metadata import InitialPechaMetadata,InitialCreationType
@@ -318,7 +319,7 @@ class OsloScrapper(OsloAlignment):
         instance_meta = InitialPechaMetadata(
             id=pecha['pecha_id'],
             source = self.start_url,
-            parser="https://github.com/jungtop/oslo_scrap_v2/blob/main/scrap.py",
+            paresr = parse_obj_as(AnyHttpUrl, "https://github.com/jungtop/oslo_scrap_v2/blob/main/scrap.py"),
             initial_creation_type=InitialCreationType.input,
             imported=datetime.datetime.now(),
             default_language=pecha['lang'],
@@ -421,7 +422,14 @@ class OsloScrapper(OsloAlignment):
         items = self.get_page()
         for item in tqdm(items):
             print(item['ref'])
-            try:
+            if item["ref"] in skip:
+                    continue
+            elif "http" in item['ref']:
+                paths = self.scrap(item['ref'],pechas_catalog,alignment_catalog)
+            else:
+                paths = self.scrap(self.pre_url+item['ref'],pechas_catalog,alignment_catalog) 
+            self.publish(paths)
+            """ try:
                 if item["ref"] in skip:
                     continue
                 elif "http" in item['ref']:
@@ -430,7 +438,7 @@ class OsloScrapper(OsloAlignment):
                     paths = self.scrap(self.pre_url+item['ref'],pechas_catalog,alignment_catalog) 
                 self.publish(paths)
             except Exception as e:
-                err_log.info(f"{item['ref']},{e}")
+                err_log.info(f"{item['ref']},{e}") """
             
 
 
