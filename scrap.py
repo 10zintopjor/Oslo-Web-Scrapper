@@ -13,7 +13,6 @@ from index import OsloAlignment
 from pathlib import Path
 from openpecha import github_utils,config
 from zipfile import ZipFile
-from serialize_to_tmx import Tmx
 from converter import Converter
 from pyewts import pyewts
 import re
@@ -345,62 +344,23 @@ class OsloScrapper(OsloAlignment):
         readme = f"{pecha}\n{Table}\n{Title}\n{lang}"
         return readme 
 
-    
 
-
-    def create_csv(self,alignment_id):
-        filename = ""
-        for i,pecha in enumerate(self.pechas):
-            filename+=pecha['lang']
-            if len(self.pechas) > i+1:
-                filename+='-'
-        with open(f"{self.root_alignment_path}/{alignment_id}/{filename}.csv",'w') as f:
-            writer = csv.writer(f)
-            writer.writerow(["pecha id","language","url"])
-            for pecha in self.pechas:
-                lang = pecha['lang']
-                pechaid = pecha['pecha_id']
-                url = f"https://github.com/OpenPecha/{pechaid}"
-                writer.writerow([pechaid,lang,url])
-
-
-    def create_tmx(self,alignment_vol_map):
-        tmxObj = Tmx(self.root_opf_path,self.root_tmx_path)
-        tmx_path = f"{self.root_tmx_path}/{self.pecha_name}"
-        self._mkdir(Path(tmx_path))
-        for map in alignment_vol_map:
-            alignment,volume = map   
-            tmxObj.create_tmx(alignment,volume,tmx_path)
-        zip_path = self.create_tmx_zip(tmx_path)
-        return zip_path
-
-
-    def create_tmx_zip(self,tmx_path):
-        zip_path = f"{self.root_tmx_path}/{self.pecha_name}_tmx.zip"
-        zipObj = ZipFile(zip_path, 'w')
-        tmxs = list(Path(f"{tmx_path}").iterdir())
-        for tmx in tmxs:
-            zipObj.write(tmx)
-        return zip_path    
-        
     def scrap(self,url,pechas_catalog,alignment_catalog):
-        opf_paths = []
         self.pecha_id_to_seg_id_list = {}
         complete_text_link = self.parse_page(url)
         if not hasattr(self,"pechas"):
             return
-        for pecha in self.pechas:
-            Path(f"{self.root_opf_path}/{pecha['pecha_id']}/readme.md").touch(exist_ok=True)
-            pechas_catalog.info(f"{pecha['pecha_id']},{pecha['lang']},{self.pecha_name},https://github.com/OpenPecha/{pecha['pecha_id']}")
-            opf_paths.append(f"{self.root_opf_path}/{pecha['pecha_id']}")
-
         source_page_path = self.get_source_page(complete_text_link)
+        for pecha in self.pechas:
+            opf_path = f"{self.root_opf_path}/{pecha['pecha_id']}"
+            publish_repo(pecha_path=opf_path,asset_paths=[source_page_path])
+            pechas_catalog.info(f"{pecha['pecha_id']},{pecha['lang']},{self.pecha_name},https://github.com/OpenPecha-Data/{pecha['pecha_id']}")
+        
         alignment_id = self.create_alignment(self.pechas,self.pecha_name)
-        alignment_catalog.info(f"{alignment_id},{self.pecha_name},https://github.com/OpenPecha/{alignment_id}")
-        self.create_csv(alignment_id)
         opa_path = f"{self.root_alignment_path}/{alignment_id}"
-        paths = (opf_paths,opa_path,source_page_path)
-        return paths
+        publish_repo(pecha_path=opa_path)
+        alignment_catalog.info(f"{alignment_id},{self.pecha_name},https://github.com/OpenPecha-Data/{alignment_id}")
+        return
         
 
     def get_source_page(self,complete_text_link):
@@ -412,42 +372,19 @@ class OsloScrapper(OsloAlignment):
 
 
     def scrap_all(self):
-        skip = ["http://www2.hf.uio.no/common/apps/permlink/permlink.php?app=polyglotta&context=volume&uid=b7e8f921-01f7-11e4-a105-001cc4ddf0f4"
-        ,"http://www2.hf.uio.no/common/apps/permlink/permlink.php?app=polyglotta&context=volume&uid=405e3a68-e661-11e3-942f-001cc4ddf0f4",
-        "http://www2.hf.uio.no/common/apps/permlink/permlink.php?app=polyglotta&context=volume&uid=30400045-e664-11e3-942f-001cc4ddf0f4",
-        "http://www2.hf.uio.no/common/apps/permlink/permlink.php?app=polyglotta&context=volume&uid=976155db-e670-11e3-942f-001cc4ddf0f4"]
         pechas_catalog = set_up_logger("pechas_catalog")
         alignment_catalog =set_up_logger("alignment_catalog")
         err_log = set_up_logger('err')
         items = self.get_page()
         for item in tqdm(items):
-            print(item['ref'])
-            if item["ref"] in skip:
-                    continue
-            elif "http" in item['ref']:
-                paths = self.scrap(item['ref'],pechas_catalog,alignment_catalog)
-            else:
-                paths = self.scrap(self.pre_url+item['ref'],pechas_catalog,alignment_catalog) 
-            self.publish(paths)
-            """ try:
-                if item["ref"] in skip:
-                    continue
-                elif "http" in item['ref']:
-                    paths = self.scrap(item['ref'],pechas_catalog,alignment_catalog)
+            try:
+                if "http" in item['ref']:
+                    self.scrap(item['ref'],pechas_catalog,alignment_catalog)
                 else:
-                    paths = self.scrap(self.pre_url+item['ref'],pechas_catalog,alignment_catalog) 
-                self.publish(paths)
+                    self.scrap(self.pre_url+item['ref'],pechas_catalog,alignment_catalog) 
             except Exception as e:
-                err_log.info(f"{item['ref']},{e}") """
+                err_log.info(f"{item['ref']},{e}")
             
-
-
-    def publish(self,paths):
-        opf_paths,opa_path,source_path = paths
-        publish_repo(pecha_path = opa_path)
-        for opf_path in opf_paths:
-            publish_repo(pecha_path = opf_path,asset_paths=[source_path])
-
 
 def set_up_logger(logger_name):
     logger = logging.getLogger(logger_name)
@@ -477,14 +414,6 @@ def publish_repo(pecha_path, asset_paths=None):
             org=os.environ.get("OPENPECHA_DATA_GITHUB_ORG"),
             token=os.environ.get("GITHUB_TOKEN")
         )
-def main():
-    obj = OsloScrapper("./root")
-    pechas_catalog = obj.set_up_logger("pechas_catalog")
-    alignment_catalog =obj.set_up_logger("alignment_catalog")
-    url = "https://www2.hf.uio.no/polyglotta/index.php?page=volume&vid=1119"
-    url = "https://www2.hf.uio.no/polyglotta/index.php?page=volume&vid=779"
-    obj.scrap(url,pechas_catalog,alignment_catalog)
-    
 
 if __name__ == "__main__":
     obj = OsloScrapper("./root")
