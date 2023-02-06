@@ -6,7 +6,6 @@ from openpecha.core.layer import Layer, LayerEnum
 from openpecha.core.pecha import OpenPechaFS 
 from openpecha.core.metadata import InitialPechaMetadata,InitialCreationType
 from bs4 import BeautifulSoup
-
 from openpecha.core.annotation import AnnBase, Span
 from uuid import uuid4
 from index import OsloAlignment
@@ -22,6 +21,7 @@ import logging
 import csv
 import datetime
 from tqdm import tqdm
+
 
 class OsloScrapper(OsloAlignment):
     start_url = "https://www2.hf.uio.no/polyglotta/index.php?page=library&bid=2"
@@ -344,15 +344,7 @@ class OsloScrapper(OsloAlignment):
         readme = f"{pecha}\n{Table}\n{Title}\n{lang}"
         return readme 
 
-    @staticmethod
-    def set_up_logger(logger_name):
-        logger = logging.getLogger(logger_name)
-        formatter = logging.Formatter("%(message)s")
-        fileHandler = logging.FileHandler(f"{logger_name}.log")
-        fileHandler.setFormatter(formatter)
-        logger.setLevel(logging.INFO)
-        logger.addHandler(fileHandler)
-        return logger
+    
 
 
     def create_csv(self,alignment_id):
@@ -407,7 +399,7 @@ class OsloScrapper(OsloAlignment):
         self.create_csv(alignment_id)
         opa_path = f"{self.root_alignment_path}/{alignment_id}"
         paths = (opf_paths,opa_path,source_page_path)
-        self.publish(paths)
+        return paths
         
 
     def get_source_page(self,complete_text_link):
@@ -423,9 +415,9 @@ class OsloScrapper(OsloAlignment):
         ,"http://www2.hf.uio.no/common/apps/permlink/permlink.php?app=polyglotta&context=volume&uid=405e3a68-e661-11e3-942f-001cc4ddf0f4",
         "http://www2.hf.uio.no/common/apps/permlink/permlink.php?app=polyglotta&context=volume&uid=30400045-e664-11e3-942f-001cc4ddf0f4",
         "http://www2.hf.uio.no/common/apps/permlink/permlink.php?app=polyglotta&context=volume&uid=976155db-e670-11e3-942f-001cc4ddf0f4"]
-        pechas_catalog = self.set_up_logger("pechas_catalog")
-        alignment_catalog =self.set_up_logger("alignment_catalog")
-        err_log = self.set_up_logger('err')
+        pechas_catalog = set_up_logger("pechas_catalog")
+        alignment_catalog =set_up_logger("alignment_catalog")
+        err_log = set_up_logger('err')
         items = self.get_page()
         for item in tqdm(items):
             print(item['ref'])
@@ -433,12 +425,13 @@ class OsloScrapper(OsloAlignment):
                 if item["ref"] in skip:
                     continue
                 elif "http" in item['ref']:
-                    self.scrap(item['ref'],pechas_catalog,alignment_catalog)
+                    paths = self.scrap(item['ref'],pechas_catalog,alignment_catalog)
                 else:
-                    self.scrap(self.pre_url+item['ref'],pechas_catalog,alignment_catalog) 
-            except:
-                err_log.info(f"{item['ref']}")
-            break
+                    paths = self.scrap(self.pre_url+item['ref'],pechas_catalog,alignment_catalog) 
+                self.publish(paths)
+            except Exception as e:
+                err_log.info(f"{item['ref']},{e}")
+            
 
 
     def publish(self,paths):
@@ -446,11 +439,19 @@ class OsloScrapper(OsloAlignment):
         publish_repo(pecha_path = opa_path)
         for opf_path in opf_paths:
             publish_repo(pecha_path = opf_path,asset_paths=[source_path])
-                
-        
+
+
+def set_up_logger(logger_name):
+    logger = logging.getLogger(logger_name)
+    formatter = logging.Formatter("%(message)s")
+    fileHandler = logging.FileHandler(f"{logger_name}.log")
+    fileHandler.setFormatter(formatter)
+    logger.setLevel(logging.INFO)
+    logger.addHandler(fileHandler)
+    return logger    
+
 
 def publish_repo(pecha_path, asset_paths=None):
-    return
     github_utils.github_publish(
         pecha_path,
         message="initial commit",
