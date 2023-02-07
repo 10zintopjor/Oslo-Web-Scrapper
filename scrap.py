@@ -415,7 +415,24 @@ def publish_repo(pecha_path, asset_paths=None):
             token=os.environ.get("GITHUB_TOKEN")
         )
 
-if __name__ == "__main__":
+def main():
     obj = OsloScrapper("./root")
-    paths = obj.scrap_all()
+    pechas_catalog = set_up_logger("pechas_catalog")
+    alignment_catalog =set_up_logger("alignment_catalog")
+    err_log = set_up_logger('err')
+    urls = Path("old_err.csv").read_text().splitlines()
+    for url in urls:
+        try:
+            if "http" in url:
+                obj.scrap(url,pechas_catalog,alignment_catalog)
+            else:
+                obj.scrap(obj.pre_url+url,pechas_catalog,alignment_catalog) 
+        except Exception as e:
+            err_log.info(f"{url},{e}")
+
+
+if __name__ == "__main__":
+    main()
+    """ obj = OsloScrapper("./root")
+    paths = obj.scrap_all() """
     
