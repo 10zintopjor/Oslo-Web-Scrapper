@@ -431,7 +431,6 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
-    """ obj = OsloScrapper("./root")
-    paths = obj.scrap_all() """
+    obj = OsloScrapper("./root")
+    paths = obj.scrap_all()
     
